@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Emergency LLP</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">LOGIN</string>
+    <string name="email">Email\n</string>
+    <string name="password">Password</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="Signup">SignUp</string>
+    <string name="create_account">Create Account</string>
+    <string name="full_name">Full Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="have_an_account">Already Have an Account?</string>
+    <string name="OTP">OTP Verification</string>
+    <string name="txt_OTP">You will receive a verification OTP on this number</string>
+    <string name="btn_send_otp">Send OTP</string>
+    <string name="otp_sent_text">Enter the OTP sent to your number</string>
+    <string name="otp_not_receive">Didn\'t receive OTP?</string>
+    <string name="otp_resend">Resend OTP</string>
+    <string name="otp_verify_btn">Verify OTP</string>
+    <string name="who_are_you">Who are You?</string>
+    <string name="fleet_owner">Fleet Owner\n</string>
+    <string name="driver">Driver</string>
+    <string name="text_next">Next</string>
+    <string name="documents_text">Documents:-</string>
+    <string name="aadharno_text">Aadhaar No.</string>
+    <string name="type_here_text">Type here</string>
+    <string name="registration_successfull_text">Registration Successful!!!</string>
+    <string name="vehicle_no_text">Vehicle No</string>
+    <string name="driver_id">Driver ID</string>
+    <string name="home_text">Home</string>
+    <string name="ambulance_fleet">Ambulance</string>
+    <string name="notification_text">Notification</string>
+    <string name="profile_text">Profile</string>
+    <string name="no_of_ambulance_registered">You have \t \t \t ambulance registered</string>
+    <string name="add_ambulance_text">TAP TO ADD AMBULANCE</string>
+    <string name="ambulance_type_text">Ambulance Type</string>
+    <string name="advance_life_support_text">Advanced Life Support</string>
+    <string name="basic_life_support">Basic Life Support</string>
+    <string name="mortuary_transport">Mortuary/Transport</string>
+    <string name="vehicle_type">Vehicle Type</string>
+    <string name="eg_bolero_traveller_etc">Eg. Bolero, Traveller etc</string>
+    <string name="cancel_text">CANCEL</string>
+    <string name="add_text">ADD</string>
+</resources>

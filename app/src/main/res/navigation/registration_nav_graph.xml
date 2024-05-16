@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registration_nav_graph"
+    app:startDestination="@id/roleSelectFragment">
+
+    <fragment
+        android:id="@+id/roleSelectFragment"
+        android:name="com.swasthavyas.emergencyllp.component.registration.ui.RoleSelectFragment"
+        android:label="fragment_role_select"
+        tools:layout="@layout/fragment_role_select" >
+        <action
+            android:id="@+id/action_roleSelectFragment_to_documentInputFragment"
+            app:destination="@id/documentInputFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_roleSelectFragment_to_vehicleNumberFragment"
+            app:destination="@id/vehicleNumberFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/documentInputFragment"
+        android:name="com.swasthavyas.emergencyllp.component.registration.ui.DocumentInputFragment"
+        android:label="fragment_document_input"
+        tools:layout="@layout/fragment_document_input" >
+        <action
+            android:id="@+id/action_documentInputFragment_to_registrationSuccessFragment"
+            app:destination="@id/registrationSuccessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationSuccessFragment"
+        android:name="com.swasthavyas.emergencyllp.component.registration.ui.RegistrationSuccessFragment"
+        android:label="fragment_registration_success"
+        tools:layout="@layout/fragment_registration_success" >
+        <action
+            android:id="@+id/action_registrationSuccessFragment_to_mainActivity2"
+            app:destination="@id/mainActivity2"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/vehicleNumberFragment"
+        android:name="com.swasthavyas.emergencyllp.component.registration.ui.VehicleNumberFragment"
+        android:label="fragment_vehicle_number"
+        tools:layout="@layout/fragment_vehicle_number" >
+        <action
+            android:id="@+id/action_vehicleNumberFragment_to_documentInputFragment"
+            app:destination="@id/documentInputFragment" />
+        <action
+            android:id="@+id/action_vehicleNumberFragment_to_driverIdFragment"
+            app:destination="@id/driverIdFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/driverIdFragment"
+        android:name="com.swasthavyas.emergencyllp.component.registration.ui.DriverIdFragment"
+        android:label="fragment_driver_id"
+        tools:layout="@layout/fragment_driver_id" >
+        <action
+            android:id="@+id/action_driverIdFragment_to_registrationSuccessFragment"
+            app:destination="@id/registrationSuccessFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity2"
+        android:name="com.swasthavyas.emergencyllp.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+</navigation>

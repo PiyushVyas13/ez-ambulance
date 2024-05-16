@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="driver">Driver</string>
+    <string name="text_next">Next</string>
+    <string name="aadharno_text">Aadhaar No.</string>
+    <string name="home_text">Home</string>
+    <string name="ambulance_fleet">Ambulance</string>
+    <string name="notification_text">Notification</string>
+    <string name="profile_text">Profile</string>
+    <string name="ambulance_type_text">Ambulance Type</string>
+    <string name="advance_life_support_text">Advanced Life Support</string>
+    <string name="basic_life_support">Basic Life Support</string>
+    <string name="vehicle_type">Vehicle Type</string>
+    <string name="eg_bolero_traveller_etc">Eg. Bolero, Traveller etc</string>
+    <string name="cancel_text">CANCEL</string>
+    <string name="add_text">ADD</string>
+</resources>

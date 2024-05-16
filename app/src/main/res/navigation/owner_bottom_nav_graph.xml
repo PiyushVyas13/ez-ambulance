@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/owner_bottom_nav_graph"
+    app:startDestination="@id/ownerHomeFragment">
+
+    <fragment
+        android:id="@+id/ownerHomeFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.HomeFragment"
+        android:label="1"
+
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/ownerManageAmbulanceFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.ManageAmbulanceFragment"
+        android:label="2"
+        tools:layout="@layout/fragment_manage_ambulance" />
+
+    <fragment
+        android:id="@+id/ownerNotificationFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.NotificationFragment"
+        android:label="3"
+        tools:layout="@layout/fragment_notification" />
+
+    <fragment
+        android:id="@+id/ownerProfileFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.ProfileFragment"
+        android:label="4"
+        tools:layout="@layout/fragment_profile" />
+
+
+</navigation>
