@@ -7,13 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.WorkerParameters;
 
-import com.google.firebase.firestore.DocumentReference;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
-
-import org.w3c.dom.Document;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +43,6 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
 
         Map<String, Object> inputData = new HashMap<>();
 
-        inputData.put("driver_id", driverId);
         inputData.put("user_id", userId);
         inputData.put("age", age);
         inputData.put("phone_number", phoneNumber);
@@ -53,16 +50,17 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
 
         Map<String, Object> roleMap = new HashMap<>();
 
-        roleMap.put("user_id", userId);
         roleMap.put("role", UserRole.EMPLOYEE_DRIVER.name().toLowerCase());
 
         dbInstance.collection("user_roles")
-                        .add(roleMap);
+                .document(userId)
+                .set(roleMap);
 
         dbInstance.collection("owners")
                 .document(ownerId)
                 .collection("employees")
-                .add(inputData)
+                .document(driverId)
+                .set(inputData)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
 
