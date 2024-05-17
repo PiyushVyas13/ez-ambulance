@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/driver_bottom_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.HomeFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_home_driver" />
+    <fragment
+        android:id="@+id/earningFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.EarningFragment"
+        android:label="2"
+        tools:layout="@layout/fragment_earning" />
+    <fragment
+        android:id="@+id/swapDriverFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.SwapDriverFragment"
+        android:label="3"
+        tools:layout="@layout/fragment_swap_driver" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.NotificationFragment"
+        android:label="4"
+        tools:layout="@layout/fragment_notification_driver" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.ProfileFragment"
+        android:label="5"
+        tools:layout="@layout/fragment_profile_driver" />
+</navigation>

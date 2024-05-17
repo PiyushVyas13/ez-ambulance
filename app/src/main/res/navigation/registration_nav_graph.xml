@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_role_select" >
         <action
             android:id="@+id/action_roleSelectFragment_to_addAmbulanceFragment"
-            app:destination="@id/addAmbulanceFragment" />
+            app:destination="@id/addAmbulanceFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_roleSelectFragment_to_documentInputFragment"
-            app:destination="@id/documentInputFragment" />
+            app:destination="@id/documentInputFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/documentInputFragment"
@@ -24,7 +32,11 @@
         tools:layout="@layout/fragment_document_input" >
         <action
             android:id="@+id/action_documentInputFragment_to_registrationSuccessFragment"
-            app:destination="@id/registrationSuccessFragment" />
+            app:destination="@id/registrationSuccessFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/registrationSuccessFragment"
@@ -49,6 +61,10 @@
         tools:layout="@layout/fragment_add_ambulance">
         <action
             android:id="@+id/action_addAmbulanceFragment_to_documentInputFragment"
-            app:destination="@id/documentInputFragment" />
+            app:destination="@id/documentInputFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 </navigation>
