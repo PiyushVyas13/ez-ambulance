@@ -4,33 +4,19 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.credentials.Credential;
-import androidx.credentials.CredentialManager;
-import androidx.credentials.CredentialManagerCallback;
-import androidx.credentials.GetCredentialRequest;
-import androidx.credentials.GetCredentialResponse;
-import androidx.credentials.GetPasswordOption;
-import androidx.credentials.PasswordCredential;
-import androidx.credentials.exceptions.GetCredentialException;
 import androidx.work.Data;
 import androidx.work.WorkerParameters;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthOptions;
-import com.google.firebase.auth.PhoneAuthProvider;
+
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 
 import java.security.SecureRandom;
 import java.util.Random;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
+
 
 public class CreateDriverWorker extends ListenableWorkerAdapter {
     Context context;
