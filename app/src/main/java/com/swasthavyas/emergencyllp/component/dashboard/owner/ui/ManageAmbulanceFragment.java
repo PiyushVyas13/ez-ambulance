@@ -22,13 +22,13 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.AddAmbulanceWorker;
-import com.swasthavyas.emergencyllp.databinding.FragmentManageAmbulanceBinding;
+import com.swasthavyas.emergencyllp.databinding.FragmentAddAmbulanceBinding;
 import com.swasthavyas.emergencyllp.util.types.AmbulanceType;
 
 
 public class ManageAmbulanceFragment extends Fragment {
     OwnerViewModel ownerViewModel;
-    FragmentManageAmbulanceBinding viewBinding;
+    FragmentAddAmbulanceBinding viewBinding;
 
 
     public ManageAmbulanceFragment() {
@@ -46,7 +46,7 @@ public class ManageAmbulanceFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        viewBinding = FragmentManageAmbulanceBinding.inflate(getLayoutInflater());
+        viewBinding = FragmentAddAmbulanceBinding.inflate(getLayoutInflater());
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
 
         ownerViewModel.getOwner().observe(getViewLifecycleOwner(), owner -> {

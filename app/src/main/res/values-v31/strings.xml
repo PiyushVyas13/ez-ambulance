@@ -14,4 +14,8 @@
     <string name="eg_bolero_traveller_etc">Eg. Bolero, Traveller etc</string>
     <string name="cancel_text">CANCEL</string>
     <string name="add_text">ADD</string>
+    <string name="name_of_driver">Name of Driver</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="age">Age</string>
+    <string name="profile_picture">profile picture</string>
 </resources>

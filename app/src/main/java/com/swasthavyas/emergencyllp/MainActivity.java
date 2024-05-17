@@ -19,11 +19,13 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.ui.DriverDashboardFragment;
 import com.swasthavyas.emergencyllp.component.dashboard.ui.OwnerDashboardFragment;
 import com.swasthavyas.emergencyllp.component.dashboard.worker.FetchRoleWorker;
+import com.swasthavyas.emergencyllp.util.types.UserRole;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                                         String role = workInfo.getOutputData().getString("role");
                                         if(role == null) {
                                             Log.d(MYAPP, "MainActivity.onCreate: role not received.");
-                                            return ;
+                                            return;
 
                                         }
                                         Toast.makeText(this, role, Toast.LENGTH_SHORT).show();
@@ -87,7 +89,12 @@ public class MainActivity extends AppCompatActivity {
                                                 fragmentTransaction.replace(R.id.dashboard_container, new OwnerDashboardFragment());
                                                 break;
                                             case "driver":
-                                                fragmentTransaction.replace(R.id.dashboard_container, new DriverDashboardFragment());
+                                                fragmentTransaction.replace(R.id.dashboard_container, DriverDashboardFragment.newInstance(UserRole.DRIVER));
+                                                break;
+                                            case "employee_driver":
+                                                //TODO: extract verification data from outputData and set the verified flag.
+                                                boolean isVerified = false;
+                                                fragmentTransaction.replace(R.id.dashboard_container, DriverDashboardFragment.newInstance(UserRole.EMPLOYEE_DRIVER, isVerified));
                                                 break;
                                             default:
                                                 Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();

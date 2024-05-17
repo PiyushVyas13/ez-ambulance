@@ -82,15 +82,40 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                                 ambulances.add(ambulanceMap);
                                             }
 
-                                            modifiedResult.put("ambulances", getSerializedAmbulances(ambulances));
+                                            modifiedResult.put("ambulances", getSerializedString(ambulances));
 
-                                            Data opData = new Data.Builder()
-                                                    .putAll(modifiedResult)
-                                                            .build();
+                                            dbInstance
+                                                    .collection("owners")
+                                                    .document(document.getId())
+                                                    .collection("employees")
+                                                    .get()
+                                                    .addOnCompleteListener(employeeTask -> {
+                                                       List<Map<String, Object>> employees = new ArrayList<>();
+
+                                                       for(DocumentSnapshot employee: employeeTask.getResult()) {
+                                                           Log.d("MYAPP", String.format("fetchOwnerWorker: [%s => %s]", employee.getId(), employee.getData()));
+                                                            Map<String, Object> employeeMap = new HashMap<>();
+
+                                                            employeeMap.put("driver_id", employee.getString("driver_id"));
+                                                            employeeMap.put("user_id", employee.getString("user_id"));
+                                                            employeeMap.put("phone_number", employee.getString("phone_number"));
+                                                            employeeMap.put("age", ((Long) employee.get("age")).intValue());
+                                                            employeeMap.put("name", employee.get("name"));
+
+                                                            employees.add(employeeMap);
+                                                       }
+
+                                                       modifiedResult.put("employees", getSerializedString(employees));
+
+                                                        Data opData = new Data.Builder()
+                                                                .putAll(modifiedResult)
+                                                                .build();
+
+                                                        callback.onSuccess(opData);
+
+                                                    });
 
 
-
-                                            callback.onSuccess(opData);
                                         }
                                         else {
                                             callback.onFailure(task1.getException());
@@ -104,7 +129,7 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                 });
     }
 
-    private static String getSerializedAmbulances(List<Map<String, Object>> mapArrayList) {
+    private static String getSerializedString(List<Map<String, Object>> mapArrayList) {
         if (mapArrayList == null || mapArrayList.isEmpty()) {
             return "[]";
         }

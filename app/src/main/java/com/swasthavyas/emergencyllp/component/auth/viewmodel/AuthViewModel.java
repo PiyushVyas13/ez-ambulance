@@ -24,7 +24,7 @@ public class AuthViewModel extends ViewModel {
         auth.addAuthStateListener(firebaseAuth -> {
             this.auth = firebaseAuth;
             this.setCurrentUser(firebaseAuth.getCurrentUser());
-            Log.d("MYAPP", "AuthViewModel: auth state changed " + ((firebaseAuth.getCurrentUser() == null) ? "null" : "not null"));
+            Log.d("MYAPP", "AuthViewModel: auth state changed " + ((firebaseAuth.getCurrentUser() == null) ? "null" : firebaseAuth.getCurrentUser().getEmail()));
         });
     }
 

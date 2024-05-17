@@ -2,10 +2,17 @@ package com.swasthavyas.emergencyllp.component.auth.ui;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.credentials.CreateCredentialResponse;
+import androidx.credentials.CreatePasswordRequest;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.CreateCredentialException;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.databinding.FragmentSignUpBinding;
+
+import java.util.concurrent.Executor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,6 +107,28 @@ public class SignUpFragment extends Fragment {
             bundle.putString("name", viewBinding.fullName.getText().toString());
             bundle.putString("email", viewBinding.email.getText().toString());
             bundle.putString("password", viewBinding.password.getText().toString());
+
+            CredentialManager credentialManager = CredentialManager.create(requireContext());
+
+            CreatePasswordRequest createPasswordRequest = new CreatePasswordRequest(viewBinding.email.getText().toString(), viewBinding.password.getText().toString());
+
+            credentialManager.createCredentialAsync(requireContext(), createPasswordRequest, null, new Executor() {
+                @Override
+                public void execute(Runnable command) {
+
+                }
+
+            }, new CredentialManagerCallback<CreateCredentialResponse, CreateCredentialException>() {
+                @Override
+                public void onResult(CreateCredentialResponse createCredentialResponse) {
+                    Log.d("MYAPP", "onResult: password saved");
+                }
+
+                @Override
+                public void onError(@NonNull CreateCredentialException e) {
+                    Log.e("MYAPP", "onError: error saving password", e);
+                }
+            });
 
 
 

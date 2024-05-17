@@ -48,9 +48,8 @@ public class DocumentInputFragment extends Fragment {
                 return;
             }
 
-            if(viewModel.getUserRole().getValue() == UserRole.OWNER) {
-                viewModel.setAadhaarNumber(viewBinding.aadharno.getText().toString());
-            }
+            viewModel.setAadhaarNumber(viewBinding.aadharno.getText().toString());
+
         });
 
 

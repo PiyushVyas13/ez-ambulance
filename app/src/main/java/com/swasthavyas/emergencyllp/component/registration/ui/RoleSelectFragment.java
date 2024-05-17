@@ -55,13 +55,11 @@ public class RoleSelectFragment extends Fragment {
             }
             if(viewBinding.radioChooseOption.getCheckedRadioButtonId() == viewBinding.fleet.getId()) {
                 viewModel.setUserRole(UserRole.OWNER);
-                Navigation.findNavController(v).navigate(R.id.action_roleSelectFragment_to_documentInputFragment);
             }
             else if(viewBinding.radioChooseOption.getCheckedRadioButtonId() == viewBinding.driver.getId()) {
                 viewModel.setUserRole(UserRole.DRIVER);
-                Navigation.findNavController(v).navigate(R.id.action_roleSelectFragment_to_vehicleNumberFragment);
             }
-
+            Navigation.findNavController(v).navigate(R.id.action_roleSelectFragment_to_documentInputFragment);
 
         });
 

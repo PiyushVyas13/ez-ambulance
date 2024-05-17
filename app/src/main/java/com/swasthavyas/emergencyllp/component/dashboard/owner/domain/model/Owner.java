@@ -14,12 +14,14 @@ public class Owner {
     private String aadhaarNumber;
 
     private final MutableLiveData<List<Ambulance>> ambulances;
+    private final MutableLiveData<List<EmployeeDriver>> employees;
 
     public Owner(@NonNull String id, @NonNull String userId, @NonNull String aadhaarNumber) {
         this.id = id;
         this.userId = userId;
         this.aadhaarNumber = aadhaarNumber;
         this.ambulances = new MutableLiveData<>(new ArrayList<>());
+        this.employees = new MutableLiveData<>(new ArrayList<>());
     }
 
 
@@ -64,5 +66,23 @@ public class Owner {
             throw new NullPointerException("ambulances is null.");
         }
 
+    }
+
+    public LiveData<List<EmployeeDriver>> getEmployees() {
+        return this.employees;
+    }
+
+    public void setEmployees(List<EmployeeDriver> employees) {
+        this.employees.setValue(employees);
+    }
+
+    public void addEmployee(EmployeeDriver employee) {
+        if(this.employees.getValue() != null) {
+            this.employees.getValue().add(employee);
+            setEmployees(this.employees.getValue());
+        }
+        else {
+            throw new NullPointerException("employees is null.");
+        }
     }
 }

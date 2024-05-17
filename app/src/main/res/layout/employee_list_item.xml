@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_90sdp"
+    android:layout_marginBottom="@dimen/_10sdp">
+
+    <ImageView
+        android:src="@drawable/male_user"
+        android:id="@+id/employee_profile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2.25"
+        android:layout_margin="@dimen/_10sdp"
+        android:contentDescription="@string/profile_picture" />
+
+    <TextView
+        android:id="@+id/employee_name"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/driver"
+        android:textSize="25sp"
+        android:gravity="center|start"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        />
+
+</LinearLayout>

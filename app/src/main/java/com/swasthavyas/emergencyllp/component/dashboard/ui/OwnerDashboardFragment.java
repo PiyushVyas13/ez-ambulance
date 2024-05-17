@@ -30,7 +30,10 @@ import com.swasthavyas.emergencyllp.AuthActivity;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ui.HomeFragment;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.FetchOwnerWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentOwnerDashboardBinding;
@@ -46,6 +49,7 @@ public class OwnerDashboardFragment extends Fragment {
     FragmentOwnerDashboardBinding viewBinding;
     OwnerViewModel ownerViewModel;
     AuthViewModel authViewModel;
+    DashboardViewModel dashboardViewModel;
 
     public OwnerDashboardFragment() {
         // Required empty public constructor
@@ -65,6 +69,7 @@ public class OwnerDashboardFragment extends Fragment {
         viewBinding = FragmentOwnerDashboardBinding.inflate(getLayoutInflater());
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
         FirebaseUser currentUser = authViewModel.getCurrentUser().getValue();
 
@@ -103,7 +108,9 @@ public class OwnerDashboardFragment extends Fragment {
                             //TODO: Deserialize ambulance string and convert it to List<Ambulance> and pass it to owner.
 
                             List<Ambulance> ambulances = deserializeAmbulancesString((String) ownerData.get("ambulances"));
+                            List<EmployeeDriver> employees = deserializeEmployeesString((String) ownerData.get("employees"));
                             owner.setAmbulances(ambulances);
+                            owner.setEmployees(employees);
 
                             ownerViewModel.setOwner(owner);
                         }
@@ -151,11 +158,13 @@ public class OwnerDashboardFragment extends Fragment {
 
 
                 if(navController.getCurrentDestination().getId() != navController.getGraph().findNode(R.id.ownerManageAmbulanceFragment).getId()) {
+                    String displayMode = dashboardViewModel.getDisplayMode().getValue();
 
+                    int destinationId = displayMode.equals(HomeFragment.MODE_AMBULANCE) ? R.id.ownerManageAmbulanceFragment : R.id.addDriverFragment;
                     if(ambulanceDestinationTag > currentDestinationTag) {
-                        navController.navigate(R.id.ownerManageAmbulanceFragment, null, options.setEnterAnim(R.anim.slide_in_right).setExitAnim(R.anim.slide_out_left).build());
+                        navController.navigate(destinationId, null, options.setEnterAnim(R.anim.slide_in_right).setExitAnim(R.anim.slide_out_left).build());
                     }else if(ambulanceDestinationTag < currentDestinationTag) {
-                        navController.navigate(R.id.ownerManageAmbulanceFragment, null, options.setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.slide_out_right).build());
+                        navController.navigate(destinationId, null, options.setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.slide_out_right).build());
                     }
 
                 }
@@ -207,18 +216,12 @@ public class OwnerDashboardFragment extends Fragment {
         List<Ambulance> ambulances = new ArrayList<>();
 
         if (serializedString == null || serializedString.isEmpty() || serializedString.equals("[]")) {
-            return new ArrayList<>(); // Return empty list for null/empty/empty array string
+            return new ArrayList<>();
         }
 
-        Gson gson = new Gson(); // Assuming you have Gson dependency added
+        Gson gson = new Gson();
 
         try {
-//            JsonArray jsonArray = gson.fromJson(serializedString, JsonArray.class);
-//            for (JsonElement element : jsonArray) {
-//                Type type = new TypeToken<Map<String, Object>>(){}.getType();
-//                Map<String, Object> map = gson.fromJson(element, type);
-//                ambulances.add(Ambulance.createFromMap(map));
-//            }
 
             JsonArray jsonArray = gson.fromJson(serializedString, JsonArray.class);
 
@@ -238,6 +241,37 @@ public class OwnerDashboardFragment extends Fragment {
 
         return ambulances;
     }
+
+    private List<EmployeeDriver> deserializeEmployeesString(String serializedString) {
+        List<EmployeeDriver> employees = new ArrayList<>();
+
+        if (serializedString == null || serializedString.isEmpty() || serializedString.equals("[]")) {
+            return new ArrayList<>(); // Return empty list for null/empty/empty array string
+        }
+
+        Gson gson = new Gson(); // Assuming you have Gson dependency added
+
+        try {
+
+            JsonArray jsonArray = gson.fromJson(serializedString, JsonArray.class);
+
+            for(JsonElement element : jsonArray) {
+                Log.d("MYAPP", "deserializeEmployeeString: " + element.toString());
+                Type type = new TypeToken<Map<String, Object>>() {}.getType();
+
+                Map<String, Object> map = gson.fromJson(element.getAsString(), type);
+                Log.d("MYAPP", "deserializeEmployeesString: " + map.toString());
+                employees.add(EmployeeDriver.createFromMap(map));
+            }
+
+
+        } catch (JsonSyntaxException e) {
+            Log.w("convertJsonArrayToListOfMaps", "Error parsing JSON array string: " + e.getMessage());
+        }
+
+        return employees;
+    }
+
 
 
 }
