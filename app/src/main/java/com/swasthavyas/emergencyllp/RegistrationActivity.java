@@ -25,6 +25,8 @@ import com.swasthavyas.emergencyllp.component.registration.worker.UserRegistrati
 import com.swasthavyas.emergencyllp.databinding.ActivityRegistrationBinding;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
+import java.util.Map;
+
 public class RegistrationActivity extends AppCompatActivity {
 
     RegistrationViewModel viewModel;
@@ -70,13 +72,36 @@ public class RegistrationActivity extends AppCompatActivity {
                                 .build())
                         .build();
 
-                OneTimeWorkRequest registrationRequest = new OneTimeWorkRequest.Builder(UserRegistrationWorker.class)
-                        .setInputData(new Data.Builder()
-                                .putString("aadhaar_number", aadhaarNumber)
-                                .putString("role", roleString)
-                                .putString("userId", userId)
-                                .build())
-                        .build();
+                OneTimeWorkRequest.Builder registrationRequestBuilder = new OneTimeWorkRequest.Builder(UserRegistrationWorker.class);
+
+                if(viewModel.getUserRole().getValue().equals(UserRole.DRIVER)) {
+                    Map<String, Object> driverAmbulance = viewModel.getDriverAmbulance().getValue();
+
+                    if(driverAmbulance.isEmpty()) {
+                        Toast.makeText(this, "Driver Ambulance is null.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    registrationRequestBuilder
+                            .setInputData(new Data.Builder()
+                                    .putString("aadhaar_number", aadhaarNumber)
+                                    .putString("role", roleString)
+                                    .putString("userId", userId)
+                                    .putAll(driverAmbulance)
+                                    .build());
+
+                }
+                else if(viewModel.getUserRole().getValue().equals(UserRole.OWNER)) {
+                    registrationRequestBuilder
+                            .setInputData(new Data.Builder()
+                                    .putString("aadhaar_number", aadhaarNumber)
+                                    .putString("role", roleString)
+                                    .putString("userId", userId)
+                                    .build());
+
+                }
+
+                OneTimeWorkRequest registrationRequest = registrationRequestBuilder.build();
 
                 WorkManager.getInstance(getApplicationContext())
                         .beginWith(roleAssignmentRequest)

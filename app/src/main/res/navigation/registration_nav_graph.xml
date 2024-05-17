@@ -11,12 +11,11 @@
         android:label="fragment_role_select"
         tools:layout="@layout/fragment_role_select" >
         <action
+            android:id="@+id/action_roleSelectFragment_to_addAmbulanceFragment"
+            app:destination="@id/addAmbulanceFragment" />
+        <action
             android:id="@+id/action_roleSelectFragment_to_documentInputFragment"
-            app:destination="@id/documentInputFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
+            app:destination="@id/documentInputFragment" />
     </fragment>
     <fragment
         android:id="@+id/documentInputFragment"
@@ -26,13 +25,6 @@
         <action
             android:id="@+id/action_documentInputFragment_to_registrationSuccessFragment"
             app:destination="@id/registrationSuccessFragment" />
-        <action
-            android:id="@+id/action_documentInputFragment_to_vehicleNumberFragment"
-            app:destination="@id/vehicleNumberFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/registrationSuccessFragment"
@@ -51,16 +43,12 @@
         android:label="activity_main"
         tools:layout="@layout/activity_main" />
     <fragment
-        android:id="@+id/vehicleNumberFragment"
+        android:id="@+id/addAmbulanceFragment"
         android:name="com.swasthavyas.emergencyllp.component.registration.ui.AddAmbulanceFragment"
         android:label="VehicleNumberFragment"
         tools:layout="@layout/fragment_add_ambulance">
         <action
-            android:id="@+id/action_vehicleNumberFragment_to_registrationSuccessFragment"
-            app:destination="@id/registrationSuccessFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
+            android:id="@+id/action_addAmbulanceFragment_to_documentInputFragment"
+            app:destination="@id/documentInputFragment" />
     </fragment>
 </navigation>

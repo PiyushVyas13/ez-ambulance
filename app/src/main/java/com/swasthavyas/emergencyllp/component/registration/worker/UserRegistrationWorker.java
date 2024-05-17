@@ -52,7 +52,30 @@ public class UserRegistrationWorker extends ListenableWorkerAdapter {
                     break;
                 case "driver":
                     collection = "drivers";
+
+                    Map<String, Object> driverAmbulance = new HashMap<>();
+
+                    String ambulanceUid = UUID.randomUUID().toString();
+                    String ambulanceType = getInputData().getString("ambulance_type");
+                    String vehicleNumber = getInputData().getString("vehicle_number");
+                    String vehicleType = getInputData().getString("vehicle_type");
+                    String aadhaar = getInputData().getString("aadhaar_number");
+
+                    if(ambulanceType == null || vehicleType == null || vehicleNumber == null || aadhaar == null) {
+                        callback.onFailure(new IllegalArgumentException("ambulanceDriver parameters are null"));
+                        return;
+                    }
+
+                    driverAmbulance.put("id", ambulanceUid);
+                    driverAmbulance.put("ambulance_type", ambulanceType);
+                    driverAmbulance.put("vehicle_number", vehicleNumber);
+                    driverAmbulance.put("vehicle_type", vehicleType);
+
+
                     inputData.put("user_id", userId);
+                    inputData.put("ambulance", driverAmbulance);
+                    inputData.put("aadhaar_number", aadhaar);
+
                     break;
                 default:
                     throw new IllegalArgumentException("provided role is invalid");

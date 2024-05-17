@@ -6,14 +6,20 @@ import androidx.lifecycle.ViewModel;
 
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RegistrationViewModel extends ViewModel {
 
     private final MutableLiveData<UserRole> userRoleLiveData;
     private final MutableLiveData<String> aadhaarNumberLiveData;
 
+    private final MutableLiveData<Map<String, Object>> driverAmbulance;
+
     public RegistrationViewModel() {
         userRoleLiveData = new MutableLiveData<>(UserRole.UNASSIGNED);
         aadhaarNumberLiveData = new MutableLiveData<>(null);
+        driverAmbulance = new MutableLiveData<>(new HashMap<>());
     }
 
     public void setUserRole(UserRole role) {
@@ -31,4 +37,13 @@ public class RegistrationViewModel extends ViewModel {
     public MutableLiveData<String> getAadhaarNumberLiveData() {
         return aadhaarNumberLiveData;
     }
+
+    public LiveData<Map<String, Object>> getDriverAmbulance() {
+        return this.driverAmbulance;
+    }
+
+    public void setDriverAmbulance(Map<String, Object> map) {
+        this.driverAmbulance.setValue(map);
+    }
+
 }
