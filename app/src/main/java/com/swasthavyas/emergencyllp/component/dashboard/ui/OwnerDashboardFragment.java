@@ -3,6 +3,7 @@ package com.swasthavyas.emergencyllp.component.dashboard.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -51,6 +52,7 @@ public class OwnerDashboardFragment extends Fragment {
     OwnerViewModel ownerViewModel;
     AuthViewModel authViewModel;
     DashboardViewModel dashboardViewModel;
+    NavController navController;
 
     public OwnerDashboardFragment() {
         // Required empty public constructor
@@ -133,7 +135,7 @@ public class OwnerDashboardFragment extends Fragment {
 
         NavigationBarView bottomNav = viewBinding.bottomNavOwner;
 
-        NavController navController = NavHostFragment.findNavController(getChildFragmentManager().findFragmentById(R.id.owner_bottom_nav_container));
+         navController = NavHostFragment.findNavController(getChildFragmentManager().findFragmentById(R.id.owner_bottom_nav_container));
 
         NavOptions.Builder options = new NavOptions.Builder()
                 .setEnterAnim(R.anim.slide_in_right)
@@ -155,64 +157,25 @@ public class OwnerDashboardFragment extends Fragment {
 
         bottomNav.setOnItemSelectedListener(menuItem -> {
 
-            int itemId = menuItem.getItemId();
-            int currentDestinationTag = Integer.parseInt(navController.getCurrentDestination().getLabel().toString());
-
-
-            if(itemId == R.id.navHome) {
-                if(navController.getCurrentDestination().getId() != navController.getGraph().findNode(R.id.ownerHomeFragment).getId()) {
-                    navController.navigate(R.id.ownerHomeFragment, null, options.setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.slide_out_right).build());
-                }
+            if(menuItem.getItemId() == R.id.navHome) {
+                navigateToDestination(R.id.ownerHomeFragment);
             }
-            else if (itemId == R.id.navAdd_Ambulance) {
-                int ambulanceDestinationTag = Integer.parseInt(navController.getGraph().findNode(R.id.ownerManageAmbulanceFragment).getLabel().toString());
+            else if(menuItem.getItemId() == R.id.navAdd_Ambulance) {
                 String displayMode = dashboardViewModel.getDisplayMode().getValue();
 
-                if(navController.getCurrentDestination().getId() != navController.getGraph().findNode(R.id.ownerManageAmbulanceFragment).getId()) {
-
-                    int destinationId = displayMode.equals(HomeFragment.MODE_AMBULANCE) ? R.id.ownerManageAmbulanceFragment : R.id.addDriverFragment;
-                    if(ambulanceDestinationTag > currentDestinationTag) {
-                        navController.navigate(destinationId, null, options.setEnterAnim(R.anim.slide_in_right).setExitAnim(R.anim.slide_out_left).build());
-                    }else if(ambulanceDestinationTag < currentDestinationTag) {
-                        navController.navigate(destinationId, null, options.setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.slide_out_right).build());
-                    }
-
+                if(displayMode.equals(HomeFragment.MODE_AMBULANCE)) {
+                    navigateToDestination(R.id.ownerManageAmbulanceFragment);
+                }
+                else {
+                    navigateToDestination(R.id.addDriverFragment);
                 }
 
-//                navController.navigate(R.id.ownerManageAmbulanceFragment, null, options.setPopUpTo(R.id.ownerManageAmbulanceFragment, true).build());
-            } else if (itemId == R.id.navNotification) {
-
-                int notificationDestinationTag = Integer.parseInt(navController.getGraph().findNode(R.id.ownerNotificationFragment).getLabel().toString());
-
-
-                if(navController.getCurrentDestination().getId() != navController.getGraph().findNode(R.id.ownerNotificationFragment).getId()) {
-
-                    if(notificationDestinationTag > currentDestinationTag) {
-                        navController.navigate(R.id.ownerNotificationFragment, null, options.setEnterAnim(R.anim.slide_in_right).setExitAnim(R.anim.slide_out_left).build());
-                    }else if(notificationDestinationTag < currentDestinationTag) {
-                        navController.navigate(R.id.ownerNotificationFragment, null, options.setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.slide_out_right).build());
-                    }
-
-                }
-
-
-//                navController.navigate(R.id.ownerNotificationFragment, null, options.setPopUpTo(R.id.ownerNotificationFragment, true).build());
-            }else{
-
-                int profileDestinationTag = Integer.parseInt(navController.getGraph().findNode(R.id.ownerProfileFragment).getLabel().toString());
-
-
-                if(navController.getCurrentDestination().getId() != navController.getGraph().findNode(R.id.ownerProfileFragment).getId()) {
-
-                    if(profileDestinationTag > currentDestinationTag) {
-                        navController.navigate(R.id.ownerProfileFragment, null, options.setEnterAnim(R.anim.slide_in_right).setExitAnim(R.anim.slide_out_left).build());
-                    }else if(profileDestinationTag < currentDestinationTag) {
-                        navController.navigate(R.id.ownerProfileFragment, null, options.setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.slide_out_right).build());
-                    }
-
-                }
-
-//                navController.navigate(R.id.ownerProfileFragment, null, options.setPopUpTo(R.id.ownerProfileFragment, true).build());
+            }
+            else if(menuItem.getItemId() == R.id.navNotification) {
+                navigateToDestination(R.id.ownerNotificationFragment);
+            }
+            else if(menuItem.getItemId() == R.id.navProfile) {
+                navigateToDestination(R.id.ownerProfileFragment);
             }
 
 
@@ -220,6 +183,28 @@ public class OwnerDashboardFragment extends Fragment {
         });
 
         return viewBinding.getRoot();
+    }
+
+    private void navigateToDestination(@IdRes int destinationId) {
+        int destinationTag = Integer.parseInt(navController.getGraph().findNode(destinationId).getLabel().toString());
+        int currentDestinationTag = Integer.parseInt(navController.getCurrentDestination().getLabel().toString());
+
+        int enterAnim = -1;
+        int exitAnim = -1;
+
+        if(destinationTag != currentDestinationTag) {
+            if(destinationTag > currentDestinationTag) {
+                enterAnim = R.anim.slide_in_right;
+                exitAnim = R.anim.slide_out_left;
+            }
+            else {
+                enterAnim = android.R.anim.slide_in_left;
+                exitAnim = android.R.anim.slide_out_right;
+            }
+
+            navController.navigate(destinationId, null, new NavOptions.Builder().setEnterAnim(enterAnim).setExitAnim(exitAnim).build());
+        }
+
     }
 
     private List<Ambulance> deserializeAmbulancesString(String serializedString) {
