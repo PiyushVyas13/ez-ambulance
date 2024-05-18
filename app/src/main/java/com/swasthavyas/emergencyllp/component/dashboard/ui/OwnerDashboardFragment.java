@@ -137,12 +137,6 @@ public class OwnerDashboardFragment extends Fragment {
 
          navController = NavHostFragment.findNavController(getChildFragmentManager().findFragmentById(R.id.owner_bottom_nav_container));
 
-        NavOptions.Builder options = new NavOptions.Builder()
-                .setEnterAnim(R.anim.slide_in_right)
-                        .setExitAnim(R.anim.slide_out_left)
-                                .setPopEnterAnim(android.R.anim.slide_in_left)
-                                        .setPopExitAnim(android.R.anim.slide_out_right);
-
         MenuItem item = bottomNav.getMenu().findItem(R.id.navAdd_Ambulance);
 
         dashboardViewModel.getDisplayMode().observe(getViewLifecycleOwner(), displayMode -> {
@@ -189,8 +183,8 @@ public class OwnerDashboardFragment extends Fragment {
         int destinationTag = Integer.parseInt(navController.getGraph().findNode(destinationId).getLabel().toString());
         int currentDestinationTag = Integer.parseInt(navController.getCurrentDestination().getLabel().toString());
 
-        int enterAnim = -1;
-        int exitAnim = -1;
+        int enterAnim;
+        int exitAnim;
 
         if(destinationTag != currentDestinationTag) {
             if(destinationTag > currentDestinationTag) {

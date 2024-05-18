@@ -19,7 +19,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
-import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.ui.DriverDashboardFragment;
