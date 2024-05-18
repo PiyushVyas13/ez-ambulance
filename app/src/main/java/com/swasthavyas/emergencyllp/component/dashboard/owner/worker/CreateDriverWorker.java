@@ -30,13 +30,14 @@ public class CreateDriverWorker extends ListenableWorkerAdapter {
         try {
             String name = getInputData().getString("name");
             String phoneNumber = getInputData().getString("phone_number");
+            String email = getInputData().getString("email");
 
-            if(name == null || phoneNumber == null) {
+            if(name == null || phoneNumber == null || email == null) {
                 callback.onFailure(new IllegalArgumentException("one of the arguments is null/invalid."));
                 return;
             }
 
-            String driverId = name.split(" ")[0] + phoneNumber.substring(3, 7) + "@swasthavyasllp.com";
+            String driverId = name.split(" ")[0] + phoneNumber.substring(3, 7);
             String password = generateDummyPassword();
 
 
@@ -44,7 +45,7 @@ public class CreateDriverWorker extends ListenableWorkerAdapter {
 
             FirebaseUser currentUser = auth.getCurrentUser();
 
-            auth.createUserWithEmailAndPassword(driverId, password)
+            auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful()) {
                             FirebaseUser user = task.getResult().getUser();
@@ -70,6 +71,7 @@ public class CreateDriverWorker extends ListenableWorkerAdapter {
                                     .putString("user_id", user.getUid())
                                     .putString("name", name)
                                     .putString("phone_number", phoneNumber)
+                                    .putString("email", email)
                                     .build();
 
                             callback.onSuccess(opData);

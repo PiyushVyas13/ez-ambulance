@@ -31,9 +31,10 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         String phoneNumber = getInputData().getString("phone_number");
         String name = getInputData().getString("name");
         String password = getInputData().getString("password");
+        String email = getInputData().getString("email");
         int age = getInputData().getInt("age", -1);
 
-        if(driverId == null || userId == null || age == -1 || ownerId == null || phoneNumber == null || name == null || password == null) {
+        if(driverId == null || userId == null || age == -1 || ownerId == null || phoneNumber == null || name == null || password == null || email == null) {
             Log.d("MYAPP", "doAsyncBackgroundTask: " + getInputData());
             callback.onFailure(new IllegalArgumentException("one of the input data is null/invalid."));
             return;
@@ -47,6 +48,7 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         inputData.put("age", age);
         inputData.put("phone_number", phoneNumber);
         inputData.put("name", name);
+        inputData.put("driver_id", driverId);
 
         Map<String, Object> roleMap = new HashMap<>();
 
@@ -59,7 +61,7 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         dbInstance.collection("owners")
                 .document(ownerId)
                 .collection("employees")
-                .document(driverId)
+                .document(email)
                 .set(inputData)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
@@ -71,6 +73,7 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
                                 .putString("driverId", driverId)
                                 .putString("userId", userId)
                                 .putString("password", password)
+                                .putString("email", email)
                                 .build();
 
                        callback.onSuccess(opData);

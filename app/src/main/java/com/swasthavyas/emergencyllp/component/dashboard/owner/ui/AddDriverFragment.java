@@ -52,7 +52,7 @@ public class AddDriverFragment extends Fragment {
 
         viewBinding.addDriverButton.setOnClickListener(v -> {
 
-            if(viewBinding.driverName.getText().toString().isEmpty() || viewBinding.driverNumber.getText().toString().isEmpty() || viewBinding.driverAge.getText().toString().isEmpty()) {
+            if(viewBinding.driverName.getText().toString().isEmpty() || viewBinding.driverNumber.getText().toString().isEmpty() || viewBinding.driverAge.getText().toString().isEmpty() || viewBinding.driverEmail.getText().toString().isEmpty()) {
                 Toast.makeText(requireActivity(), "All fields are required!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -75,6 +75,7 @@ public class AddDriverFragment extends Fragment {
                     .setInputData(new Data.Builder()
                             .putString("name", viewBinding.driverName.getText().toString())
                             .putString("phone_number", "+91" + viewBinding.driverNumber.getText().toString())
+                            .putString("email", viewBinding.driverEmail.getText().toString())
                             .build())
                     .build();
 
@@ -107,10 +108,7 @@ public class AddDriverFragment extends Fragment {
                     .getWorkInfoByIdLiveData(addDriverRequest.getId())
                     .observe(getViewLifecycleOwner(), workInfo -> {
                         if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
-                            Toast.makeText(requireActivity(), "Ambulance Added Successfully", Toast.LENGTH_SHORT).show();
-
-
-                            Map<String, Object> map = workInfo.getOutputData().getKeyValueMap();
+                            Toast.makeText(requireActivity(), "Driver Added Successfully", Toast.LENGTH_SHORT).show();
 
 
                            owner.addEmployee(EmployeeDriver.createFromMap(workInfo.getOutputData().getKeyValueMap()));
