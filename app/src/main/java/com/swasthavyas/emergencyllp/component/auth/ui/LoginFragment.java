@@ -11,11 +11,15 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
@@ -48,6 +52,29 @@ public class LoginFragment extends Fragment {
         Toast.makeText(requireContext(), "In LOgin Fragment", Toast.LENGTH_SHORT).show();
         viewBinding.signup.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_signUpFragment);
+        });
+
+        viewBinding.resetPassword.setOnClickListener(v -> {
+            if(this.currentUser != null) {
+                Toast.makeText(requireActivity(), "You are already logged in!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(viewBinding.email.getText().toString().isEmpty()) {
+                Toast.makeText(requireActivity(), "Please provide your registered email!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            FirebaseAuth.getInstance().sendPasswordResetEmail(viewBinding.email.getText().toString())
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            Snackbar.make(v, "Email sent! Check your email for password reset link.", BaseTransientBottomBar.LENGTH_LONG).show();
+                        }
+                        else {
+                            Snackbar.make(v, "Cannot send email", BaseTransientBottomBar.LENGTH_LONG).show();
+                            Log.e("MYAPP", "onCreateView: password reset mail", task.getException());
+                        }
+                    });
         });
 
         viewBinding.loginBtn.setOnClickListener(v -> {
