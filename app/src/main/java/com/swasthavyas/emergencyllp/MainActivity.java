@@ -27,6 +27,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.ui.OwnerDashboardFragmen
 import com.swasthavyas.emergencyllp.component.dashboard.worker.FetchRoleWorker;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
@@ -84,17 +85,15 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         Toast.makeText(this, role, Toast.LENGTH_SHORT).show();
 
-                                        switch (role) {
-                                            case "owner":
+                                        switch (UserRole.valueOf(role.toUpperCase(Locale.getDefault()))) {
+                                            case OWNER:
                                                 fragmentTransaction.replace(R.id.dashboard_container, new OwnerDashboardFragment());
                                                 break;
-                                            case "driver":
+                                            case DRIVER:
                                                 fragmentTransaction.replace(R.id.dashboard_container, DriverDashboardFragment.newInstance(UserRole.DRIVER));
                                                 break;
-                                            case "employee_driver":
-                                                //TODO: extract verification data from outputData and set the verified flag.
-                                                boolean isVerified = false;
-                                                fragmentTransaction.replace(R.id.dashboard_container, DriverDashboardFragment.newInstance(UserRole.EMPLOYEE_DRIVER, isVerified));
+                                            case EMPLOYEE_DRIVER:
+                                                fragmentTransaction.replace(R.id.dashboard_container, DriverDashboardFragment.newInstance(UserRole.EMPLOYEE_DRIVER));
                                                 break;
                                             default:
                                                 Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();

@@ -29,7 +29,6 @@ public class DriverDashboardFragment extends Fragment {
     FragmentDriverDashboardBinding viewBinding;
 
     private UserRole userRole;
-    private boolean isVerified;
     NavController navController;
 
 
@@ -45,22 +44,12 @@ public class DriverDashboardFragment extends Fragment {
         return fragment;
     }
 
-    public static DriverDashboardFragment newInstance(UserRole role, boolean isVerified) {
-        DriverDashboardFragment fragment = new DriverDashboardFragment();
-        Bundle args = new Bundle();
-        args.putString("role", role.name());
-        args.putBoolean("isVerified", isVerified);
-        fragment.setArguments(args);
-
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.userRole = UserRole.valueOf(getArguments().getString("role"));
-            this.isVerified = getArguments().getBoolean("isVerified", true);
         }
         else {
             this.userRole = UserRole.UNASSIGNED;
