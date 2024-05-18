@@ -15,6 +15,7 @@ import androidx.work.WorkManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -140,7 +141,17 @@ public class OwnerDashboardFragment extends Fragment {
                                 .setPopEnterAnim(android.R.anim.slide_in_left)
                                         .setPopExitAnim(android.R.anim.slide_out_right);
 
+        MenuItem item = bottomNav.getMenu().findItem(R.id.navAdd_Ambulance);
 
+        dashboardViewModel.getDisplayMode().observe(getViewLifecycleOwner(), displayMode -> {
+            if(displayMode.equals(HomeFragment.MODE_AMBULANCE)) {
+                item.setTitle("Ambulance");
+            }
+            else {
+                item.setTitle("Driver");
+
+            }
+        });
 
         bottomNav.setOnItemSelectedListener(menuItem -> {
 
@@ -155,10 +166,9 @@ public class OwnerDashboardFragment extends Fragment {
             }
             else if (itemId == R.id.navAdd_Ambulance) {
                 int ambulanceDestinationTag = Integer.parseInt(navController.getGraph().findNode(R.id.ownerManageAmbulanceFragment).getLabel().toString());
-
+                String displayMode = dashboardViewModel.getDisplayMode().getValue();
 
                 if(navController.getCurrentDestination().getId() != navController.getGraph().findNode(R.id.ownerManageAmbulanceFragment).getId()) {
-                    String displayMode = dashboardViewModel.getDisplayMode().getValue();
 
                     int destinationId = displayMode.equals(HomeFragment.MODE_AMBULANCE) ? R.id.ownerManageAmbulanceFragment : R.id.addDriverFragment;
                     if(ambulanceDestinationTag > currentDestinationTag) {
