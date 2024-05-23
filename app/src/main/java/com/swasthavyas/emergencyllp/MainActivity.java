@@ -25,6 +25,7 @@ import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.ui.DriverDashboardFragment;
 import com.swasthavyas.emergencyllp.component.dashboard.ui.OwnerDashboardFragment;
 import com.swasthavyas.emergencyllp.component.dashboard.worker.FetchRoleWorker;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
 import java.util.Locale;
@@ -32,7 +33,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String MYAPP = "MYAPP";
     FirebaseUser currentUser;
     AuthViewModel authViewModel;
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         AtomicBoolean lock = new AtomicBoolean(false);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        Log.d(MYAPP, "In MainActivity");
+        Log.d(AppConstants.TAG, "In MainActivity");
 
 
         authViewModel.getCurrentUser().observe(this, firebaseUser -> {
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (!lock.get()) {
                 this.currentUser = firebaseUser;
-                Log.d("MYAPP", "MainActivity.Observer: " + this.currentUser);
+                Log.d(AppConstants.TAG, "MainActivity.Observer: " + this.currentUser);
 
                 if (this.currentUser != null) {
                     OneTimeWorkRequest fetchRoleRequest = new OneTimeWorkRequest.Builder(FetchRoleWorker.class)
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                                     if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
                                         String role = workInfo.getOutputData().getString("role");
                                         if(role == null) {
-                                            Log.d(MYAPP, "MainActivity.onCreate: role not received.");
+                                            Log.d(AppConstants.TAG, "MainActivity.onCreate: role not received.");
                                             return;
 
                                         }
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                                                 break;
                                             default:
                                                 Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-                                                Log.d(MYAPP, "MainActivity.onCreate: invalid role - [ " + role + " ]");
+                                                Log.d(AppConstants.TAG, "MainActivity.onCreate: invalid role - [ " + role + " ]");
                                         }
 
                                         fragmentTransaction.commit();
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                                         if(workInfo.getOutputData().getString("exception").equals("NoSuchElementException")) {
                                             // TODO: Redirect to registration UI
     //                                    FirebaseAuth.getInstance().signOut();
-                                            Log.d("MYAPP", "fetchRoleObserver: " + workInfo.getId() + ": " +workInfo.getState());
+                                            Log.d(AppConstants.TAG, "fetchRoleObserver: " + workInfo.getId() + ": " +workInfo.getState());
                                             Toast.makeText(this, "Redirecting to registration UI...", Toast.LENGTH_SHORT).show();
 
                                             Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         else {
                                             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-                                            Log.d(MYAPP, "onCreate: " + workInfo.getOutputData().getString("message"));
+                                            Log.d(AppConstants.TAG, "onCreate: " + workInfo.getOutputData().getString("message"));
                                         }
                                     }
 
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, AuthActivity.class);
                     startActivity(intent);
                     Toast.makeText(this, "You are not logged in", Toast.LENGTH_SHORT).show();
-                    Log.d("MYAPP", "Not logged in");
+                    Log.d(AppConstants.TAG, "Not logged in");
                     finish();
                 }
 

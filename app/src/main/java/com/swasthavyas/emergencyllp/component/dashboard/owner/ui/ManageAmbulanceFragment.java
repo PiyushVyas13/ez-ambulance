@@ -23,6 +23,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Ambul
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.AddAmbulanceWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentAddAmbulanceBinding;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.types.AmbulanceType;
 
 
@@ -51,7 +52,7 @@ public class ManageAmbulanceFragment extends Fragment {
 
         ownerViewModel.getOwner().observe(getViewLifecycleOwner(), owner -> {
             if(owner != null) {
-                Log.d("MYAPP", "ManageAmbulanceFragment.onCreateView: " + owner);
+                Log.d(AppConstants.TAG, "ManageAmbulanceFragment.onCreateView: " + owner);
                 Toast.makeText(requireContext(), owner.getId(), Toast.LENGTH_SHORT).show();
             }
         });

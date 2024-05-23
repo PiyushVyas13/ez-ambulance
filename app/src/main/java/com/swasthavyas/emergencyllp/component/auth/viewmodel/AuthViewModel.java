@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.swasthavyas.emergencyllp.component.auth.domain.model.UserInfo;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 
 public class AuthViewModel extends ViewModel {
     private MutableLiveData<UserInfo> userInfoLiveData;
@@ -24,7 +25,7 @@ public class AuthViewModel extends ViewModel {
         auth.addAuthStateListener(firebaseAuth -> {
             this.auth = firebaseAuth;
             this.setCurrentUser(firebaseAuth.getCurrentUser());
-            Log.d("MYAPP", "AuthViewModel: auth state changed " + ((firebaseAuth.getCurrentUser() == null) ? "null" : firebaseAuth.getCurrentUser().getEmail()));
+            Log.d(AppConstants.TAG, "AuthViewModel: auth state changed " + ((firebaseAuth.getCurrentUser() == null) ? "null" : firebaseAuth.getCurrentUser().getEmail()));
         });
     }
 

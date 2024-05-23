@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 
@@ -55,13 +56,13 @@ public class CreateDriverWorker extends ListenableWorkerAdapter {
                             user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(name).build())
                                     .addOnCompleteListener(updateNameTask -> {
                                         if(updateNameTask.isSuccessful()) {
-                                            Log.d("MYAPP", "createDriverWorker: name updated");
+                                            Log.d(AppConstants.TAG, "createDriverWorker: name updated");
                                             // auth.signOut();
                                             auth.updateCurrentUser(currentUser);
 
                                         }
                                         else {
-                                            Log.d("MYAPP", "createDriverWorker: cannot update name " + updateNameTask.getException());
+                                            Log.d(AppConstants.TAG, "createDriverWorker: cannot update name " + updateNameTask.getException());
                                         }
                                     });
 
@@ -78,7 +79,7 @@ public class CreateDriverWorker extends ListenableWorkerAdapter {
 
                         }
                         else {
-                            Log.e("MYAPP", "doAsyncBackgroundTask: ", task.getException());
+                            Log.e(AppConstants.TAG, "doAsyncBackgroundTask: ", task.getException());
                             callback.onFailure(task.getException());
                         }
                     });

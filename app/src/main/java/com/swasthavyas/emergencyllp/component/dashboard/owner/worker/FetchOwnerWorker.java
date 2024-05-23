@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 
@@ -38,7 +39,7 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
             callback.onFailure(new IllegalArgumentException("userId not provided"));
             return;
         }
-        Log.d("MYAPP", "fetchOwnerWorker: Inside the worker, userId: " + userId);
+        Log.d(AppConstants.TAG, "fetchOwnerWorker: Inside the worker, userId: " + userId);
 
         dbInstance.collection("owners")
                 .whereEqualTo("user_id", userId).limit(1)
@@ -53,7 +54,7 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                        }
 
                        for(QueryDocumentSnapshot document : task.getResult()) {
-                           Log.d("MYAPP", "fetchOwnerWorker: " + "[ "+ document.getId() + " => " + document.getData() + " ]");
+                           Log.d(AppConstants.TAG, "fetchOwnerWorker: " + "[ "+ document.getId() + " => " + document.getData() + " ]");
                            Map<String, Object> modifiedResult = new HashMap<>();
 
                            modifiedResult.put("owner_id", document.getId());
@@ -72,7 +73,7 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                             List<Map<String, Object>> ambulances = new ArrayList<>();
 
                                             for(DocumentSnapshot ambulance : task1.getResult()) {
-                                                Log.d("MYAPP", String.format("fetchOwnerWorker: [%s => %s]", ambulance.getId(), ambulance.getData()));
+                                                Log.d(AppConstants.TAG, String.format("fetchOwnerWorker: [%s => %s]", ambulance.getId(), ambulance.getData()));
                                                 Map<String, Object> ambulanceMap = new HashMap<>();
                                                 ambulanceMap.put("ambulance_id", ambulance.getId());
                                                 ambulanceMap.put("ambulance_type", ambulance.getData().get("ambulanceType"));
@@ -93,7 +94,7 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                                        List<Map<String, Object>> employees = new ArrayList<>();
 
                                                        for(DocumentSnapshot employee: employeeTask.getResult()) {
-                                                           Log.d("MYAPP", String.format("fetchOwnerWorker: [%s => %s]", employee.getId(), employee.getData()));
+                                                           Log.d(AppConstants.TAG, String.format("fetchOwnerWorker: [%s => %s]", employee.getId(), employee.getData()));
                                                             Map<String, Object> employeeMap = new HashMap<>();
 
                                                             employeeMap.put("driver_id", employee.getId());

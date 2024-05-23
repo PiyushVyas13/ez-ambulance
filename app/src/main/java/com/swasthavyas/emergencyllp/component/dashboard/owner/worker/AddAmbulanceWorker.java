@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 
@@ -63,7 +64,7 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
                                 .build();
 
 
-                        Log.d("MYAPP", "addAmbulanceWorker: " + task.getResult().getPath());
+                        Log.d(AppConstants.TAG, "addAmbulanceWorker: " + task.getResult().getPath());
                         callback.onSuccess(opData);
                     }
                     else {

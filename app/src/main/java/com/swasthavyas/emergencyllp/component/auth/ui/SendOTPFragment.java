@@ -20,6 +20,7 @@ import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.databinding.FragmentSendOtpBinding;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.FirebaseAuthUtil;
 
 import java.util.concurrent.TimeUnit;
@@ -57,7 +58,7 @@ public class SendOTPFragment extends Fragment {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 Toast.makeText(requireActivity(), "Invalid Phone number or request", Toast.LENGTH_SHORT).show();
-                Log.d("MYAPP", "onVerificationFailed: " + e.getMessage());
+                Log.d(AppConstants.TAG, "onVerificationFailed: " + e.getMessage());
                 viewBinding.sendOtpProgress.setVisibility(View.GONE);
                 Navigation.findNavController(viewBinding.getRoot()).popBackStack();
             }

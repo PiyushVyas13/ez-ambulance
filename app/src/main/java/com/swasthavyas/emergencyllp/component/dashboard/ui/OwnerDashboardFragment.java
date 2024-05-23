@@ -39,6 +39,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.Dashboar
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.FetchOwnerWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentOwnerDashboardBinding;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -100,8 +101,8 @@ public class OwnerDashboardFragment extends Fragment {
                 .observe(getViewLifecycleOwner(), workInfo -> {
                     if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
                         Map<String, Object> ownerData = workInfo.getOutputData().getKeyValueMap();
-                        Log.d("MYAPP", "onCreateView: " + ownerData);
-                        Log.d("MYAPP", "onCreateView: " + workInfo.getOutputData());
+                        Log.d(AppConstants.TAG, "onCreateView: " + ownerData);
+                        Log.d(AppConstants.TAG, "onCreateView: " + workInfo.getOutputData());
                         if(!ownerData.isEmpty()) {
                             Owner owner = new Owner(
                                     (String) ownerData.get("owner_id"),
@@ -215,11 +216,11 @@ public class OwnerDashboardFragment extends Fragment {
             JsonArray jsonArray = gson.fromJson(serializedString, JsonArray.class);
 
             for(JsonElement element : jsonArray) {
-                Log.d("MYAPP", "deserializeAmbulancesString: " + element.toString());
+                Log.d(AppConstants.TAG, "deserializeAmbulancesString: " + element.toString());
                 Type type = new TypeToken<Map<String, Object>>() {}.getType();
 
                 Map<String, Object> map = gson.fromJson(element.getAsString(), type);
-                Log.d("MYAPP", "deserializeAmbulancesString: " + map.toString());
+                Log.d(AppConstants.TAG, "deserializeAmbulancesString: " + map.toString());
                 ambulances.add(Ambulance.createFromMap(map));
             }
 
@@ -245,11 +246,11 @@ public class OwnerDashboardFragment extends Fragment {
             JsonArray jsonArray = gson.fromJson(serializedString, JsonArray.class);
 
             for(JsonElement element : jsonArray) {
-                Log.d("MYAPP", "deserializeEmployeeString: " + element.toString());
+                Log.d(AppConstants.TAG, "deserializeEmployeeString: " + element.toString());
                 Type type = new TypeToken<Map<String, Object>>() {}.getType();
 
                 Map<String, Object> map = gson.fromJson(element.getAsString(), type);
-                Log.d("MYAPP", "deserializeEmployeesString: " + map.toString());
+                Log.d(AppConstants.TAG, "deserializeEmployeesString: " + map.toString());
                 employees.add(EmployeeDriver.createFromMap(map));
             }
 

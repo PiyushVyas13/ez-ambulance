@@ -25,6 +25,7 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.auth.worker.SignInWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentLoginBinding;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 
 
 public class LoginFragment extends Fragment {
@@ -72,7 +73,7 @@ public class LoginFragment extends Fragment {
                         }
                         else {
                             Snackbar.make(v, "Cannot send email", BaseTransientBottomBar.LENGTH_LONG).show();
-                            Log.e("MYAPP", "onCreateView: password reset mail", task.getException());
+                            Log.e(AppConstants.TAG, "onCreateView: password reset mail", task.getException());
                         }
                     });
         });

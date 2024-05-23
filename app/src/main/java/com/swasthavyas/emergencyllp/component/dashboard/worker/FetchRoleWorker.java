@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 
 import java.util.NoSuchElementException;
@@ -76,7 +77,7 @@ public class FetchRoleWorker extends ListenableWorker {
                    callback.onSuccess(opData);
                }
                else {
-                   Log.d("MYAPP", "getRoleFromDb: document not found");
+                   Log.d(AppConstants.TAG, "getRoleFromDb: document not found");
                    callback.onFailure(new NoSuchElementException("document not found"));
                }
            }

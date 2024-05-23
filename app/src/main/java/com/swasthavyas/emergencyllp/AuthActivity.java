@@ -27,6 +27,7 @@ import com.swasthavyas.emergencyllp.component.auth.worker.AnonymousSignInWorker;
 import com.swasthavyas.emergencyllp.component.auth.worker.EmailAuthLinkWorker;
 import com.swasthavyas.emergencyllp.component.auth.worker.PhoneAuthLinkWorker;
 import com.swasthavyas.emergencyllp.databinding.ActivityAuthBinding;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 
 import java.util.Map;
 
@@ -97,10 +98,10 @@ public class AuthActivity extends AppCompatActivity {
                                         this.currentUser.delete()
                                                 .addOnCompleteListener(task ->  {
                                                     if(task.isSuccessful()) {
-                                                        Log.d("MYAPP", "deleteAnonUser: user deleted");
+                                                        Log.d(AppConstants.TAG, "deleteAnonUser: user deleted");
                                                     }
                                                     else {
-                                                        Log.d("MYAPP", "deleteAnonUser: cannot delete user - [" + task.getException().getMessage() + "]");
+                                                        Log.d(AppConstants.TAG, "deleteAnonUser: cannot delete user - [" + task.getException().getMessage() + "]");
                                                     }
                                                 });
                                     }
@@ -124,16 +125,16 @@ public class AuthActivity extends AppCompatActivity {
                                     Map<String, Object> map = message.getKeyValueMap();
 
                                     if(!map.isEmpty()) {
-                                        Log.d("MYAPP", "phoneAuthLinkFailed: output data is empty");
+                                        Log.d(AppConstants.TAG, "phoneAuthLinkFailed: output data is empty");
                                         Toast.makeText(this, workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
                                         if(this.currentUser != null) {
                                             this.currentUser.delete()
                                                     .addOnCompleteListener(task ->  {
                                                         if(task.isSuccessful()) {
-                                                            Log.d("MYAPP", "deleteAnonUser: user deleted");
+                                                            Log.d(AppConstants.TAG, "deleteAnonUser: user deleted");
                                                         }
                                                         else {
-                                                            Log.d("MYAPP", "deleteAnonUser: cannot delete user - [" + task.getException().getMessage() + "]");
+                                                            Log.d(AppConstants.TAG, "deleteAnonUser: cannot delete user - [" + task.getException().getMessage() + "]");
                                                         }
                                                     });
                                         }
@@ -156,16 +157,16 @@ public class AuthActivity extends AppCompatActivity {
                                     Map<String, Object> map = message.getKeyValueMap();
 
                                     if(!map.isEmpty()) {
-                                        Log.d("MYAPP", "emailAuthLinkFailed: output data is empty");
+                                        Log.d(AppConstants.TAG, "emailAuthLinkFailed: output data is empty");
                                         Toast.makeText(this, workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
                                         if(this.currentUser != null) {
                                             this.currentUser.delete()
                                                     .addOnCompleteListener(task ->  {
                                                         if(task.isSuccessful()) {
-                                                            Log.d("MYAPP", "deleteAnonUser: user deleted");
+                                                            Log.d(AppConstants.TAG, "deleteAnonUser: user deleted");
                                                         }
                                                         else {
-                                                            Log.d("MYAPP", "deleteAnonUser: cannot delete user - [" + task.getException().getMessage() + "]");
+                                                            Log.d(AppConstants.TAG, "deleteAnonUser: cannot delete user - [" + task.getException().getMessage() + "]");
                                                         }
                                                     });
                                         }
@@ -187,10 +188,10 @@ public class AuthActivity extends AppCompatActivity {
                                         this.currentUser.updateProfile(request)
                                                 .addOnCompleteListener(task -> {
                                                     if(task.isSuccessful()) {
-                                                        Log.d("MYAPP", "addDisplayName: name updated");
+                                                        Log.d(AppConstants.TAG, "addDisplayName: name updated");
                                                     }
                                                     else {
-                                                        Log.d("MYAPP", "addDisplayName: cannot update name - [" + task.getException().getMessage() + "]");
+                                                        Log.d(AppConstants.TAG, "addDisplayName: cannot update name - [" + task.getException().getMessage() + "]");
                                                     }
                                                 });
                                     }

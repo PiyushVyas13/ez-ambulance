@@ -8,6 +8,7 @@ import androidx.work.Data;
 import androidx.work.WorkerParameters;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 
@@ -34,7 +35,7 @@ public class UserRegistrationWorker extends ListenableWorkerAdapter {
             if(role == null || userId == null) {
                 for (String key :
                         getInputData().getKeyValueMap().keySet()) {
-                    Log.d("MYAPP", "userRegistrationWorker: " + key);
+                    Log.d(AppConstants.TAG, "userRegistrationWorker: " + key);
                 }
                 throw new IllegalArgumentException("userId or role not provided.");
             }

@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters;
 
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
@@ -35,7 +36,7 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         int age = getInputData().getInt("age", -1);
 
         if(driverId == null || userId == null || age == -1 || ownerId == null || phoneNumber == null || name == null || password == null || email == null) {
-            Log.d("MYAPP", "doAsyncBackgroundTask: " + getInputData());
+            Log.d(AppConstants.TAG, "doAsyncBackgroundTask: " + getInputData());
             callback.onFailure(new IllegalArgumentException("one of the input data is null/invalid."));
             return;
         }

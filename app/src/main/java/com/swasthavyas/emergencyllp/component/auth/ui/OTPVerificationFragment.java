@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.swasthavyas.emergencyllp.component.auth.domain.model.UserInfo;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentOtpVerificationBinding;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 
 
 public class OTPVerificationFragment extends Fragment {
@@ -73,7 +74,7 @@ public class OTPVerificationFragment extends Fragment {
             String otp = viewBinding.otpView.getOtp();
 
             if(otp.length() < 6) {
-                Log.d("MYAPP", "verifyOtp: otp length is less than 6");
+                Log.d(AppConstants.TAG, "verifyOtp: otp length is less than 6");
                 return;
             }
 
@@ -92,7 +93,7 @@ public class OTPVerificationFragment extends Fragment {
 
         }
         else {
-            Log.d("MYAPP", "verifyOtp: arguments are empty");
+            Log.d(AppConstants.TAG, "verifyOtp: arguments are empty");
         }
     }
 }
