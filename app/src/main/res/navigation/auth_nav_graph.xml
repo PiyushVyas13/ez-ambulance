@@ -19,9 +19,6 @@
         <action
             android:id="@+id/action_loginFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
-        <action
-            android:id="@+id/action_loginFragment_to_placeholder"
-            app:destination="@id/placeholder" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -59,5 +56,4 @@
         android:name="com.swasthavyas.emergencyllp.component.auth.ui.OTPVerificationFragment"
         android:label="fragment_otp_verification"
         tools:layout="@layout/fragment_otp_verification" />
-    <fragment android:id="@+id/placeholder" />
 </navigation>
