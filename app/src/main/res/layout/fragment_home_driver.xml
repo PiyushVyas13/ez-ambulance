@@ -1,17 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_fragment"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".component.dashboard.driver.ui.HomeFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Driver Home"
-        android:textSize="30sp"
-        android:gravity="center"
-        />
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_top"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-</FrameLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center|top"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/off_duty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_40sdp"
+                    android:src="@drawable/right"
+                    app:backgroundTint="@color/transparent"
+                    app:cornerRadius="@dimen/_40sdp"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/off_duty_text"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_47sdp">
+
+                <View
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_3sdp"
+                    android:layout_gravity="center"
+                    android:background="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/on_duty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_40sdp"
+                    android:src="@drawable/number2_stepper_top"
+                    app:backgroundTint="@color/transparent"
+                    app:cornerRadius="@dimen/_40sdp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/on_duty_text"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_47sdp">
+
+                <View
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_3sdp"
+                    android:layout_gravity="center"
+                    android:background="@color/white" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/go_to"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_40sdp"
+                    android:src="@drawable/number3_stepper_top"
+                    app:backgroundTint="@color/transparent"
+                    app:cornerRadius="@dimen/_40sdp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/go_to_text"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_130sdp"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="@dimen/_20sdp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today, 23 October"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_gravity="center|top"
+                    android:layout_marginTop="@dimen/_15sdp"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rs. 00.00"
+                    android:textSize="@dimen/_18ssp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_130sdp"
+                android:backgroundTint="@color/white"
+                android:outlineSpotShadowColor="@color/black"
+                app:cardCornerRadius="@dimen/_20sdp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 Rides"
+                    android:textSize="@dimen/_18ssp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rides Completed"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_gravity="center|top"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/history_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:backgroundTint="@color/white"
+            android:text="@string/history_text"
+            android:textAllCaps="false"
+            android:textColor="@color/primary"
+            app:cornerRadius="@dimen/_7sdp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:layout_constraintVertical_bias="1.0">
+
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/change_ambulance_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_gravity="bottom|end"
+            app:backgroundTint="@color/secondary"
+            android:textColor="@color/white"
+            android:contentDescription="@string/extended_fab_content_desc"
+            android:text="@string/extended_fab_label"
+            app:iconTint="@color/white"
+            android:elevation="8dp"
+            app:icon="@drawable/replace"/>
+
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.52" />
+</androidx.constraintlayout.widget.ConstraintLayout>

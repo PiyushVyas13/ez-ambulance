@@ -15,7 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_nav_driver"
-        android:layout_gravity="center"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
         />
 
 
@@ -23,15 +28,24 @@
         android:id="@+id/bottom_nav_driver"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemRippleColor="@color/primary"
-        android:paddingTop="@dimen/_5sdp"
-        android:paddingBottom="@dimen/_5sdp"
-        app:labelVisibilityMode="labeled"
-        app:itemTextColor="@color/black"
-        app:itemIconTint="@color/black"
-        android:background="@color/white"
+        android:layout_alignParentBottom="true"
+        android:animateLayoutChanges="true"
+        app:labelVisibilityMode="selected"
+        android:foregroundGravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4"
         app:menu="@menu/driver_dashboard_bottom_nav"
-        android:layout_alignParentBottom="true" />
+
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
 
 
 </RelativeLayout>

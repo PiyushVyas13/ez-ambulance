@@ -31,4 +31,10 @@
     <string name="finish">Finish</string>
     <string name="go_to_dashboard">Go to Dashboard</string>
     <string name="otp_send_text">We will send you an One Time Password on this mobile number</string>
+    <string name="off_duty_text">Off Duty</string>
+    <string name="on_duty_text">On Duty</string>
+    <string name="go_to_text">Go to</string>
+    <string name="history_text">History</string>
+    <string name="extended_fab_content_desc">Change Ambulance</string>
+    <string name="extended_fab_label">Change Ambulance</string>
 </resources>

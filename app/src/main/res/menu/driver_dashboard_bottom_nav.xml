@@ -4,24 +4,15 @@
     <item
         android:id="@+id/navHome"
         android:title="@string/home_text"
-        android:icon="@drawable/home" />
-
-    <item
-        android:id="@+id/navEarning"
-        android:title="@string/earning_driver"
-        android:icon="@drawable/rupees"/>
-    <item
-        android:id="@+id/navSwapDriver"
-        android:title="@string/swap_driver"
-        android:icon="@drawable/swap"/>
+        android:icon="@drawable/home_icon" />
 
     <item
         android:id="@+id/navNotification"
         android:title="@string/notification_text"
-        android:icon="@drawable/notification"/>
+        android:icon="@drawable/message"/>
 
     <item
         android:id="@+id/navProfile"
         android:title="@string/profile_text"
-        android:icon="@drawable/profile"/>
+        android:icon="@drawable/profile_icon"/>
 </menu>

@@ -68,12 +68,6 @@ public class DriverDashboardFragment extends Fragment {
             if(menuItem.getItemId() == R.id.navHome) {
                 navigateToDestination(R.id.homeFragment);
             }
-            else if(menuItem.getItemId() == R.id.navEarning) {
-                navigateToDestination(R.id.earningFragment);
-            }
-            else if(menuItem.getItemId() == R.id.navSwapDriver) {
-                navigateToDestination(R.id.swapDriverFragment);
-            }
             else if(menuItem.getItemId() == R.id.navNotification) {
                 navigateToDestination(R.id.notificationFragment);
             }

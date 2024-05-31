@@ -6,4 +6,5 @@
     <color name="primary">#FFFF6700</color>
     <color name="error">#B3261E</color>
     <color name="secondary">#FFA500</color>
+    <color name="teal_700">#FF018786</color>
 </resources>
