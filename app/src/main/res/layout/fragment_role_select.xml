@@ -2,87 +2,177 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/role_select_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeableImageView2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_130sdp"
+            android:background="@drawable/background_top"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_36sdp"
+            android:layout_marginTop="@dimen/_50sdp"
+            android:layout_marginEnd="@dimen/_36sdp"
+            android:gravity="center"
+            android:text="@string/information_text"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_30ssp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_height="560dp"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="w,2:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline11"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/_40sdp"
-            android:text="@string/who_are_you"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_25ssp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingHorizontal="@dimen/_16sdp"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+            tools:layout_editor_absoluteX="0dp">
 
-        <RadioGroup
-            android:id="@+id/radio_choose_option"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/_60sdp"
-            android:layout_marginTop="@dimen/_40sdp"
-            android:layout_marginBottom="@dimen/_100sdp">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/owner_card"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="@dimen/_80sdp"
+                android:layout_weight="1"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                app:checkedIconTint="@color/primary"
 
-            <RadioButton
-                app:buttonTint="@color/primary"
-                android:id="@+id/fleet"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_40sdp"
-                android:text="@string/fleet_owner"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_22ssp"
-                android:layout_marginBottom="@dimen/_15sdp"
-                android:textStyle="bold"/>
+                >
 
-            <RadioButton
-                android:id="@+id/driver"
-                app:buttonTint="@color/primary"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_40sdp"
-                android:text="@string/driver"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_22ssp"
-                android:textStyle="bold"/>
-        </RadioGroup>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatButton
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:contentDescription="TODO"
+                        android:src="@drawable/owner" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_18ssp"
+                        android:layout_marginTop="25dp"
+                        android:gravity="center"
+                        android:text="Owner" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/driver_card"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_80sdp"
+                android:layout_weight="1"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                app:checkedIconTint="@color/primary"
+
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:contentDescription="TODO"
+                        android:src="@drawable/driver" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_18ssp"
+                        android:layout_marginTop="25dp"
+                        android:gravity="center"
+                        android:text="Driver" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/next_btn"
-            android:layout_width="@dimen/_110sdp"
-            android:layout_height="@dimen/_60sdp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/_40sdp"
-            android:background="@drawable/btn_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_25sdp"
             android:text="@string/text_next"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_15ssp"
-
-            />
-
+            android:textAllCaps="false"
+            android:textSize="@dimen/_18ssp"
+            app:backgroundTint="@color/primary"
+            tools:layout_editor_absoluteX="0dp" />
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
+
+    <!--        <RadioGroup-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginStart="@dimen/_16sdp"-->
+    <!--            android:layout_marginEnd="@dimen/_16sdp"-->
+    <!--            android:padding="@dimen/_10sdp"-->
+    <!--            android:layout_marginTop="@dimen/_80sdp">-->
+
+    <!--            <com.google.android.material.radiobutton.MaterialRadioButton-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="@string/fleet_owner_text"-->
+    <!--                android:textSize="@dimen/_18ssp"/>-->
+
+    <!--            <com.google.android.material.radiobutton.MaterialRadioButton-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="@string/self_owned_driver_text"-->
+    <!--                android:textSize="@dimen/_18ssp"/>-->
+
+
+    <!--        </RadioGroup>-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

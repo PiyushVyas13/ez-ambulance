@@ -67,7 +67,7 @@ public class SignUpFragment extends Fragment {
 
             Bundle bundle = new Bundle();
             bundle.putString("name", viewBinding.fullName.getText().toString());
-            bundle.putString("email", viewBinding.email.getText().toString());
+            bundle.putString("email", "" + viewBinding.email.getText().toString() + viewBinding.emailLayout.getSuffixText().toString());
             bundle.putString("password", viewBinding.password.getText().toString());
 
              Navigation.findNavController(v).navigate(R.id.action_signUpFragment_to_sendOTPFragment, bundle);

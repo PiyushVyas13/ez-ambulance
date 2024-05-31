@@ -9,7 +9,6 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.registration.viewmodel.RegistrationViewModel;
@@ -47,17 +46,23 @@ public class RoleSelectFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
 
+        viewBinding.ownerCard.setOnClickListener(v -> {
+            viewBinding.driverCard.setChecked(false);
+            viewBinding.ownerCard.setChecked(true);
+        });
+
+        viewBinding.driverCard.setOnClickListener(v -> {
+            viewBinding.ownerCard.setChecked(false);
+            viewBinding.driverCard.setChecked(true);
+        });
+
         viewBinding.nextBtn.setOnClickListener(v ->  {
 
-            if(viewBinding.radioChooseOption.getCheckedRadioButtonId() == -1) {
-                Toast.makeText(requireActivity(), "Please select an option!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(viewBinding.radioChooseOption.getCheckedRadioButtonId() == viewBinding.fleet.getId()) {
+            if(viewBinding.ownerCard.isChecked()) {
                 viewModel.setUserRole(UserRole.OWNER);
                 Navigation.findNavController(v).navigate(R.id.action_roleSelectFragment_to_documentInputFragment);
             }
-            else if(viewBinding.radioChooseOption.getCheckedRadioButtonId() == viewBinding.driver.getId()) {
+            else if(viewBinding.driverCard.isChecked()) {
                 viewModel.setUserRole(UserRole.DRIVER);
                 Navigation.findNavController(v).navigate(R.id.action_roleSelectFragment_to_addAmbulanceFragment);
             }

@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.swasthavyas.emergencyllp.component.registration.viewmodel.RegistrationViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentDocumentInputBinding;
-import com.swasthavyas.emergencyllp.util.types.UserRole;
 
 
 public class DocumentInputFragment extends Fragment {
@@ -37,18 +36,18 @@ public class DocumentInputFragment extends Fragment {
         viewBinding = FragmentDocumentInputBinding.inflate(getLayoutInflater());
 
 
-        viewBinding.btnNext.setOnClickListener(v -> {
-            if(viewBinding.aadharno.getText().toString().isEmpty()) {
+        viewBinding.finishButton.setOnClickListener(v -> {
+            if(viewBinding.aadhaarNo.getText().toString().isEmpty()) {
                 Toast.makeText(requireActivity(), "Please provide aadhaar number.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if(viewBinding.aadharno.getText().length() != 12) {
+            if(viewBinding.aadhaarNo.getText().length() != 12) {
                 Toast.makeText(requireActivity(), "Provide a valid aadhaar number.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            viewModel.setAadhaarNumber(viewBinding.aadharno.getText().toString());
+            viewModel.setAadhaarNumber(viewBinding.aadhaarNo.getText().toString());
 
         });
 

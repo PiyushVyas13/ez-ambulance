@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
 
         viewBinding.displayModeToggle.setOnClickListener(v -> {
             if(dashboardViewModel.getDisplayMode().getValue().equals(MODE_AMBULANCE)) {
-                viewBinding.displayModeToggle.setImageResource(R.drawable.ambulance);
+                viewBinding.displayModeToggle.setImageResource(R.drawable.ambulance_icon);
                 dashboardViewModel.setDisplayMode(MODE_DRIVER);
             }
             else {

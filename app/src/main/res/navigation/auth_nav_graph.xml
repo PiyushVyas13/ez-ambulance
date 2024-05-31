@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/auth_nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/tagLineFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -15,7 +15,8 @@
             app:destination="@id/signUpFragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in" />
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_loginFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
@@ -56,4 +57,17 @@
         android:name="com.swasthavyas.emergencyllp.component.auth.ui.OTPVerificationFragment"
         android:label="fragment_otp_verification"
         tools:layout="@layout/fragment_otp_verification" />
+    <fragment
+        android:id="@+id/tagLineFragment"
+        android:name="com.swasthavyas.emergencyllp.component.auth.ui.TagLineFragment"
+        android:label="fragment_tag_line"
+        tools:layout="@layout/fragment_tag_line" >
+        <action
+            android:id="@+id/action_tagLineFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
 </navigation>

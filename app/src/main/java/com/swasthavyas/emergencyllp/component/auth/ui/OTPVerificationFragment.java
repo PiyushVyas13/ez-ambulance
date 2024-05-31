@@ -4,9 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
-import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +37,7 @@ public class OTPVerificationFragment extends Fragment {
 
         viewBinding = FragmentOtpVerificationBinding.inflate(getLayoutInflater());
 
-        viewBinding.otpVerifyBtn.setOnClickListener(v -> {
+        viewBinding.verifyOtpBtn.setOnClickListener(v -> {
             verifyOtp();
         });
 
@@ -49,14 +46,6 @@ public class OTPVerificationFragment extends Fragment {
 
     private void verifyOtp() {
         // TODO: Implement OTP verification logic
-
-        NavController navController = Navigation.findNavController(viewBinding.getRoot());
-
-        int startDestination = navController.getGraph().getStartDestination();
-        NavOptions options = new NavOptions.Builder().setPopUpTo(startDestination, true)
-                .setExitAnim(android.R.anim.fade_out).setEnterAnim(android.R.anim.fade_in).build();
-
-
 
         if(getArguments() != null) {
             String verificationId  = getArguments().getString("verificationId");

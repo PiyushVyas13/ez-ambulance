@@ -72,6 +72,7 @@ public class RegistrationSuccessFragment extends Fragment {
 
         viewBinding.btnToDashboard.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_registrationSuccessFragment_to_mainActivity2);
+            requireActivity().finish();
         });
 
 

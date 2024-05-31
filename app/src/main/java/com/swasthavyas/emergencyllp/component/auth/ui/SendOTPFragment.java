@@ -81,7 +81,7 @@ public class SendOTPFragment extends Fragment {
                 bundle.putString("name", name);
                 bundle.putString("email", email);
                 bundle.putString("password", password);
-                bundle.putString("phone", viewBinding.phoneNumber.getText().toString());
+                bundle.putString("phone", viewBinding.mobileNo.getText().toString());
 
                 Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.action_sendOTPFragment_to_OTPVerificationFragment, bundle);
             }
@@ -90,20 +90,20 @@ public class SendOTPFragment extends Fragment {
 
         viewBinding.sendOtp.setOnClickListener(v -> {
 
-            if(viewBinding.phoneNumber.getText().toString().isEmpty()) {
+            if(viewBinding.mobileNo.getText().toString().isEmpty()) {
                 Toast.makeText(requireActivity(), "Enter the phone number", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-            if(user != null && user.getPhoneNumber() != null && user.getPhoneNumber().equals(viewBinding.phoneNumber.getText().toString())) {
+            if(user != null && user.getPhoneNumber() != null && user.getPhoneNumber().equals(viewBinding.mobileNo.getText().toString())) {
                 Toast.makeText(requireActivity(), "A user with this phone number already exists!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             PhoneAuthOptions options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-                    .setPhoneNumber("+91" + viewBinding.phoneNumber.getText().toString())
+                    .setPhoneNumber("+91" + viewBinding.mobileNo.getText().toString())
                             .setTimeout(60L, TimeUnit.SECONDS)
                                     .setCallbacks(callbacks)
                                             .setActivity(requireActivity())

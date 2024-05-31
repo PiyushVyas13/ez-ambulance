@@ -6,7 +6,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="dont_have_account">Don\'t have an account?</string>
-    <string name="Signup">SignUp</string>
+    <string name="signup_text">SignUp</string>
     <string name="create_account">Create Account</string>
     <string name="full_name">Full Name</string>
     <string name="confirm_password">Confirm Password</string>
@@ -48,4 +48,20 @@
     <string name="profile_picture">profile picture</string>
     <string name="earning_driver">Earning</string>
     <string name="swap_driver">Swap</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="email_username">Email/Username</string>
+    <string name="gmailend_text">\@gmail.com</string>
+    <string name="continue_text">Continue</string>
+    <string name="get_otp_text">Get OTP</string>
+    <string name="enter_mobile_number_text">Enter Mobile Number</string>
+    <string name="otp_verification">OTP Verification</string>
+    <string name="send_verification_code_text">We have sent a verification code to your Mobile Number</string>
+    <string name="didn_t_recieve_the_otp_text">Didn\'t Receive OTP?</string>
+    <string name="resend_otp_text">Resend OTP</string>
+    <string name="verify">Verify</string>
+    <string name="information_text">Who are you?</string>
+    <string name="upload_aadhar_photo_text">Upload aadhaar photo</string>
+    <string name="finish">Finish</string>
+    <string name="go_to_dashboard">Go to Dashboard</string>
+    <string name="otp_send_text">We will send you an One Time Password on this mobile number</string>
 </resources>
