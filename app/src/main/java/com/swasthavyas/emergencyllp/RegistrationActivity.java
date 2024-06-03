@@ -50,20 +50,24 @@ public class RegistrationActivity extends AppCompatActivity {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
 
-        viewModel.getAadhaarNumberLiveData().observe(this, aadhaarNumber -> {
-            if( viewModel.getUserRole().getValue() != null && viewModel.getUserRole().getValue() != UserRole.UNASSIGNED && aadhaarNumber != null && aadhaarNumber.length() == 12) {
+        viewModel.getAadhaarUri().observe(this, aadhaarUri -> {
+
+            FirebaseUser currentUser = authViewModel.getCurrentUser().getValue();
+            String aadhaarNumber = viewModel.getAadhaarNumberLiveData().getValue();
+
+            if( viewModel.getUserRole().getValue() != null && viewModel.getUserRole().getValue() != UserRole.UNASSIGNED && aadhaarNumber != null && aadhaarNumber.length() == 12 && aadhaarUri != null) {
                 // chain two work requests
                 // 1. create an entry in the user role collection
                 // 2. create an entry in the driver/owner collection
 
-                FirebaseUser currentUser = authViewModel.getCurrentUser().getValue();
+
+                String roleString = String.valueOf(viewModel.getUserRole().getValue()).toLowerCase();
+                String userId = currentUser.getUid();
 
                 if(currentUser == null) {
                     Toast.makeText(this, "Unauthorized", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String roleString = String.valueOf(viewModel.getUserRole().getValue()).toLowerCase();
-                String userId = currentUser.getUid();
 
                 OneTimeWorkRequest roleAssignmentRequest = new OneTimeWorkRequest.Builder(RoleAssignmentWorker.class)
                         .setInputData(new Data.Builder()
@@ -87,6 +91,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                     .putString("aadhaar_number", aadhaarNumber)
                                     .putString("role", roleString)
                                     .putString("userId", userId)
+                                    .putString("aadhaarUriString", aadhaarUri.toString())
                                     .putAll(driverAmbulance)
                                     .build());
 
@@ -97,6 +102,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                     .putString("aadhaar_number", aadhaarNumber)
                                     .putString("role", roleString)
                                     .putString("userId", userId)
+                                    .putString("aadhaarUriString", aadhaarUri.toString())
                                     .build());
 
                 }

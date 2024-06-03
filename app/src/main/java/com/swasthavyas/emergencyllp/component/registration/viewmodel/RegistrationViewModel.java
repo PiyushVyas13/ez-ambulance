@@ -1,5 +1,7 @@
 package com.swasthavyas.emergencyllp.component.registration.viewmodel;
 
+import android.net.Uri;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -13,6 +15,7 @@ public class RegistrationViewModel extends ViewModel {
 
     private final MutableLiveData<UserRole> userRoleLiveData;
     private final MutableLiveData<String> aadhaarNumberLiveData;
+    private final MutableLiveData<Uri> aadhaarUri;
 
     private final MutableLiveData<Map<String, Object>> driverAmbulance;
 
@@ -20,6 +23,7 @@ public class RegistrationViewModel extends ViewModel {
         userRoleLiveData = new MutableLiveData<>(UserRole.UNASSIGNED);
         aadhaarNumberLiveData = new MutableLiveData<>(null);
         driverAmbulance = new MutableLiveData<>(new HashMap<>());
+        aadhaarUri = new MutableLiveData<>(null);
     }
 
     public void setUserRole(UserRole role) {
@@ -44,6 +48,14 @@ public class RegistrationViewModel extends ViewModel {
 
     public void setDriverAmbulance(Map<String, Object> map) {
         this.driverAmbulance.setValue(map);
+    }
+
+    public MutableLiveData<Uri> getAadhaarUri() {
+        return this.aadhaarUri;
+    }
+
+    public void setAadhaarUri(Uri aadhaarUri) {
+        this.aadhaarUri.setValue(aadhaarUri);
     }
 
 }

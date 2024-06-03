@@ -56,5 +56,6 @@ dependencies {
     implementation (libs.sdp.android)
     implementation (libs.ssp.android)
     implementation libs.gson
+    implementation(libs.firebase.storage)
 
 }

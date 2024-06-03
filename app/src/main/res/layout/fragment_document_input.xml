@@ -79,32 +79,89 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/aadhaar_upload_button"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_16sdp"
-            android:layout_marginTop="@dimen/_160sdp"
+            android:layout_marginTop="@dimen/_165sdp"
             android:layout_marginEnd="@dimen/_16sdp"
-            android:hint="@string/upload_aadhar_photo_text"
+            android:text="@string/upload_aadhar_photo_text"
             android:textColorHint="@color/black"
             app:boxStrokeColor="@color/primary"
             app:boxStrokeErrorColor="@color/error"
             app:boxStrokeWidth="@dimen/_2sdp"
             app:endIconMode="custom"
-            app:endIconDrawable="@drawable/attach_file_icon"
-            app:endIconTint="@color/black">
+            app:icon="@drawable/attach_file_icon"
+            app:endIconTint="@color/black" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/file_preview_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="55dp"
+            android:visibility="gone"
+            >
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textColor="@color/black"
-                android:textStyle="bold|italic" />
+                android:layout_height="match_parent"
 
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginVertical="12dp"
+                android:layout_marginHorizontal="8dp">
+
+                <ImageView
+                    android:scaleType="centerInside"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/pdf_icon"
+                    android:adjustViewBounds="true"
+                    android:layout_weight="1"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="10">
+
+                    <TextView
+                        android:id="@+id/preview_file_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="some_file_name.pdf"
+                        android:textSize="18sp"
+                        />
+
+                    <TextView
+                        android:id="@+id/preview_file_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="23.3 MB"
+                        android:textSize="12sp"
+                        android:layout_marginTop="5dp"
+                        />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/preview_cancel_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/baseline_cancel_24"
+                    app:tint="@color/primary"
+                    android:layout_weight="1"
+                    />
+
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
 
 
         <com.google.android.material.button.MaterialButton
@@ -112,7 +169,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_16sdp"
-            android:layout_marginTop="@dimen/_320sdp"
+            android:layout_marginTop="@dimen/_380sdp"
             android:layout_marginEnd="@dimen/_16sdp"
             app:backgroundTint="@color/primary"
             android:text="@string/finish"
