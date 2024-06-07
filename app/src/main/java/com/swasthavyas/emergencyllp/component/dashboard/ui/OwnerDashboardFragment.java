@@ -138,33 +138,10 @@ public class OwnerDashboardFragment extends Fragment {
 
          navController = NavHostFragment.findNavController(getChildFragmentManager().findFragmentById(R.id.owner_bottom_nav_container));
 
-        MenuItem item = bottomNav.getMenu().findItem(R.id.navAdd_Ambulance);
-
-        dashboardViewModel.getDisplayMode().observe(getViewLifecycleOwner(), displayMode -> {
-            if(displayMode.equals(HomeFragment.MODE_AMBULANCE)) {
-                item.setTitle("Ambulance");
-            }
-            else {
-                item.setTitle("Driver");
-
-            }
-        });
-
         bottomNav.setOnItemSelectedListener(menuItem -> {
 
             if(menuItem.getItemId() == R.id.navHome) {
                 navigateToDestination(R.id.ownerHomeFragment);
-            }
-            else if(menuItem.getItemId() == R.id.navAdd_Ambulance) {
-                String displayMode = dashboardViewModel.getDisplayMode().getValue();
-
-                if(displayMode.equals(HomeFragment.MODE_AMBULANCE)) {
-                    navigateToDestination(R.id.ownerAddAmbulanceFragment);
-                }
-                else {
-                    navigateToDestination(R.id.addDriverFragment);
-                }
-
             }
             else if(menuItem.getItemId() == R.id.navNotification) {
                 navigateToDestination(R.id.ownerNotificationFragment);

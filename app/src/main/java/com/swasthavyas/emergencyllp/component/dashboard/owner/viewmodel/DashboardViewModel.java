@@ -14,25 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DashboardViewModel extends ViewModel {
-    private final MutableLiveData<String> displayMode;
+
 
     private final MutableLiveData<AddDriverFragment.RegistrationStep> registrationStep;
-
     private final MutableLiveData<Map<String, Data>> registrationData;
 
     public DashboardViewModel() {
-        displayMode = new MutableLiveData<>(HomeFragment.MODE_AMBULANCE);
         registrationStep = new MutableLiveData<>(AddDriverFragment.RegistrationStep.PERSONAL_DETAIL);
         registrationData = new MutableLiveData<>(null);
-    }
-
-
-    public MutableLiveData<String> getDisplayMode() {
-        return displayMode;
-    }
-
-    public void setDisplayMode(String displayMode) {
-        this.displayMode.setValue(displayMode);
     }
 
     public MutableLiveData<AddDriverFragment.RegistrationStep> getRegistrationStep() {

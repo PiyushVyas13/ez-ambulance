@@ -7,14 +7,9 @@
         android:icon="@drawable/home" />
 
     <item
-        android:id="@+id/navAdd_Ambulance"
-        android:title="@string/ambulance_fleet"
-        android:icon="@drawable/plus"/>
-
-    <item
         android:id="@+id/navNotification"
         android:title="@string/notification_text"
-        android:icon="@drawable/notification"/>
+        android:icon="@drawable/message"/>
 
     <item
         android:id="@+id/navProfile"
