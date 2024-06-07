@@ -1,46 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/_10sdp">
+    android:layout_marginBottom="@dimen/_6sdp"
+    >
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_90sdp"
-        android:layout_marginBottom="@dimen/_10sdp">
+        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:background="@drawable/list_item_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:src="@drawable/male_user"
-            android:id="@+id/employee_profile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2.25"
-            android:layout_margin="@dimen/_10sdp"
-            android:contentDescription="@string/profile_picture" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/employee_name"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sr_number"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_20ssp"
+                android:gravity="center"
+                android:background="@drawable/background_round_primary"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/driver_name_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="@dimen/_16ssp"
+                android:text="Driver Name"
+                android:textColor="@color/black"/>
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipBackgroundColor="#198754"
+                android:textColor="@color/white"
+                android:text="Available"
+
+                />
+
+        </LinearLayout>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/delete_button"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/_10sdp"
-            android:text="@string/driver"
-            android:textSize="25sp"
-            android:gravity="center|start"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            />
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:src="@drawable/delete_icon"/>
 
     </LinearLayout>
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:dividerInsetEnd="@dimen/_10sdp"
-        app:dividerInsetStart="@dimen/_10sdp"
-        />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

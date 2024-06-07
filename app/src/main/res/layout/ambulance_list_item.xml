@@ -1,27 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@color/black"
-    android:layout_marginBottom="12dp">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/_6sdp"
+    >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Vehicle No:"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:gravity="center"
-
-        />
-
-    <TextView
-        android:id="@+id/vehicle_number_holder"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:textColor="@color/white"
+        android:orientation="horizontal"
         android:layout_height="match_parent"
-        android:layout_marginStart="15dp"
-        android:gravity="center"
-        />
+        android:background="@drawable/list_item_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sr_number"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_20ssp"
+                android:gravity="center"
+                android:background="@drawable/background_round_primary"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/vehicle_number_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Ambulance No."
+                android:textColor="@color/black"/>
+
+<!--            <LinearLayout-->
+<!--                android:layout_marginTop="@dimen/_8sdp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:textStyle="italic"-->
+<!--                    android:text="Information"-->
+<!--                    android:textColor="@color/black"/>-->
+
+<!--                <View-->
+<!--                    android:layout_width="@dimen/_1sdp"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginStart="@dimen/_5sdp"-->
+<!--                    android:layout_marginEnd="@dimen/_5sdp"-->
+<!--                    android:background="@color/dark_grey"/>-->
+
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:textStyle="italic"-->
+<!--                    android:text="On Ride"-->
+<!--                    android:textColor="@color/black"/>-->
+
+
+<!--            </LinearLayout>-->
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipBackgroundColor="#198754"
+                android:textColor="@color/white"
+                android:text="Available"
+
+                />
+
+        </LinearLayout>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/delete_button"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:src="@drawable/delete_icon"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

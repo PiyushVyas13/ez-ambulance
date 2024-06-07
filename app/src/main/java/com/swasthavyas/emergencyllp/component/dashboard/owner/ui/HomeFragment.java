@@ -3,24 +3,27 @@ package com.swasthavyas.emergencyllp.component.dashboard.owner.ui;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter.AmbulanceAdapter;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter.EmployeeAdapter;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter.DisplayModeAdapter;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentHomeBinding;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class HomeFragment extends Fragment {
@@ -43,102 +46,69 @@ public class HomeFragment extends Fragment {
 
     }
 
-    @SuppressLint("DefaultLocale")
+    @SuppressLint({"DefaultLocale", "NotifyDataSetChanged"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewBinding = FragmentHomeBinding.inflate(getLayoutInflater());
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
-        dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
-
-        viewBinding.displayModeToggle.setOnClickListener(v -> {
-            if(dashboardViewModel.getDisplayMode().getValue().equals(MODE_AMBULANCE)) {
-                viewBinding.displayModeToggle.setImageResource(R.drawable.ambulance_icon);
-                dashboardViewModel.setDisplayMode(MODE_DRIVER);
-            }
-            else {
-                viewBinding.displayModeToggle.setImageResource(R.drawable.new_user_add);
-                dashboardViewModel.setDisplayMode(MODE_AMBULANCE);
-            }
-        });
 
         ownerViewModel.getOwner().observe(getViewLifecycleOwner(), owner -> {
             if(owner != null) {
+                AtomicReference<String> currentMode = new AtomicReference<>(MODE_AMBULANCE);
 
-                dashboardViewModel.getDisplayMode().observe(getViewLifecycleOwner(), displayMode -> {
-                    Toast.makeText(requireContext(), displayMode, Toast.LENGTH_SHORT).show();
-                    if(displayMode.equals(MODE_AMBULANCE)) {
+                viewBinding.entityCountText.setText(String.format("You have %d ambulances registered", owner.getAmbulances().getValue().size()));
 
-                        viewBinding.countTextView.setText("You have - ambulances registered");
-                        viewBinding.displayModeText.setText("Driver");
-                        viewBinding.recyclerView.setVisibility(View.GONE);
-                        viewBinding.addBtn.setVisibility(View.GONE);
 
-                        owner.getAmbulances().observe(getViewLifecycleOwner(), ambulances -> {
-                            if(ambulances != null) {
-                                if (ambulances.isEmpty()) {
-                                    viewBinding.recyclerView.setVisibility(View.GONE);
-                                    viewBinding.addBtn.setVisibility(View.VISIBLE);
+                viewBinding.viewpager2.setAdapter(new DisplayModeAdapter(this));
 
-                                    viewBinding.addBtn.setText("TAP TO ADD AMBULANCE");
-                                    viewBinding.addBtn.setOnClickListener(v -> {
-                                        Navigation.findNavController(v).navigate(R.id.ownerManageAmbulanceFragment, null, new NavOptions.Builder().setEnterAnim(R.anim.slide_in_right).setExitAnim(R.anim.slide_out_left).build());
-                                    });
-                                }
-                                else {
-                                    viewBinding.addBtn.setVisibility(View.GONE);
-                                    viewBinding.recyclerView.setVisibility(View.VISIBLE);
-
-                                    viewBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                    viewBinding.recyclerView.setAdapter(new AmbulanceAdapter(ambulances));
-                                }
-
-                                viewBinding.countTextView.setText(String.format("You have %d ambulance(s) registered", ambulances.size()));
-                            }
-
-                        });
+                new TabLayoutMediator(viewBinding.tablayout, viewBinding.viewpager2, (tab, i) -> {
+                    switch (i) {
+                        case 0:
+                            tab.setText("Ambulance");
+                            break;
+                        case 1:
+                            tab.setText("Driver");
+                            break;
                     }
-                    else if(displayMode.equals(MODE_DRIVER)) {
-                        viewBinding.countTextView.setText("You have - drivers registered");
-                        viewBinding.displayModeText.setText("Ambulance");
-                        viewBinding.recyclerView.setVisibility(View.GONE);
-                        viewBinding.addBtn.setVisibility(View.GONE);
+                }).attach();
 
-
-                        //TODO: start observing for changes in employee (observer goes here).
-                        owner.getEmployees().observe(getViewLifecycleOwner(), employees -> {
-                            if(employees != null) {
-                                if (employees.isEmpty()) {
-                                    viewBinding.recyclerView.setVisibility(View.GONE);
-                                    viewBinding.addBtn.setVisibility(View.VISIBLE);
-
-                                    viewBinding.addBtn.setText("TAP TO ADD DRIVER");
-                                    viewBinding.addBtn.setOnClickListener(v -> {
-                                        Navigation.findNavController(v).navigate(R.id.addDriverFragment, null, new NavOptions.Builder().setEnterAnim(R.anim.slide_in_right).setExitAnim(R.anim.slide_out_left).build());
-                                    });
-                                }
-                                else {
-                                    viewBinding.addBtn.setVisibility(View.GONE);
-                                    viewBinding.recyclerView.setVisibility(View.VISIBLE);
-                                    viewBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                    viewBinding.recyclerView.setAdapter(new EmployeeAdapter(employees));
-                                }
-
-                                viewBinding.countTextView.setText(String.format("You have %d driver(s) registered", employees.size()));
-                            }
-
-                        });
+                viewBinding.tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        if(tab.getText().toString().equals("Ambulance")) {
+                            currentMode.set(MODE_AMBULANCE);
+                            viewBinding.entityCountText.setText(String.format("You have %d ambulances registered", owner.getAmbulances().getValue().size()));
+                        }
+                        else if(tab.getText().toString().equals("Driver")) {
+                            currentMode.set(MODE_DRIVER);
+                            viewBinding.entityCountText.setText(String.format("You have %d drivers registered", owner.getEmployees().getValue().size()));
+                        }
                     }
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {}
 
-
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {}
 
                 });
 
-
-
+                viewBinding.addEntityBtn.setOnClickListener(v -> {
+                    switch (currentMode.get()) {
+                        case MODE_AMBULANCE:
+                            Toast.makeText(requireActivity(), "Ambulance Mode", Toast.LENGTH_SHORT).show();
+                            Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.ownerAddAmbulanceFragment, null, new NavOptions.Builder().setEnterAnim(R.anim.slide_in_right).setExitAnim(android.R.anim.fade_out).build());
+                            break;
+                        case MODE_DRIVER:
+                            Toast.makeText(requireActivity(), "Driver Mode", Toast.LENGTH_SHORT).show();
+                            Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.addDriverFragment, null, new NavOptions.Builder().setEnterAnim(R.anim.slide_in_right).setExitAnim(android.R.anim.fade_out).build());
+                            break;
+                    }
+                });
             }
-
         });
+
+
 
 
         return viewBinding.getRoot();

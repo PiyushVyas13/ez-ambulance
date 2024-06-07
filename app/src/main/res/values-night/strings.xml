@@ -37,4 +37,14 @@
     <string name="history_text">History</string>
     <string name="extended_fab_content_desc">Change Ambulance</string>
     <string name="extended_fab_label">Change Ambulance</string>
+    <string name="add_an_ambulance">Add an Ambulance</string>
+    <string name="add_a_photo_of_ambulance">Add a photo of ambulance</string>
+    <string name="cancel">Cancel</string>
+    <string name="personal_detail_text">Personal Details</string>
+    <string name="ambulance_documents_detail_text"><![CDATA[Ambulance & Document Details]]></string>
+    <string name="select_ambulance_text">Select Ambulance</string>
+    <string name="aadhaar_no_of_driver_text">Driver\'s Aadhaar Number</string>
+    <string name="choose_file_text">Choose a file</string>
+    <string name="no_file_chosen_text">No file chosen</string>
+    <string name="upload_licence_photo_text">Upload photo of Driver\'s License</string>
 </resources>

@@ -13,8 +13,8 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/ownerManageAmbulanceFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.ManageAmbulanceFragment"
+        android:id="@+id/ownerAddAmbulanceFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.AddAmbulanceFragment"
         android:label="2"
         tools:layout="@layout/fragment_add_ambulance" />
 

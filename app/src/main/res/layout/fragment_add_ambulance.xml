@@ -1,220 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="422dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/_10sdp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline18"
-        app:layout_constraintDimensionRatio="w,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline16">
 
-        <LinearLayout
-            android:id="@+id/linearLayout2"
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeableImageView2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_110sdp"
+            android:background="@drawable/background_top"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/_10sdp">
+            android:layout_gravity="center"
+            android:text="@string/add_an_ambulance"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_30ssp"
+            android:textStyle="bold" />
 
-            <TextView
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ambulance_type_text"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/ambulance_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_25sdp">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/advance_life_support"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginEnd="@dimen/_50sdp"
-                android:text="@string/ambulance_type_text"
+                android:text="@string/advance_life_support_text"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_20ssp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="@dimen/_15ssp" />
 
-            <RadioGroup
-                android:id="@+id/ambulance_type"
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/basic_life_support"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_45sdp"
-                android:orientation="vertical">
-
-                <RadioButton
-                    android:id="@+id/advance_life_support"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_gravity="start"
-                    android:buttonTint="@color/primary"
-                    android:text="@string/advance_life_support_text"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_15ssp" />
-
-                <RadioButton
-                    android:id="@+id/basic_life_support"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_gravity="start"
-                    android:buttonTint="@color/primary"
-                    android:text="@string/basic_life_support"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_15ssp" />
-
-
-                <RadioButton
-                    android:id="@+id/transport"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_gravity="start"
-                    android:layout_marginBottom="@dimen/_15sdp"
-                    android:buttonTint="@color/primary"
-                    android:text="@string/mortuary_transport"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_15ssp" />
-
-            </RadioGroup>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_70sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:text="@string/vehicle_no_text"
+                android:text="@string/basic_life_support"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_20ssp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="@dimen/_15ssp" />
 
 
-            <EditText
-                android:id="@+id/vehicle_number"
-                android:layout_width="@dimen/_230sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_25sdp"
-                android:background="@drawable/input_background"
-                android:hint="@string/type_here_text"
-                android:paddingStart="@dimen/_20sdp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/_15ssp"
-                android:textStyle="bold" />
-
-
-            <TextView
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/transport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_70sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:text="@string/vehicle_type"
+                android:text="@string/mortuary_transport"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_20ssp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="@dimen/_15ssp" />
 
+        </RadioGroup>
 
-            <EditText
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintVertical_bias="0.13">
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:hint="@string/vehicle_type"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeErrorColor="@color/error"
+            app:boxStrokeWidth="@dimen/_2sdp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/primary">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/vehicle_type"
-                android:layout_width="@dimen/_230sdp"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_100sdp"
-                android:background="@drawable/input_background"
-                android:hint="@string/eg_bolero_traveller_etc"
-                android:paddingStart="@dimen/_20sdp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/_15ssp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"
+                android:textStyle="bold|italic" />
 
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </ScrollView>
+        <com.google.android.material.textfield.TextInputLayout
+
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:hint="@string/vehicle_no_text"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeErrorColor="@color/error"
+            app:boxStrokeWidth="@dimen/_2sdp"
+            app:endIconMode="clear_text"
+            android:layout_marginBottom="@dimen/_5sdp"
+            app:endIconTint="@color/primary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/vehicle_number"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_43sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold|italic" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/ambulance_photo_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:hint="@string/add_a_photo_of_ambulance"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeErrorColor="@color/error"
+            app:boxStrokeWidth="@dimen/_2sdp"
+            app:endIconDrawable="@drawable/attach_file_icon"
+            app:endIconMode="custom"
+            app:endIconTint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ambulance_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none|text"
+                android:textColor="@color/black"
+                android:clickable="false"
+                android:textStyle="bold|italic" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_13sdp"
+        android:layout_marginEnd="@dimen/_13sdp"
+        android:gravity="bottom"
+        android:layout_marginBottom="@dimen/_12sdp"
         android:orientation="horizontal"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingBottom="@dimen/_5sdp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_cancel"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_gravity="start"
-            android:background="@drawable/btn_background"
-            android:backgroundTint="@color/white"
-            android:shadowColor="@color/black"
-            android:shadowDx="100"
-            android:shadowDy="100"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_button"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:backgroundTint="@color/btn_background"
             android:text="@string/cancel_text"
+            android:textAllCaps="false"
             android:textColor="@color/black"
-            android:textSize="@dimen/_15ssp" />
+            android:textSize="@dimen/_14ssp"
+            app:backgroundTint="#EEEEEE"
+            app:cornerRadius="@dimen/_16sdp" />
 
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/add_ambulance_btn"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="@dimen/_50sdp"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_45sdp"
             android:layout_gravity="end"
-            android:layout_marginStart="@dimen/_80sdp"
-            android:background="@drawable/btn_background"
             android:text="@string/add_text"
+            android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="@dimen/_15ssp" />
+            android:textSize="@dimen/_14ssp"
+            app:cornerRadius="@dimen/_16sdp" />
 
     </LinearLayout>
 
-
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline16"
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="top" />
+        app:layout_constraintGuide_percent="1.0" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline18"
+        android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9" />
-
+        app:layout_constraintGuide_percent="0.2" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/add_ambulance_progressbar"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:indeterminate="true"
         app:indicatorColor="@color/primary"
+        android:indeterminate="true"
         android:visibility="gone"
 
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout4"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

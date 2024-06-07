@@ -3,164 +3,114 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/bg"
     android:layout_height="match_parent"
     >
 
-    <ScrollView
-        android:id="@+id/scrollView4"
-        android:layout_width="wrap_content"
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline19">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeableImageView2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_110sdp"
+            android:background="@drawable/background_top"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline19">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_25sdp"
-                android:layout_marginEnd="@dimen/_70sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:text="@string/name_of_driver"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_20ssp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tab_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Add a Driver"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_30ssp"
+            android:textStyle="bold" />
 
-
-            <EditText
-                android:id="@+id/driver_name"
-                android:layout_width="@dimen/_230sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_25sdp"
-                android:background="@drawable/input_background"
-                android:hint="@string/type_here_text"
-                android:paddingStart="@dimen/_20sdp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/_15ssp"
-                android:textStyle="bold" />
+    </FrameLayout>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_70sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:text="@string/mobile_number"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_20ssp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
 
-            <EditText
-                android:id="@+id/driver_number"
-                android:layout_width="@dimen/_230sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_25sdp"
-                android:background="@drawable/input_background"
-                android:hint="@string/type_here_text"
-                android:paddingStart="@dimen/_20sdp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/_15ssp"
-                android:textStyle="bold" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/driver_registration_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:navGraph="@navigation/driver_registration_graph"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_70sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:text="@string/email"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_20ssp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        app:layout_constraintTop_toBottomOf="@id/frameLayout"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp" />
 
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_13sdp"
+        android:layout_marginEnd="@dimen/_13sdp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline">
 
-            <EditText
-                android:id="@+id/driver_email"
-                android:layout_width="@dimen/_230sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_25sdp"
-                android:background="@drawable/input_background"
-                android:hint="@string/type_here_text"
-                android:paddingStart="@dimen/_20sdp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/_15ssp"
-                android:textStyle="bold" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_gravity="end"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:textSize="@dimen/_14ssp"
+            app:cornerRadius="@dimen/_16sdp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_gravity="end"
+            android:text="@string/text_next"
+            android:textAllCaps="false"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            app:cornerRadius="@dimen/_16sdp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_70sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:text="@string/age"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_20ssp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
 
-
-            <EditText
-                android:id="@+id/driver_age"
-                android:layout_width="@dimen/_230sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_25sdp"
-                android:background="@drawable/input_background"
-                android:hint="@string/type_here_text"
-                android:inputType="number"
-                android:maxLength="2"
-                android:paddingStart="@dimen/_20sdp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/_15ssp"
-                android:textStyle="bold" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/add_driver_button"
-                android:layout_width="@dimen/_110sdp"
-                android:layout_height="@dimen/_60sdp"
-                android:layout_gravity="end"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:layout_marginBottom="@dimen/_25sdp"
-                android:background="@drawable/btn_background"
-                android:text="@string/add_text"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_15ssp" />
-
-
-        </LinearLayout>
-
-    </ScrollView>
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline19"
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.19" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/add_driver_progressbar"
@@ -170,10 +120,10 @@
         app:indicatorColor="@color/primary"
         android:visibility="gone"
 
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

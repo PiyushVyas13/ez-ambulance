@@ -1,6 +1,7 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.worker;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,8 @@ import androidx.work.WorkerParameters;
 
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
@@ -33,15 +36,21 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         String name = getInputData().getString("name");
         String password = getInputData().getString("password");
         String email = getInputData().getString("email");
+        String assignedAmbulanceNumber = getInputData().getString("assigned_ambulance_number");
+        String aadhaarUriString = getInputData().getString("aadhaarUriString");
+        String licenseUriString = getInputData().getString("licenceUriString");
         int age = getInputData().getInt("age", -1);
 
-        if(driverId == null || userId == null || age == -1 || ownerId == null || phoneNumber == null || name == null || password == null || email == null) {
+        if(driverId == null || userId == null || age == -1 || ownerId == null || phoneNumber == null || name == null || password == null || email == null || assignedAmbulanceNumber == null || aadhaarUriString == null || licenseUriString == null) {
             Log.d(AppConstants.TAG, "doAsyncBackgroundTask: " + getInputData());
             callback.onFailure(new IllegalArgumentException("one of the input data is null/invalid."));
             return;
         }
 
         FirebaseFirestore dbInstance = FirebaseFirestore.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference rootRef = storage.getReference();
 
         Map<String, Object> inputData = new HashMap<>();
 
@@ -50,6 +59,7 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         inputData.put("phone_number", phoneNumber);
         inputData.put("name", name);
         inputData.put("driver_id", driverId);
+
 
         Map<String, Object> roleMap = new HashMap<>();
 
@@ -67,17 +77,42 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
 
-                        Data opData = new Data.Builder()
+                        StorageReference aadhaarRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/aadhaar_card.jpg", ownerId, driverId));
+                        StorageReference licenseRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/license.jpg", ownerId, driverId));
+
+                        Data.Builder opData = new Data.Builder()
                                 .putString("name", name)
                                 .putString("phone_number", phoneNumber)
                                 .putInt("age", age)
                                 .putString("driverId", driverId)
                                 .putString("userId", userId)
                                 .putString("password", password)
-                                .putString("email", email)
-                                .build();
+                                .putString("email", email);
 
-                       callback.onSuccess(opData);
+
+                        aadhaarRef.putFile(Uri.parse(aadhaarUriString))
+                                .addOnCompleteListener(aadhaarUploadTask -> {
+                                   if(aadhaarUploadTask.isSuccessful()) {
+                                       opData.putString("aadhaar_storage_ref", aadhaarUploadTask.getResult().getStorage().toString());
+                                       licenseRef.putFile(Uri.parse(licenseUriString))
+                                               .addOnCompleteListener(licenseUploadTask -> {
+                                                   if(licenseUploadTask.isSuccessful()) {
+                                                        opData.putString("license_storage_ref", licenseUploadTask.getResult().getStorage().toString());
+
+                                                        callback.onSuccess(opData.build());
+                                                   }
+                                                   else {
+                                                       callback.onFailure(licenseUploadTask.getException());
+                                                   }
+
+                                               });
+
+                                   }
+                                   else {
+                                       callback.onFailure(aadhaarUploadTask.getException());
+                                   }
+
+                                });
                     }
                     else {
                         callback.onFailure(task.getException());

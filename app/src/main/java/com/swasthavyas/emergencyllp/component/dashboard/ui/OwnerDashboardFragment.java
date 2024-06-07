@@ -159,7 +159,7 @@ public class OwnerDashboardFragment extends Fragment {
                 String displayMode = dashboardViewModel.getDisplayMode().getValue();
 
                 if(displayMode.equals(HomeFragment.MODE_AMBULANCE)) {
-                    navigateToDestination(R.id.ownerManageAmbulanceFragment);
+                    navigateToDestination(R.id.ownerAddAmbulanceFragment);
                 }
                 else {
                     navigateToDestination(R.id.addDriverFragment);

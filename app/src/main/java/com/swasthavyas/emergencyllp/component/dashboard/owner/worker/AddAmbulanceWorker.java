@@ -1,6 +1,7 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.worker;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,8 @@ import androidx.work.WorkerParameters;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
@@ -27,8 +30,10 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
         String vehicleType = getInputData().getString("vehicleType");
         String vehicleNumber = getInputData().getString("vehicleNumber");
         String ambulanceType = getInputData().getString("ambulanceType");
+        String photoUri = getInputData().getString("photoUri");
+        String userId = getInputData().getString("userId");
 
-        if(ownerId == null || vehicleNumber == null || vehicleType == null || ambulanceType == null) {
+        if(ownerId == null || vehicleNumber == null || vehicleType == null || ambulanceType == null || photoUri == null) {
             callback.onFailure(new IllegalArgumentException("insufficient arguments provided"));
             return;
         }
@@ -55,17 +60,33 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
 
 
 
-                        Data opData = new Data.Builder()
+                        Data.Builder opDataBuilder = new Data.Builder()
                                 .putString("id", reference.getId())
                                 .putString("owner_id", ownerId)
                                 .putString("ambulance_type", ambulanceType)
                                 .putString("vehicle_number", vehicleNumber)
-                                .putString("vehicle_type", vehicleType)
-                                .build();
+                                .putString("vehicle_type", vehicleType);
 
 
                         Log.d(AppConstants.TAG, "addAmbulanceWorker: " + task.getResult().getPath());
-                        callback.onSuccess(opData);
+
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+                        StorageReference rootRef = storage.getReference();
+
+                        StorageReference ambulanceImageRef = rootRef.child(String.format("users/owner/%s/ambulances/ambulance_%s.jpg", userId, reference.getId()));
+
+                        ambulanceImageRef.putFile(Uri.parse(photoUri))
+                                        .addOnCompleteListener(task1 -> {
+                                           if(task1.isSuccessful()) {
+                                               opDataBuilder.putString("image_reference", task1.getResult().getStorage().toString());
+                                               callback.onSuccess(opDataBuilder.build());
+                                           }
+                                           else {
+                                               callback.onFailure(task1.getException());
+                                           }
+                                        });
+
                     }
                     else {
                         callback.onFailure(task.getException());

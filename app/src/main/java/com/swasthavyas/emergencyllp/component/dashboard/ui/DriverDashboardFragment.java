@@ -21,7 +21,9 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.databinding.FragmentDriverDashboardBinding;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
-
+/**
+ * Parent container fragment for the Driver's Dashboard
+ * **/
 public class DriverDashboardFragment extends Fragment {
 
     FragmentDriverDashboardBinding viewBinding;
@@ -48,8 +50,7 @@ public class DriverDashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.userRole = UserRole.valueOf(getArguments().getString("role"));
-        }
-        else {
+        } else {
             this.userRole = UserRole.UNASSIGNED;
         }
     }
@@ -65,20 +66,16 @@ public class DriverDashboardFragment extends Fragment {
         NavigationBarView navigationBarView = viewBinding.bottomNavDriver;
 
         navigationBarView.setOnItemSelectedListener(menuItem -> {
-            if(menuItem.getItemId() == R.id.navHome) {
+            if (menuItem.getItemId() == R.id.navHome) {
                 navigateToDestination(R.id.homeFragment);
-            }
-            else if(menuItem.getItemId() == R.id.navNotification) {
+            } else if (menuItem.getItemId() == R.id.navNotification) {
                 navigateToDestination(R.id.notificationFragment);
-            }
-            else if(menuItem.getItemId() == R.id.navProfile) {
+            } else if (menuItem.getItemId() == R.id.navProfile) {
                 navigateToDestination(R.id.profileFragment);
             }
 
             return true;
         });
-
-
 
 
         return viewBinding.getRoot();
@@ -91,12 +88,11 @@ public class DriverDashboardFragment extends Fragment {
         int enterAnim;
         int exitAnim;
 
-        if(destinationTag != currentDestinationTag) {
-            if(destinationTag > currentDestinationTag) {
+        if (destinationTag != currentDestinationTag) {
+            if (destinationTag > currentDestinationTag) {
                 enterAnim = R.anim.slide_in_right;
                 exitAnim = R.anim.slide_out_left;
-            }
-            else {
+            } else {
                 enterAnim = android.R.anim.slide_in_left;
                 exitAnim = android.R.anim.slide_out_right;
             }

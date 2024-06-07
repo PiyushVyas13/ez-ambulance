@@ -21,20 +21,20 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView driverName;
-        private final ImageView profilePicture;
+        // private final ImageView profilePicture;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             // We can attach some listeners here
-            driverName = (TextView) itemView.findViewById(R.id.employee_name);
-            profilePicture = (ImageView) itemView.findViewById(R.id.employee_profile);
+            driverName = (TextView) itemView.findViewById(R.id.driver_name_holder);
+            // profilePicture = (ImageView) itemView.findViewById(R.id.employee_profile);
         }
 
         public TextView getDriverName() {
             return driverName;
         }
-        public ImageView getProfilePicture() {return profilePicture;}
+        // public ImageView getProfilePicture() {return profilePicture;}
 
 
     }

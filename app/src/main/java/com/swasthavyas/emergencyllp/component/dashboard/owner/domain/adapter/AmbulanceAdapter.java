@@ -12,26 +12,31 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Ambulance;
 
 import java.util.List;
+import java.util.Locale;
 
 public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.ViewHolder> {
 
-    private List<Ambulance> ambulances;
+    private final List<Ambulance> ambulances;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView vehicleNumber;
+        private final TextView serialNumber;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             // We can attach some listeners here
-            textView = (TextView) itemView.findViewById(R.id.vehicle_number_holder);
+            vehicleNumber = (TextView) itemView.findViewById(R.id.vehicle_number_holder);
+            serialNumber = (TextView) itemView.findViewById(R.id.sr_number);
         }
 
-        public TextView getTextView() {
-            return textView;
+        public TextView getVehicleNumber() {
+            return vehicleNumber;
         }
 
-
+        public TextView getSerialNumber() {
+            return serialNumber;
+        }
     }
 
     public AmbulanceAdapter(List<Ambulance> ambulances) {
@@ -50,7 +55,8 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getTextView().setText(ambulances.get(position).getVehicleNumber());
+        holder.getVehicleNumber().setText(ambulances.get(position).getVehicleNumber());
+        holder.getSerialNumber().setText(String.format(Locale.getDefault(), "%d", position+1));
     }
 
 

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+    app:layout_constraintVertical_bias="0.0">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="@string/personal_detail_text"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:textSize="@dimen/_25ssp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:hint="@string/email"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
+        app:boxStrokeErrorColor="@color/error"
+        app:boxStrokeWidth="@dimen/_2sdp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:hint="@string/name_of_driver"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
+        app:boxStrokeErrorColor="@color/error"
+        app:boxStrokeWidth="@dimen/_2sdp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name_driver"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:hint="@string/age"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
+        app:boxStrokeErrorColor="@color/error"
+        app:boxStrokeWidth="@dimen/_2sdp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/driver_age"
+            android:layout_width="match_parent"
+            android:inputType="number"
+            android:layout_height="@dimen/_43sdp"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:hint="@string/mobile_number"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
+        app:boxStrokeErrorColor="@color/error"
+        app:boxStrokeWidth="@dimen/_2sdp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/driver_mobile_number"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_43sdp"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+</LinearLayout>

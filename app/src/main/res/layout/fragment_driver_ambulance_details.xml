@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+    app:layout_constraintVertical_bias="0.0">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="@string/ambulance_documents_detail_text"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:textSize="@dimen/_15ssp"/>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:hint="@string/select_ambulance_text"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
+        app:boxStrokeErrorColor="@color/error"
+        app:boxStrokeWidth="@dimen/_2sdp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/black">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/ambulance_autocomplete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:hint="@string/aadhaar_no_of_driver_text"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
+        app:boxStrokeErrorColor="@color/error"
+        app:boxStrokeWidth="@dimen/_2sdp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/aadhaarno_driver"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_43sdp"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <LinearLayout
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:layout_height="match_parent">
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_aadhar_photo_text"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="@dimen/_5sdp"/>
+
+
+        <LinearLayout
+            android:padding="@dimen/_8sdp"
+            android:layout_width="match_parent"
+            android:background="@drawable/uploadfile_background"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/driver_aadhaar_picker_button"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_30sdp"
+                app:backgroundTint="@color/grey"
+                android:text="@string/choose_file_text"
+                android:textAllCaps="false"
+                android:textColor="@color/black"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/aahdaar_file_name"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_height="wrap_content"
+                android:text="@string/no_file_chosen_text"
+                android:textSize="@dimen/_13ssp"
+                android:textColor="@color/dark_grey"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_licence_photo_text"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="@dimen/_5sdp"/>
+
+
+        <LinearLayout
+            android:padding="@dimen/_8sdp"
+            android:layout_width="match_parent"
+            android:background="@drawable/uploadfile_background"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/driver_licencse_picker_button"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_30sdp"
+                app:backgroundTint="@color/grey"
+                android:text="@string/choose_file_text"
+                android:textAllCaps="false"
+                android:textColor="@color/black"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/license_file_name"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_height="wrap_content"
+                android:text="@string/no_file_chosen_text"
+                android:textSize="@dimen/_13ssp"
+                android:textColor="@color/dark_grey"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
