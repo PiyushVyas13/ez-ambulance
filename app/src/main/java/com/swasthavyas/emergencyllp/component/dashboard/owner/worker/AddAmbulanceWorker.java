@@ -47,6 +47,12 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
         inputData.put("vehicle_type", vehicleType);
         inputData.put("ambulanceType", ambulanceType);
 
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference rootRef = storage.getReference();
+
+        StorageReference ambulanceImageRef = rootRef.child(String.format("users/owner/%s/ambulances/ambulance_%s.jpg", userId, vehicleNumber));
+
 
         dbInstance.collection("owners")
                 .document(ownerId)
@@ -56,10 +62,6 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
                     if(task.isSuccessful()) {
                         DocumentReference reference = task.getResult();
 
-                        reference.getId();
-
-
-
                         Data.Builder opDataBuilder = new Data.Builder()
                                 .putString("id", reference.getId())
                                 .putString("owner_id", ownerId)
@@ -67,31 +69,38 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
                                 .putString("vehicle_number", vehicleNumber)
                                 .putString("vehicle_type", vehicleType);
 
-
-                        Log.d(AppConstants.TAG, "addAmbulanceWorker: " + task.getResult().getPath());
-
-                        FirebaseStorage storage = FirebaseStorage.getInstance();
-
-                        StorageReference rootRef = storage.getReference();
-
-                        StorageReference ambulanceImageRef = rootRef.child(String.format("users/owner/%s/ambulances/ambulance_%s.jpg", userId, reference.getId()));
-
                         ambulanceImageRef.putFile(Uri.parse(photoUri))
-                                        .addOnCompleteListener(task1 -> {
-                                           if(task1.isSuccessful()) {
-                                               opDataBuilder.putString("image_reference", task1.getResult().getStorage().toString());
-                                               callback.onSuccess(opDataBuilder.build());
-                                           }
-                                           else {
-                                               callback.onFailure(task1.getException());
-                                           }
-                                        });
+                                .addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()) {
+                                        opDataBuilder.putString("image_reference", task1.getResult().getStorage().toString());
+
+                                        Log.d(AppConstants.TAG, "addAmbulanceWorker: " + task.getResult().getPath());
+
+                                        dbInstance
+                                                .collection("owners")
+                                                .document(ownerId)
+                                                .collection("ambulances")
+                                                .document(reference.getId())
+                                                .update("image_ref", task1.getResult().getStorage().toString());
+
+                                        callback.onSuccess(opDataBuilder.build());
+                                    }
+                                    else {
+                                        callback.onFailure(task1.getException());
+                                    }
+                                });
+
 
                     }
                     else {
                         callback.onFailure(task.getException());
                     }
                 });
+
+
+
+
+
 
 
 

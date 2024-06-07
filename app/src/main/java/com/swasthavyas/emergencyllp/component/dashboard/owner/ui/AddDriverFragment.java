@@ -170,6 +170,7 @@ public class AddDriverFragment extends Fragment {
                     OneTimeWorkRequest addDriverRequest = new OneTimeWorkRequest.Builder(AddDriverWorker.class)
                             .setInputData(new Data.Builder()
                                     .putInt("age", personalData.getInt("age", -1))
+                                    .putString("owner_uid", owner.getUserId())
                                     .putString("aadhaar_number", ambulanceData.getString("aadhaar_number"))
                                     .putString("assigned_ambulance_number", ambulanceData.getString("assigned_ambulance_number"))
                                     .putString("aadhaarUriString", ambulanceData.getString("aadhaarUriString"))

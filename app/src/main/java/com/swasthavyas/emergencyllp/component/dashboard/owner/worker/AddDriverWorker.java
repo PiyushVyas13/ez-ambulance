@@ -32,16 +32,18 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         String driverId = getInputData().getString("driver_id");
         String userId = getInputData().getString("user_id");
         String ownerId = getInputData().getString("owner_id");
+        String ownerUid = getInputData().getString("owner_uid");
         String phoneNumber = getInputData().getString("phone_number");
         String name = getInputData().getString("name");
         String password = getInputData().getString("password");
         String email = getInputData().getString("email");
+        String aadhaarNumber = getInputData().getString("aadhaar_number");
         String assignedAmbulanceNumber = getInputData().getString("assigned_ambulance_number");
         String aadhaarUriString = getInputData().getString("aadhaarUriString");
         String licenseUriString = getInputData().getString("licenceUriString");
         int age = getInputData().getInt("age", -1);
 
-        if(driverId == null || userId == null || age == -1 || ownerId == null || phoneNumber == null || name == null || password == null || email == null || assignedAmbulanceNumber == null || aadhaarUriString == null || licenseUriString == null) {
+        if(driverId == null || userId == null || age == -1 || ownerId == null || ownerUid == null || phoneNumber == null || name == null || password == null || email == null || aadhaarNumber == null || aadhaarUriString == null || licenseUriString == null) {
             Log.d(AppConstants.TAG, "doAsyncBackgroundTask: " + getInputData());
             callback.onFailure(new IllegalArgumentException("one of the input data is null/invalid."));
             return;
@@ -59,6 +61,10 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         inputData.put("phone_number", phoneNumber);
         inputData.put("name", name);
         inputData.put("driver_id", driverId);
+        inputData.put("aadhaar_number", aadhaarNumber);
+
+        String assignedAmbulance = assignedAmbulanceNumber == null ? "None" : assignedAmbulanceNumber;
+        inputData.put("assigned_ambulance_number", assignedAmbulance);
 
 
         Map<String, Object> roleMap = new HashMap<>();
@@ -77,8 +83,8 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
 
-                        StorageReference aadhaarRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/aadhaar_card.jpg", ownerId, driverId));
-                        StorageReference licenseRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/license.jpg", ownerId, driverId));
+                        StorageReference aadhaarRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/aadhaar_card.jpg", ownerUid, driverId));
+                        StorageReference licenseRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/license.jpg", ownerUid, driverId));
 
                         Data.Builder opData = new Data.Builder()
                                 .putString("name", name)
@@ -98,6 +104,12 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
                                                .addOnCompleteListener(licenseUploadTask -> {
                                                    if(licenseUploadTask.isSuccessful()) {
                                                         opData.putString("license_storage_ref", licenseUploadTask.getResult().getStorage().toString());
+
+                                                        dbInstance.collection("owners")
+                                                                .document(ownerId)
+                                                                .collection("employees")
+                                                                .document(email)
+                                                                .update("aadhaar_image_ref", aadhaarUploadTask.getResult().getStorage().toString(), "license_image_ref", licenseUploadTask.getResult().getStorage().toString());
 
                                                         callback.onSuccess(opData.build());
                                                    }
