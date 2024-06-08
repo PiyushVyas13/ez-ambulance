@@ -91,11 +91,14 @@
 
         </LinearLayout>
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <ImageButton
             android:id="@+id/delete_button"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_19sdp"
+            android:scaleType="fitXY"
+            android:backgroundTint="@color/transparent"
             android:src="@drawable/delete_icon"/>
 
     </LinearLayout>

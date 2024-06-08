@@ -1,10 +1,16 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.worker.DeleteAmbulanceWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
 
 import java.util.ArrayList;
@@ -69,6 +75,16 @@ public class Owner {
             throw new NullPointerException("ambulances is null.");
         }
 
+    }
+
+    public void deleteAmbulance(int position) {
+        if(this.ambulances.getValue() == null) {
+            throw new NullPointerException("Ambulances is null.");
+        }
+
+        this.ambulances.getValue().remove(position);
+
+        this.ambulances.setValue(this.ambulances.getValue());
     }
 
     public LiveData<List<EmployeeDriver>> getEmployees() {

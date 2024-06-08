@@ -7,15 +7,24 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.adapter.AmbulanceAdapter;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.worker.DeleteAmbulanceWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentManageAmbulanceBinding;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 
 
 public class ManageAmbulanceFragment extends Fragment {
@@ -45,7 +54,42 @@ public class ManageAmbulanceFragment extends Fragment {
         Owner currentOwner = ownerViewModel.getOwner().getValue();
 
         if(currentOwner != null) {
-            AmbulanceAdapter ambulanceAdapter = new AmbulanceAdapter(currentOwner.getAmbulances().getValue());
+
+            AmbulanceAdapter.OnDeleteCallback deleteCallback = new AmbulanceAdapter.OnDeleteCallback() {
+                @Override
+                public void onDelete(String ambulanceId, String imageRef, int position) {
+                    Data inputData = new Data.Builder()
+                            .putString(Ambulance.ModelColumns.ID, ambulanceId)
+                            .putString(Ambulance.ModelColumns.OWNER_ID, currentOwner.getId())
+                            .putString(Ambulance.ModelColumns.IMAGE_REF, imageRef)
+                            .build();
+
+                    OneTimeWorkRequest deleteAmbulanceRequest = new OneTimeWorkRequest.Builder(DeleteAmbulanceWorker.class)
+                            .setInputData(inputData)
+                            .build();
+
+
+                    WorkManager.getInstance(requireContext())
+                            .enqueue(deleteAmbulanceRequest);
+
+
+                    WorkManager.getInstance(requireContext())
+                            .getWorkInfoByIdLiveData(deleteAmbulanceRequest.getId())
+                            .observe(getViewLifecycleOwner(), workInfo -> {
+                                if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
+                                    Toast.makeText(requireActivity(), "Ambulance Deleted Successfully!", Toast.LENGTH_SHORT).show();
+                                    currentOwner.deleteAmbulance(position);
+                                }
+                                else if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
+                                    Log.d(AppConstants.TAG, "onDelete: " + workInfo.getOutputData().getString("message"));
+                                    Toast.makeText(requireActivity(), workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            };
+
+
+            AmbulanceAdapter ambulanceAdapter = new AmbulanceAdapter(requireContext(), currentOwner.getAmbulances().getValue(), deleteCallback);
             viewBinding.ambulanceList.setLayoutManager(new LinearLayoutManager(requireContext()));
             viewBinding.ambulanceList.setAdapter(ambulanceAdapter);
 

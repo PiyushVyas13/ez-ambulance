@@ -1,5 +1,7 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.util.types.AmbulanceType;
 
 import java.util.Map;
@@ -12,17 +14,19 @@ public class Ambulance {
     private AmbulanceType ambulanceType;
     private String vehicleNumber;
     private String vehicleType;
+    private StorageReference imageRef;
 
     private Ambulance() {
 
     }
 
-    private Ambulance(String id, String ownerId, AmbulanceType ambulanceType, String vehicleNumber, String vehicleType)  {
+    private Ambulance(String id, String ownerId, AmbulanceType ambulanceType, String vehicleNumber, String vehicleType, String imageRef)  {
         this.id = id;
         this.ownerId = ownerId;
         this.ambulanceType = ambulanceType;
         this.vehicleNumber = vehicleNumber;
         this.vehicleType = vehicleType;
+        this.imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageRef);
 
     }
 
@@ -32,8 +36,9 @@ public class Ambulance {
         AmbulanceType ambulanceType = AmbulanceType.valueOf((String) map.get(ModelColumns.AMBULANCE_TYPE));
         String vehicleNumber = (String) map.get(ModelColumns.VEHICLE_NUMBER);
         String vehicleType = (String) map.get(ModelColumns.AMBULANCE_TYPE);
+        String imageRef = (String) map.get(ModelColumns.IMAGE_REF);
 
-        return new Ambulance(id, ownerId, ambulanceType, vehicleNumber, vehicleType);
+        return new Ambulance(id, ownerId, ambulanceType, vehicleNumber, vehicleType, imageRef);
     }
 
     public static Ambulance getInstance() {
@@ -81,6 +86,14 @@ public class Ambulance {
 
     public void setVehicleType(String vehicleType) {
         this.vehicleType = vehicleType;
+    }
+
+    public StorageReference getImageRef() {
+        return imageRef;
+    }
+
+    public void setImageRef(StorageReference imageRef) {
+        this.imageRef = imageRef;
     }
 
     public static class ModelColumns {

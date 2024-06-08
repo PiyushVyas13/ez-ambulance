@@ -82,6 +82,7 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                                 ambulanceMap.put(Ambulance.ModelColumns.VEHICLE_NUMBER, ambulance.getData().get(Ambulance.ModelColumns.VEHICLE_NUMBER));
                                                 ambulanceMap.put(Ambulance.ModelColumns.VEHICLE_TYPE, ambulance.getData().get(Ambulance.ModelColumns.VEHICLE_TYPE));
                                                 ambulanceMap.put(Ambulance.ModelColumns.OWNER_ID, ambulance.getData().get(Ambulance.ModelColumns.OWNER_ID));
+                                                ambulanceMap.put(Ambulance.ModelColumns.IMAGE_REF, ambulance.getData().get(Ambulance.ModelColumns.IMAGE_REF));
                                                 ambulances.add(ambulanceMap);
                                             }
 

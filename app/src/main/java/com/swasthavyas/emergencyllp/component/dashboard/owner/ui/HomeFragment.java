@@ -56,7 +56,12 @@ public class HomeFragment extends Fragment {
             if(owner != null) {
                 AtomicReference<String> currentMode = new AtomicReference<>(MODE_AMBULANCE);
 
-                viewBinding.entityCountText.setText(String.format("You have %d ambulances registered", owner.getAmbulances().getValue().size()));
+
+                owner.getAmbulances().observe(getViewLifecycleOwner(), ambulances -> {
+                    if(currentMode.get() == MODE_AMBULANCE) {
+                        viewBinding.entityCountText.setText(String.format("You have %d ambulances registered",ambulances.size()));
+                    }
+                });
 
 
                 viewBinding.viewpager2.setAdapter(new DisplayModeAdapter(this));
