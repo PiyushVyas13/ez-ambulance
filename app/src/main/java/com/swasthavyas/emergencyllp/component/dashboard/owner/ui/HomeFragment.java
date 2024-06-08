@@ -3,7 +3,6 @@ package com.swasthavyas.emergencyllp.component.dashboard.owner.ui;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
-import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,7 +18,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter.DisplayModeAdapter;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.DashboardViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.worker.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentHomeBinding;
 

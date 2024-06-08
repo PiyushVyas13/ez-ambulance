@@ -11,16 +11,6 @@
         android:label="1"
         tools:layout="@layout/fragment_home_driver" />
     <fragment
-        android:id="@+id/earningFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.EarningFragment"
-        android:label="2"
-        tools:layout="@layout/fragment_earning" />
-    <fragment
-        android:id="@+id/swapDriverFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.SwapDriverFragment"
-        android:label="3"
-        tools:layout="@layout/fragment_swap_driver" />
-    <fragment
         android:id="@+id/notificationFragment"
         android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.NotificationFragment"
         android:label="4"

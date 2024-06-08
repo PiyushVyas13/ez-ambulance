@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.ui;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.ui;
 
 import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
 
@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,12 +28,12 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.AddAmbulanceWorker;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.worker.AddAmbulanceWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentAddAmbulanceBinding;
-import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.types.AmbulanceType;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance.ModelColumns;
 
 public class AddAmbulanceFragment extends Fragment {
     FragmentAddAmbulanceBinding viewBinding;
@@ -122,10 +121,10 @@ public class AddAmbulanceFragment extends Fragment {
 
             OneTimeWorkRequest addAmbulanceRequest = new OneTimeWorkRequest.Builder(AddAmbulanceWorker.class)
                     .setInputData(new Data.Builder()
-                            .putString("ownerId", ownerId)
-                            .putString("ambulanceType", ambulanceType.name())
-                            .putString("vehicleType", vehicleType)
-                            .putString("vehicleNumber", vehicleNumber)
+                            .putString(ModelColumns.OWNER_ID, ownerId)
+                            .putString(ModelColumns.AMBULANCE_TYPE, ambulanceType.name())
+                            .putString(ModelColumns.VEHICLE_TYPE, vehicleType)
+                            .putString(ModelColumns.VEHICLE_NUMBER, vehicleNumber)
                             .putString("photoUri", ambulanceUri.toString())
                             .putString("userId", ownerViewModel.getOwner().getValue().getUserId())
                             .build())

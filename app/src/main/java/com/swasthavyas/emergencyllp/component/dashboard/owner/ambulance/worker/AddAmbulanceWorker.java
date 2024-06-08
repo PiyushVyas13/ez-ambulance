@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.worker;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.worker;
 
 import android.content.Context;
 import android.net.Uri;
@@ -15,6 +15,7 @@ import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance.ModelColumns;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +27,10 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
 
     @Override
     public void doAsyncBackgroundTask(NetworkResultCallback callback) {
-        String ownerId = getInputData().getString("ownerId");
-        String vehicleType = getInputData().getString("vehicleType");
-        String vehicleNumber = getInputData().getString("vehicleNumber");
-        String ambulanceType = getInputData().getString("ambulanceType");
+        String ownerId = getInputData().getString(ModelColumns.OWNER_ID);
+        String vehicleType = getInputData().getString(ModelColumns.VEHICLE_TYPE);
+        String vehicleNumber = getInputData().getString(ModelColumns.VEHICLE_NUMBER);
+        String ambulanceType = getInputData().getString(ModelColumns.AMBULANCE_TYPE);
         String photoUri = getInputData().getString("photoUri");
         String userId = getInputData().getString("userId");
 
@@ -42,10 +43,10 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
 
         Map<String, Object> inputData = new HashMap<>();
 //        String uid = UUID.randomUUID().toString();
-        inputData.put("owner_id", ownerId);
-        inputData.put("vehicle_number", vehicleNumber);
-        inputData.put("vehicle_type", vehicleType);
-        inputData.put("ambulanceType", ambulanceType);
+        inputData.put(ModelColumns.OWNER_ID, ownerId);
+        inputData.put(ModelColumns.VEHICLE_NUMBER, vehicleNumber);
+        inputData.put(ModelColumns.VEHICLE_TYPE, vehicleType);
+        inputData.put(ModelColumns.AMBULANCE_TYPE, ambulanceType);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -63,16 +64,16 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
                         DocumentReference reference = task.getResult();
 
                         Data.Builder opDataBuilder = new Data.Builder()
-                                .putString("id", reference.getId())
-                                .putString("owner_id", ownerId)
-                                .putString("ambulance_type", ambulanceType)
-                                .putString("vehicle_number", vehicleNumber)
-                                .putString("vehicle_type", vehicleType);
+                                .putString(ModelColumns.ID, reference.getId())
+                                .putString(ModelColumns.OWNER_ID, ownerId)
+                                .putString(ModelColumns.AMBULANCE_TYPE, ambulanceType)
+                                .putString(ModelColumns.VEHICLE_NUMBER, vehicleNumber)
+                                .putString(ModelColumns.VEHICLE_TYPE, vehicleType);
 
                         ambulanceImageRef.putFile(Uri.parse(photoUri))
                                 .addOnCompleteListener(task1 -> {
                                     if(task1.isSuccessful()) {
-                                        opDataBuilder.putString("image_reference", task1.getResult().getStorage().toString());
+                                        opDataBuilder.putString(ModelColumns.IMAGE_REF, task1.getResult().getStorage().toString());
 
                                         Log.d(AppConstants.TAG, "addAmbulanceWorker: " + task.getResult().getPath());
 
@@ -81,7 +82,7 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
                                                 .document(ownerId)
                                                 .collection("ambulances")
                                                 .document(reference.getId())
-                                                .update("image_ref", task1.getResult().getStorage().toString());
+                                                .update(ModelColumns.IMAGE_REF, task1.getResult().getStorage().toString());
 
                                         callback.onSuccess(opDataBuilder.build());
                                     }
@@ -96,13 +97,6 @@ public class AddAmbulanceWorker extends ListenableWorkerAdapter {
                         callback.onFailure(task.getException());
                     }
                 });
-
-
-
-
-
-
-
 
     }
 }

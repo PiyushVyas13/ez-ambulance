@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
+
 import java.util.ArrayList;
 import java.util.List;
 

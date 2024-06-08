@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.ui;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,8 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter.EmployeeAdapter;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.adapter.EmployeeAdapter;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentManageDriverBinding;

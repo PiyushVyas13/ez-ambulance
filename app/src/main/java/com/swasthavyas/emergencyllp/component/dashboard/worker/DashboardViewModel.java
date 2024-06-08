@@ -1,14 +1,11 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel;
-
-import android.os.Bundle;
+package com.swasthavyas.emergencyllp.component.dashboard.worker;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.work.Data;
 
-import com.swasthavyas.emergencyllp.component.dashboard.owner.ui.AddDriverFragment;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.ui.HomeFragment;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui.AddDriverFragment;
 
 import java.util.HashMap;
 import java.util.Map;

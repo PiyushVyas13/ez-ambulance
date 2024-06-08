@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/driverPersonalDetailsFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.DriverPersonalDetailsFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui.DriverPersonalDetailsFragment"
         android:label="fragment_driver_personal_details"
         tools:layout="@layout/fragment_driver_personal_details" >
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/driverAmbulanceDetailsFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.DriverAmbulanceDetailsFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui.DriverAmbulanceDetailsFragment"
         android:label="fragment_driver_ambulance_details"
         tools:layout="@layout/fragment_driver_ambulance_details" />
 </navigation>

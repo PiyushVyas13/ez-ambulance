@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model;
 
 import com.swasthavyas.emergencyllp.util.types.AmbulanceType;
 
@@ -27,11 +27,11 @@ public class Ambulance {
     }
 
     public static Ambulance createFromMap(Map<String, Object> map) {
-        String id = (String) map.get("id");
-        String ownerId = (String) map.get("owner_id");
-        AmbulanceType ambulanceType = AmbulanceType.valueOf((String) map.get("ambulance_type"));
-        String vehicleNumber = (String) map.get("vehicle_number");
-        String vehicleType = (String) map.get("vehicle_type");
+        String id = (String) map.get(ModelColumns.ID);
+        String ownerId = (String) map.get(ModelColumns.OWNER_ID);
+        AmbulanceType ambulanceType = AmbulanceType.valueOf((String) map.get(ModelColumns.AMBULANCE_TYPE));
+        String vehicleNumber = (String) map.get(ModelColumns.VEHICLE_NUMBER);
+        String vehicleType = (String) map.get(ModelColumns.AMBULANCE_TYPE);
 
         return new Ambulance(id, ownerId, ambulanceType, vehicleNumber, vehicleType);
     }
@@ -81,5 +81,14 @@ public class Ambulance {
 
     public void setVehicleType(String vehicleType) {
         this.vehicleType = vehicleType;
+    }
+
+    public static class ModelColumns {
+        public static final String ID = "id";
+        public static final String OWNER_ID = "owner_id";
+        public static final String AMBULANCE_TYPE = "ambulanceType";
+        public static final String VEHICLE_NUMBER = "vehicle_number";
+        public static final String VEHICLE_TYPE = "vehicle_type";
+        public static final String IMAGE_REF = "image_ref";
     }
 }

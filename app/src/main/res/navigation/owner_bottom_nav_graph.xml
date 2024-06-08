@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/ownerAddAmbulanceFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.AddAmbulanceFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.ui.AddAmbulanceFragment"
         android:label="2"
         tools:layout="@layout/fragment_add_ambulance" />
 
@@ -31,7 +31,7 @@
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/addDriverFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.AddDriverFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui.AddDriverFragment"
         android:label="2"
         tools:layout="@layout/fragment_add_driver" />
 

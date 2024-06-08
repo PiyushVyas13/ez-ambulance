@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model;
 
 import java.util.Map;
 

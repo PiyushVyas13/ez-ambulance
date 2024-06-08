@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.ui;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui;
 
 import android.os.Bundle;
 
@@ -22,12 +22,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.DashboardViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.worker.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.AddDriverWorker;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.CreateDriverWorker;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.worker.AddDriverWorker;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.worker.CreateDriverWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentAddDriverBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 

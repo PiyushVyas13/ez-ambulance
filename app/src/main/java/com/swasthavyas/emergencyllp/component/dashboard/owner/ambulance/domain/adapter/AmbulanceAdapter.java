@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
 
 import java.util.List;
 import java.util.Locale;

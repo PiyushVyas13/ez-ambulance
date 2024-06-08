@@ -1,10 +1,9 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.ui;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui;
 
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -20,8 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentDriverAmbulanceDetailsBinding;
 

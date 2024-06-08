@@ -11,9 +11,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
+
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
 
 import org.json.JSONArray;
 
@@ -75,11 +77,11 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                             for(DocumentSnapshot ambulance : task1.getResult()) {
                                                 Log.d(AppConstants.TAG, String.format("fetchOwnerWorker: [%s => %s]", ambulance.getId(), ambulance.getData()));
                                                 Map<String, Object> ambulanceMap = new HashMap<>();
-                                                ambulanceMap.put("ambulance_id", ambulance.getId());
-                                                ambulanceMap.put("ambulance_type", ambulance.getData().get("ambulanceType"));
-                                                ambulanceMap.put("vehicle_number", ambulance.getData().get("vehicle_number"));
-                                                ambulanceMap.put("vehicle_type", ambulance.getData().get("vehicle_type"));
-                                                ambulanceMap.put("owner_id", ambulance.getData().get("owner_id"));
+                                                ambulanceMap.put(Ambulance.ModelColumns.ID, ambulance.getId());
+                                                ambulanceMap.put(Ambulance.ModelColumns.AMBULANCE_TYPE, ambulance.getData().get(Ambulance.ModelColumns.AMBULANCE_TYPE));
+                                                ambulanceMap.put(Ambulance.ModelColumns.VEHICLE_NUMBER, ambulance.getData().get(Ambulance.ModelColumns.VEHICLE_NUMBER));
+                                                ambulanceMap.put(Ambulance.ModelColumns.VEHICLE_TYPE, ambulance.getData().get(Ambulance.ModelColumns.VEHICLE_TYPE));
+                                                ambulanceMap.put(Ambulance.ModelColumns.OWNER_ID, ambulance.getData().get(Ambulance.ModelColumns.OWNER_ID));
                                                 ambulances.add(ambulanceMap);
                                             }
 

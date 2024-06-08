@@ -1,14 +1,9 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.ui;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleEventObserver;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.work.Data;
 
 import android.view.LayoutInflater;
@@ -16,8 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.DashboardViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.worker.DashboardViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentDriverPersonalDetailsBinding;
 
 

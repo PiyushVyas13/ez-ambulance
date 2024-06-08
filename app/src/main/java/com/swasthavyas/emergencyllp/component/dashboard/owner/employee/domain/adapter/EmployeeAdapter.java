@@ -1,17 +1,15 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter;
+package com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Ambulance;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
 
 import java.util.List;
 
