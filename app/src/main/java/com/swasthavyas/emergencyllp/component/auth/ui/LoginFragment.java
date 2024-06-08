@@ -101,6 +101,7 @@ public class LoginFragment extends Fragment {
                             viewBinding.emailLoginProgressbar.setVisibility(View.GONE);
                             Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.action_loginFragment_to_mainActivity);
                             viewBinding.loginBtn.setEnabled(true);
+                            requireActivity().finish();
                         } else if (workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
                             // TODO: get exception class name and set appropriate message
                             String message = workInfo.getOutputData().getString("message");

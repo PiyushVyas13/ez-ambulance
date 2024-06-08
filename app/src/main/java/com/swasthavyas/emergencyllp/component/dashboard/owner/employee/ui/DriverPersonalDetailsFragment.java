@@ -11,14 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.swasthavyas.emergencyllp.component.dashboard.worker.DashboardViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.viewmodel.DriverRegistrationViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentDriverPersonalDetailsBinding;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver.ModelColumns;
 
 
 public class DriverPersonalDetailsFragment extends Fragment {
 
     FragmentDriverPersonalDetailsBinding viewBinding;
-    DashboardViewModel dashboardViewModel;
+    DriverRegistrationViewModel driverRegistrationViewModel;
 
     public DriverPersonalDetailsFragment() {
         // Required empty public constructor
@@ -79,10 +80,10 @@ public class DriverPersonalDetailsFragment extends Fragment {
 
 
 
-        dataBuilder.putString("email", email);
-        dataBuilder.putString("name", name);
-        dataBuilder.putString("phone_number", mobile);
-        dataBuilder.putInt("age", Integer.parseInt(age));
+        dataBuilder.putString(ModelColumns.EMAIL, email);
+        dataBuilder.putString(ModelColumns.NAME, name);
+        dataBuilder.putString(ModelColumns.PHONE_NUMBER, mobile);
+        dataBuilder.putInt(ModelColumns.AGE, Integer.parseInt(age));
 
         return dataBuilder.build();
     }

@@ -18,7 +18,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter.DisplayModeAdapter;
-import com.swasthavyas.emergencyllp.component.dashboard.worker.DashboardViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.viewmodel.DriverRegistrationViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentHomeBinding;
 
@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
 
     FragmentHomeBinding viewBinding;
     OwnerViewModel ownerViewModel;
-    DashboardViewModel dashboardViewModel;
+    DriverRegistrationViewModel dashboardViewModel;
 
     public static final String MODE_AMBULANCE = "ambulance";
     public static final String MODE_DRIVER = "driver";

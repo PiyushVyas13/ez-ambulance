@@ -1,5 +1,7 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model;
 
+import android.view.Display;
+
 import java.util.Map;
 
 public class EmployeeDriver {
@@ -19,9 +21,9 @@ public class EmployeeDriver {
     }
 
     public static EmployeeDriver createFromMap(Map<String, Object> map) {
-        String driverId = (String) map.get("driver_id");
-        String userId = (String) map.get("user_id");
-        Object ageReceived = map.get("age");
+        String driverId = (String) map.get(ModelColumns.DRIVER_ID);
+        String userId = (String) map.get(ModelColumns.USER_ID);
+        Object ageReceived = map.get(ModelColumns.AGE);
         int age = -1;
 
         if(ageReceived instanceof Double) {
@@ -34,8 +36,8 @@ public class EmployeeDriver {
         }
 
 
-        String phoneNumber = (String) map.get("phone_number");
-        String name = (String) map.get("name");
+        String phoneNumber = (String) map.get(ModelColumns.PHONE_NUMBER);
+        String name = (String) map.get(ModelColumns.NAME);
 
         return new EmployeeDriver(name, driverId, userId, age, phoneNumber);
     }
@@ -78,5 +80,19 @@ public class EmployeeDriver {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static class ModelColumns {
+        public static final String EMAIL = "email";
+        public static final String DRIVER_ID = "driver_id";
+        public static final String USER_ID = "user_id";
+        public static final String AGE = "age";
+        public static final String NAME = "name";
+        public static final String PHONE_NUMBER = "phone_number";
+        public static final String ASSIGNED_AMBULANCE_NUMBER = "assigned_ambulance_number";
+        public static final String AADHAAR_NUMBER = "aadhaar_number";
+        public static final String AADHAAR_IMAGE_REF = "aadhaar_image_ref";
+        public static final String LICENSE_IMAGE_REF = "license_image_ref";
+
     }
 }

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentDriverAmbulanceDetailsBinding;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver.ModelColumns;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,8 +110,8 @@ public class DriverAmbulanceDetailsFragment extends Fragment {
 
         String ambulanceNumber = viewBinding.ambulanceAutocomplete.getText().toString().isEmpty() ? null : viewBinding.ambulanceAutocomplete.getText().toString();
 
-        dataBuilder.putString("assigned_ambulance_number", ambulanceNumber);
-        dataBuilder.putString("aadhaar_number", viewBinding.aadhaarnoDriver.getText().toString());
+        dataBuilder.putString(ModelColumns.ASSIGNED_AMBULANCE_NUMBER, ambulanceNumber);
+        dataBuilder.putString(ModelColumns.AADHAAR_NUMBER, viewBinding.aadhaarnoDriver.getText().toString());
         dataBuilder.putString("aadhaarUriString", aadhaarUri.toString());
         dataBuilder.putString("licenceUriString", licenseUri.toString());
 

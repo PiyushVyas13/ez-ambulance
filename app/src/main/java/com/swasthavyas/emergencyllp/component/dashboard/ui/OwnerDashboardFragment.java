@@ -33,7 +33,7 @@ import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
-import com.swasthavyas.emergencyllp.component.dashboard.worker.DashboardViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.viewmodel.DriverRegistrationViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.FetchOwnerWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentOwnerDashboardBinding;
@@ -50,7 +50,7 @@ public class OwnerDashboardFragment extends Fragment {
     FragmentOwnerDashboardBinding viewBinding;
     OwnerViewModel ownerViewModel;
     AuthViewModel authViewModel;
-    DashboardViewModel dashboardViewModel;
+    DriverRegistrationViewModel driverRegistrationViewModel;
     NavController navController;
 
     public OwnerDashboardFragment() {
@@ -71,7 +71,7 @@ public class OwnerDashboardFragment extends Fragment {
         viewBinding = FragmentOwnerDashboardBinding.inflate(getLayoutInflater());
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
-        dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
+        driverRegistrationViewModel = new ViewModelProvider(requireActivity()).get(DriverRegistrationViewModel.class);
 
         FirebaseUser currentUser = authViewModel.getCurrentUser().getValue();
 

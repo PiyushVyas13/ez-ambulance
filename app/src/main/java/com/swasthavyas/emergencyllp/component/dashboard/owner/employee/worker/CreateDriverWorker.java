@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
@@ -29,9 +30,9 @@ public class CreateDriverWorker extends ListenableWorkerAdapter {
     @Override
     public void doAsyncBackgroundTask(NetworkResultCallback callback) {
         try {
-            String name = getInputData().getString("name");
-            String phoneNumber = getInputData().getString("phone_number");
-            String email = getInputData().getString("email");
+            String name = getInputData().getString(EmployeeDriver.ModelColumns.NAME);
+            String phoneNumber = getInputData().getString(EmployeeDriver.ModelColumns.PHONE_NUMBER);
+            String email = getInputData().getString(EmployeeDriver.ModelColumns.EMAIL);
 
             if(name == null || phoneNumber == null || email == null) {
                 callback.onFailure(new IllegalArgumentException("one of the arguments is null/invalid."));
@@ -67,12 +68,12 @@ public class CreateDriverWorker extends ListenableWorkerAdapter {
                                     });
 
                             Data opData = new Data.Builder()
-                                    .putString("driver_id", driverId)
+                                    .putString(EmployeeDriver.ModelColumns.DRIVER_ID, driverId)
                                     .putString("password", password)
-                                    .putString("user_id", user.getUid())
-                                    .putString("name", name)
-                                    .putString("phone_number", phoneNumber)
-                                    .putString("email", email)
+                                    .putString(EmployeeDriver.ModelColumns.USER_ID, user.getUid())
+                                    .putString(EmployeeDriver.ModelColumns.NAME, name)
+                                    .putString(EmployeeDriver.ModelColumns.PHONE_NUMBER, phoneNumber)
+                                    .putString(EmployeeDriver.ModelColumns.EMAIL, email)
                                     .build();
 
                             callback.onSuccess(opData);

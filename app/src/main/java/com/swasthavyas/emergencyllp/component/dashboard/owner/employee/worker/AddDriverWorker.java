@@ -16,6 +16,7 @@ import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver.ModelColumns;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,19 +30,20 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
 
     @Override
     public void doAsyncBackgroundTask(NetworkResultCallback callback) {
-        String driverId = getInputData().getString("driver_id");
-        String userId = getInputData().getString("user_id");
+        String driverId = getInputData().getString(ModelColumns.DRIVER_ID);
+        String userId = getInputData().getString(ModelColumns.USER_ID);
+        String phoneNumber = getInputData().getString(ModelColumns.PHONE_NUMBER);
+        String name = getInputData().getString(ModelColumns.NAME);
+        String email = getInputData().getString(ModelColumns.EMAIL);
+        String aadhaarNumber = getInputData().getString(ModelColumns.AADHAAR_NUMBER);
+        String assignedAmbulanceNumber = getInputData().getString(ModelColumns.ASSIGNED_AMBULANCE_NUMBER);
+
         String ownerId = getInputData().getString("owner_id");
         String ownerUid = getInputData().getString("owner_uid");
-        String phoneNumber = getInputData().getString("phone_number");
-        String name = getInputData().getString("name");
         String password = getInputData().getString("password");
-        String email = getInputData().getString("email");
-        String aadhaarNumber = getInputData().getString("aadhaar_number");
-        String assignedAmbulanceNumber = getInputData().getString("assigned_ambulance_number");
         String aadhaarUriString = getInputData().getString("aadhaarUriString");
         String licenseUriString = getInputData().getString("licenceUriString");
-        int age = getInputData().getInt("age", -1);
+        int age = getInputData().getInt(ModelColumns.AGE, -1);
 
         if(driverId == null || userId == null || age == -1 || ownerId == null || ownerUid == null || phoneNumber == null || name == null || password == null || email == null || aadhaarNumber == null || aadhaarUriString == null || licenseUriString == null) {
             Log.d(AppConstants.TAG, "doAsyncBackgroundTask: " + getInputData());
@@ -56,15 +58,15 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
 
         Map<String, Object> inputData = new HashMap<>();
 
-        inputData.put("user_id", userId);
-        inputData.put("age", age);
-        inputData.put("phone_number", phoneNumber);
-        inputData.put("name", name);
-        inputData.put("driver_id", driverId);
-        inputData.put("aadhaar_number", aadhaarNumber);
+        inputData.put(ModelColumns.USER_ID, userId);
+        inputData.put(ModelColumns.AGE, age);
+        inputData.put(ModelColumns.PHONE_NUMBER, phoneNumber);
+        inputData.put(ModelColumns.NAME, name);
+        inputData.put(ModelColumns.DRIVER_ID, driverId);
+        inputData.put(ModelColumns.AADHAAR_NUMBER, aadhaarNumber);
 
         String assignedAmbulance = assignedAmbulanceNumber == null ? "None" : assignedAmbulanceNumber;
-        inputData.put("assigned_ambulance_number", assignedAmbulance);
+        inputData.put(ModelColumns.ASSIGNED_AMBULANCE_NUMBER, assignedAmbulance);
 
 
         Map<String, Object> roleMap = new HashMap<>();
@@ -87,29 +89,29 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
                         StorageReference licenseRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/license.jpg", ownerUid, driverId));
 
                         Data.Builder opData = new Data.Builder()
-                                .putString("name", name)
-                                .putString("phone_number", phoneNumber)
-                                .putInt("age", age)
-                                .putString("driverId", driverId)
-                                .putString("userId", userId)
-                                .putString("password", password)
-                                .putString("email", email);
+                                .putString(ModelColumns.NAME, name)
+                                .putString(ModelColumns.PHONE_NUMBER, phoneNumber)
+                                .putInt(ModelColumns.AGE, age)
+                                .putString(ModelColumns.DRIVER_ID, driverId)
+                                .putString(ModelColumns.USER_ID, userId)
+                                .putString(ModelColumns.EMAIL, email)
+                                .putString("password", password);
 
 
                         aadhaarRef.putFile(Uri.parse(aadhaarUriString))
                                 .addOnCompleteListener(aadhaarUploadTask -> {
                                    if(aadhaarUploadTask.isSuccessful()) {
-                                       opData.putString("aadhaar_storage_ref", aadhaarUploadTask.getResult().getStorage().toString());
+                                       opData.putString(ModelColumns.AADHAAR_IMAGE_REF, aadhaarUploadTask.getResult().getStorage().toString());
                                        licenseRef.putFile(Uri.parse(licenseUriString))
                                                .addOnCompleteListener(licenseUploadTask -> {
                                                    if(licenseUploadTask.isSuccessful()) {
-                                                        opData.putString("license_storage_ref", licenseUploadTask.getResult().getStorage().toString());
+                                                        opData.putString(ModelColumns.LICENSE_IMAGE_REF, licenseUploadTask.getResult().getStorage().toString());
 
                                                         dbInstance.collection("owners")
                                                                 .document(ownerId)
                                                                 .collection("employees")
                                                                 .document(email)
-                                                                .update("aadhaar_image_ref", aadhaarUploadTask.getResult().getStorage().toString(), "license_image_ref", licenseUploadTask.getResult().getStorage().toString());
+                                                                .update(ModelColumns.AADHAAR_IMAGE_REF, aadhaarUploadTask.getResult().getStorage().toString(), ModelColumns.LICENSE_IMAGE_REF, licenseUploadTask.getResult().getStorage().toString());
 
                                                         callback.onSuccess(opData.build());
                                                    }
