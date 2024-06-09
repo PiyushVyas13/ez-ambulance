@@ -48,9 +48,7 @@
                     android:layout_height="100dp"
                     android:src="@drawable/sample_profile"
                     android:scaleType="centerCrop"
-
                     android:elevation="4dp"
-
                     />
 
                 <ImageButton
@@ -62,6 +60,17 @@
                     android:src="@drawable/edit_icon"
                     android:background="@drawable/profile_background"
                 />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/profile_pic_progressbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    app:indicatorColor="@color/primary"
+                    android:translationZ="8dp"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    />
 
             </FrameLayout>
 

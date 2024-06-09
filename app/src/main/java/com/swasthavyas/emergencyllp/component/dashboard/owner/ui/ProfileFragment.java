@@ -1,6 +1,7 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -11,6 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +33,7 @@ import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.AuthActivity;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.ProfileUpdateWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentProfileBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 
@@ -67,8 +73,9 @@ public class ProfileFragment extends Fragment {
 
         ActivityResultLauncher<PickVisualMediaRequest> profileImagePicker = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
             if(uri != null) {
+                Drawable currentDrawable = viewBinding.profileImage.getDrawable();
                 viewBinding.profileImage.setImageURI(uri);
-                uploadProfileImage(uri);
+                uploadProfileImage(currentDrawable, uri);
             }
         });
 
@@ -105,7 +112,6 @@ public class ProfileFragment extends Fragment {
             Glide.with(requireContext())
                     .load(currentUser.getPhotoUrl())
                     .placeholder(R.drawable.sample_profile)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .dontAnimate()
                     .into(viewBinding.profileImage);
             Toast.makeText(requireActivity(), currentUser.getPhotoUrl().toString(), Toast.LENGTH_SHORT).show();
@@ -113,44 +119,36 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void uploadProfileImage(Uri newProfileUri) {
+    private void uploadProfileImage(Drawable currentDrawable, Uri newProfileUri) {
         assert currentUser != null;
 
-        StorageReference rootRef = FirebaseStorage.getInstance().getReference();
-        StorageReference profilePicRef = rootRef.child(String.format("/users/owner/%s/profile_image.jpg", currentUser.getUid()));
+        Data inputData = new Data.Builder()
+                .putString("newProfileUriString", newProfileUri.toString())
+                .build();
 
-        profilePicRef.putFile(newProfileUri)
-                .addOnCompleteListener(uploadImageTask -> {
-                   if(uploadImageTask.isSuccessful()) {
+        OneTimeWorkRequest updateProfileImageRequest = new OneTimeWorkRequest.Builder(ProfileUpdateWorker.class)
+                .setInputData(inputData)
+                .build();
 
-                       profilePicRef.getDownloadUrl()
-                               .addOnCompleteListener(downloadUrlTask -> {
+        WorkManager.getInstance(requireContext())
+                .enqueue(updateProfileImageRequest);
 
-                                   if(downloadUrlTask.isSuccessful()) {
-                                       UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                               .setPhotoUri(downloadUrlTask.getResult())
-                                               .build();
+        WorkManager.getInstance(requireContext())
+                .getWorkInfoByIdLiveData(updateProfileImageRequest.getId())
+                .observe(getViewLifecycleOwner(), workInfo -> {
 
-                                       currentUser.updateProfile(profileChangeRequest)
-                                               .addOnCompleteListener(imageUpdateTask -> {
-                                                  if(imageUpdateTask.isSuccessful()) {
-                                                      Toast.makeText(requireContext(), "Profile Updated Successfully!", Toast.LENGTH_SHORT).show();
-                                                  }
-                                                  else {
-                                                      Log.d(AppConstants.TAG, "uploadProfileImage: " + imageUpdateTask.getException());
-                                                  }
-
-                                               });
-                                   }
-                                   else {
-                                       Log.d(AppConstants.TAG, "uploadProfileImage: " + downloadUrlTask.getException());
-                                   }
-                               });
-
-                   }
-                   else {
-                       Log.d(AppConstants.TAG, "uploadProfileImage: " + uploadImageTask.getException());
-                   }
+                    if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
+                        Toast.makeText(requireActivity(), "Profile Updated Successfully!", Toast.LENGTH_SHORT).show();
+                        viewBinding.profilePicProgressbar.setVisibility(View.GONE);
+                    }
+                    else if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
+                        Toast.makeText(requireContext(), workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
+                        viewBinding.profilePicProgressbar.setVisibility(View.GONE);
+                        viewBinding.profileImage.setImageDrawable(currentDrawable);
+                    }
+                    else if(workInfo.getState().equals(WorkInfo.State.RUNNING)) {
+                        viewBinding.profilePicProgressbar.setVisibility(View.VISIBLE);
+                    }
 
                 });
 
