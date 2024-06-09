@@ -42,15 +42,26 @@
 
                 android:layout_marginTop="@dimen/_60sdp">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/profile"
-                    android:background="@drawable/profile_background"
+                    android:src="@drawable/sample_profile"
                     android:scaleType="centerCrop"
-                    android:elevation="8dp"
+
+                    android:elevation="4dp"
+
                     />
+
+                <ImageButton
+                    android:id="@+id/change_profile_image"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="bottom|end"
+                    android:translationZ="5dp"
+                    android:src="@drawable/edit_icon"
+                    android:background="@drawable/profile_background"
+                />
 
             </FrameLayout>
 
@@ -64,10 +75,11 @@
                 android:textStyle="bold"
                 android:layout_below="@id/image_container"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 />
 
             <TextView
+                android:id="@+id/owner_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Email Here"
@@ -115,6 +127,7 @@
             />
 
         <TextView
+            android:id="@+id/owner_name_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name Here"
@@ -140,6 +153,7 @@
             />
 
         <TextView
+            android:id="@+id/owner_mobile_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name Here"
@@ -165,6 +179,7 @@
             />
 
         <TextView
+            android:id="@+id/owner_email_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name Here"
@@ -190,6 +205,7 @@
             />
 
         <TextView
+            android:id="@+id/owner_aadhaar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name Here"
