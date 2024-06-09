@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#40000000" /> <!-- Shadow color -->
+            <size android:width="100dp" android:height="100dp" />
+            <corners android:radius="50dp" />
+        </shape>
+    </item>
+
+    <!-- Background Circle -->
+    <item android:top="2dp" android:left="2dp" android:right="3dp" android:bottom="3dp">
+        <shape android:shape="oval">
+            <solid android:color="#FFFFFF" /> <!-- White background for better contrast -->
+            <size android:width="100dp" android:height="100dp" />
+            <corners android:radius="50dp" />
+        </shape>
+    </item>
+
+</layer-list>
