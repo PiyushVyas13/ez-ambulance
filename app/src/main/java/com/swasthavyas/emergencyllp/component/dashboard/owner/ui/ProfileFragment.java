@@ -61,6 +61,9 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
             requireActivity().finish();
         }
+
+        Glide.get(requireContext()).clearMemory();
+        new Thread(() -> Glide.get(requireContext()).clearDiskCache()).start();
     }
 
     @Override
@@ -108,6 +111,8 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
         if(currentUser.getPhotoUrl() != null) {
             Glide.with(requireContext())
                     .load(currentUser.getPhotoUrl())

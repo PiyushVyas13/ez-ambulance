@@ -53,8 +53,12 @@ public class ProfileUpdateWorker extends ListenableWorkerAdapter {
                                 .addOnCompleteListener(downloadUrlTask -> {
 
                                     if(downloadUrlTask.isSuccessful()) {
+
+                                        String downloadUrl = downloadUrlTask.getResult().toString() + "&timestamp=" + System.currentTimeMillis();
+                                        Log.d(AppConstants.TAG, "doAsyncBackgroundTask: " + downloadUrl);
+
                                         UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                                .setPhotoUri(downloadUrlTask.getResult())
+                                                .setPhotoUri(Uri.parse(downloadUrl))
                                                 .build();
 
                                         currentUser.updateProfile(profileChangeRequest)
