@@ -1,12 +1,11 @@
 [versions]
-agp = "8.4.0"
+agp = "8.4.2"
 circleimageview = "3.1.0"
 compiler = "4.14.2"
 firebaseUiStorage = "7.2.0"
 glide = "4.14.2"
-googleMaterial = "1.9.0"
+googleMaterial = "1.12.0"
 concurrentFutures = "1.1.0"
-firebaseAdmin = "9.2.0"
 firebaseBom = "33.0.0"
 gson = "2.10.1"
 guava = "32.0.1-android"
@@ -14,12 +13,14 @@ junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
-material = "1.10.0"
+material = "1.12.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
 coreSplashscreen = "1.0.1"
 navigationUi = "2.7.7"
+playServicesMaps = "18.2.0"
 sdpAndroid = "1.1.1"
+secretsGradlePlugin = "2.0.1"
 sspAndroid = "1.1.1"
 workRuntime = "2.9.0"
 
@@ -27,7 +28,6 @@ workRuntime = "2.9.0"
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }
-firebase-admin = { module = "com.google.firebase:firebase-admin", version.ref = "firebaseAdmin" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
@@ -47,7 +47,9 @@ core-splashscreen = { group = "androidx.core", name = "core-splashscreen", versi
 navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationUi" }
 navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationUi" }
 material-v190 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
+secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }
 work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
 
