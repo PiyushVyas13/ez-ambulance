@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.adapter.AmbulanceAdapter;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.worker.DeleteAmbulanceWorker;
@@ -89,9 +92,16 @@ public class ManageAmbulanceFragment extends Fragment {
             };
 
 
-            AmbulanceAdapter ambulanceAdapter = new AmbulanceAdapter(requireContext(), currentOwner.getAmbulances().getValue(), deleteCallback);
+            AmbulanceAdapter ambulanceAdapter = new AmbulanceAdapter(requireContext(), currentOwner.getAmbulances().getValue(), deleteCallback, ((position, ambulance) -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("ambulance", ambulance);
+                Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.ambulanceDetailFragment, bundle, new NavOptions.Builder().setEnterAnim(R.anim.slide_in_right).setExitAnim(android.R.anim.fade_out).build());
+            }));
+
+
             viewBinding.ambulanceList.setLayoutManager(new LinearLayoutManager(requireContext()));
             viewBinding.ambulanceList.setAdapter(ambulanceAdapter);
+
 
             currentOwner.getAmbulances().observe(getViewLifecycleOwner(), ambulances -> {
                 if(ambulances != null) {

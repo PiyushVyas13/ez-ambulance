@@ -47,4 +47,7 @@
     <string name="choose_file_text">Choose a file</string>
     <string name="no_file_chosen_text">No file chosen</string>
     <string name="upload_licence_photo_text">Upload photo of Driver\'s License</string>
+    <string name="assign_ride_text">Assign Ride</string>
+    <string name="about_ambulance_text">About Ambulance</string>
+    <string name="ambulance_on_ride_text">This Ambulance is on a ride!</string>
 </resources>

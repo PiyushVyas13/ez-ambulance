@@ -34,6 +34,11 @@
         android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui.AddDriverFragment"
         android:label="2"
         tools:layout="@layout/fragment_add_driver" />
+    <fragment
+        android:id="@+id/ambulanceDetailFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.ui.AmbulanceDetailFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_ambulance_detail" />
 
 
 </navigation>

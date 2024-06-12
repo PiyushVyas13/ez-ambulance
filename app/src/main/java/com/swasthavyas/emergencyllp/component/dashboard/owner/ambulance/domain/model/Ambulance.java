@@ -1,12 +1,18 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.util.types.AmbulanceType;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class Ambulance {
+public class Ambulance implements Parcelable {
 
 
     private String id;
@@ -20,6 +26,17 @@ public class Ambulance {
 
     }
 
+    protected Ambulance(Parcel parcel) {
+        id = parcel.readString();
+        ownerId = parcel.readString();
+        ambulanceType = AmbulanceType.valueOf(parcel.readString());
+        vehicleNumber = parcel.readString();
+        vehicleType = parcel.readString();
+        imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(parcel.readString());
+    }
+
+
+
     private Ambulance(String id, String ownerId, AmbulanceType ambulanceType, String vehicleNumber, String vehicleType, String imageRef)  {
         this.id = id;
         this.ownerId = ownerId;
@@ -29,6 +46,18 @@ public class Ambulance {
         this.imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageRef);
 
     }
+
+    public static final Creator<Ambulance> CREATOR = new Creator<Ambulance>() {
+        @Override
+        public Ambulance createFromParcel(Parcel in) {
+            return new Ambulance(in);
+        }
+
+        @Override
+        public Ambulance[] newArray(int size) {
+            return new Ambulance[size];
+        }
+    };
 
     public static Ambulance createFromMap(Map<String, Object> map) {
         String id = (String) map.get(ModelColumns.ID);
@@ -94,6 +123,22 @@ public class Ambulance {
 
     public void setImageRef(StorageReference imageRef) {
         this.imageRef = imageRef;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(getId());
+        dest.writeString(getOwnerId());
+        dest.writeString(getAmbulanceType().name());
+        dest.writeString(getVehicleNumber());
+        dest.writeString(getVehicleType());
+        dest.writeString(getImageRef().toString());
     }
 
     public static class ModelColumns {

@@ -27,14 +27,22 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
 
     private final List<Ambulance> ambulances;
-    private Context context;
+    private final Context context;
 
-    private OnDeleteCallback deleteCallback;
+    private final OnDeleteCallback deleteCallback;
+    private final OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position, Ambulance item);
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView vehicleNumber;
         private final TextView serialNumber;
         private final ImageButton deleteButton;
+
+
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -54,12 +62,18 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
         }
 
         public ImageButton getDeleteButton() {return deleteButton; }
+
+        public void setOnItemClickListener(Ambulance item, int position, OnItemClickListener listener) {
+            itemView.setOnClickListener(v -> listener.onItemClick(position, item));
+        }
+
     }
 
-    public AmbulanceAdapter(Context context, List<Ambulance> ambulances, OnDeleteCallback deleteCallback) {
+    public AmbulanceAdapter(Context context, List<Ambulance> ambulances, OnDeleteCallback deleteCallback, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.ambulances = ambulances;
         this.deleteCallback = deleteCallback;
+        this.itemClickListener = onItemClickListener;
     }
 
 
@@ -77,6 +91,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
         Ambulance ambulance = ambulances.get(position);
         holder.getVehicleNumber().setText(ambulance.getVehicleNumber());
         holder.getSerialNumber().setText(String.format(Locale.getDefault(), "%d", position+1));
+        holder.setOnItemClickListener(ambulance, position, itemClickListener);
 
 
         holder.getDeleteButton().setOnClickListener(v -> {
