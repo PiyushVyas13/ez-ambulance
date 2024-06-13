@@ -27,7 +27,6 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner
 import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.viewmodel.DriverRegistrationViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.worker.AddDriverWorker;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.worker.CreateDriverWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentAddDriverBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.RegistrationStep;
@@ -155,17 +154,12 @@ public class AddDriverFragment extends Fragment {
                     Data ambulanceData = Objects.requireNonNull(registrationDataMap.get(RegistrationStep.AMBULANCE_DETAILS));
 
 
-                    OneTimeWorkRequest createDriverRequest = new OneTimeWorkRequest.Builder(CreateDriverWorker.class)
-                    .setInputData(new Data.Builder()
-                            .putString("name", personalData.getString("name"))
-                            .putString("phone_number", "+91" + personalData.getString("phone_number"))
-                            .putString("email", personalData.getString("email"))
-                            .build())
-                    .build();
-
                     OneTimeWorkRequest addDriverRequest = new OneTimeWorkRequest.Builder(AddDriverWorker.class)
                             .setInputData(new Data.Builder()
                                     .putInt("age", personalData.getInt("age", -1))
+                                    .putString("name", personalData.getString("name"))
+                                    .putString("phone_number", "+91" + personalData.getString("phone_number"))
+                                    .putString("email", personalData.getString("email"))
                                     .putString("owner_uid", owner.getUserId())
                                     .putString("aadhaar_number", ambulanceData.getString("aadhaar_number"))
                                     .putString("assigned_ambulance_number", ambulanceData.getString("assigned_ambulance_number"))
@@ -175,22 +169,8 @@ public class AddDriverFragment extends Fragment {
                                     .build())
                             .build();
 
-
                     WorkManager.getInstance(requireContext())
-                            .beginWith(createDriverRequest)
-                            .then(addDriverRequest)
-                            .enqueue();
-
-                    WorkManager.getInstance(requireContext())
-                            .getWorkInfoByIdLiveData(createDriverRequest.getId())
-                            .observe(getViewLifecycleOwner(), workInfo -> {
-                                if (workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
-                                    Toast.makeText(requireContext(), workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
-                                } else if (workInfo.getState().equals(WorkInfo.State.RUNNING)) {
-                                    viewBinding.addDriverProgressbar.setVisibility(View.VISIBLE);
-                                }
-                            });
-
+                            .enqueue(addDriverRequest);
 
                     WorkManager.getInstance(requireContext())
                             .getWorkInfoByIdLiveData(addDriverRequest.getId())
