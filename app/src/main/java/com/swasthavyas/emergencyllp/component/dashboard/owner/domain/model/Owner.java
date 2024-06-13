@@ -104,4 +104,13 @@ public class Owner {
             throw new NullPointerException("employees is null.");
         }
     }
+
+    public void deleteEmployee(int position) {
+        if(this.employees.getValue() == null) {
+            throw new NullPointerException("Employee is null");
+        }
+
+        this.employees.getValue().remove(position);
+        this.employees.setValue(this.employees.getValue());
+    }
 }

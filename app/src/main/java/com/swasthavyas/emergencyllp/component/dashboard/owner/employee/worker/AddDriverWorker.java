@@ -155,8 +155,8 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
     }
 
     private void uploadDocuments(Map<String, Object> inputData) {
-        StorageReference aadhaarRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/aadhaar_card.jpg", receivedData.getString("owner_uid"), receivedData.getString("email")));
-        StorageReference licenceRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/licence.jpg", receivedData.getString("owner_uid"), receivedData.getString("email")));
+        StorageReference aadhaarRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/aadhaar_card.jpg", receivedData.getString("owner_uid"), inputData.get(EmployeeDriver.ModelColumns.DRIVER_ID)));
+        StorageReference licenceRef = rootRef.child(String.format("/users/owner/%s/employees/%s/docs/licence.jpg", receivedData.getString("owner_uid"), inputData.get(EmployeeDriver.ModelColumns.DRIVER_ID)));
 
         aadhaarRef.putFile(Uri.parse(receivedData.getString("aadhaar_uri_string")))
                 .addOnCompleteListener(aadhaarUploadTask -> {

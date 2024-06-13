@@ -100,7 +100,8 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                                            Log.d(AppConstants.TAG, String.format("fetchOwnerWorker: [%s => %s]", employee.getId(), employee.getData()));
                                                             Map<String, Object> employeeMap = new HashMap<>();
 
-                                                            employeeMap.put("driver_id", employee.getId());
+                                                            employeeMap.put("email", employee.getId());
+                                                            employeeMap.put("driver_id", employee.getString("driver_id"));
                                                             employeeMap.put("user_id", employee.getString("user_id"));
                                                             employeeMap.put("phone_number", employee.getString("phone_number"));
                                                             employeeMap.put("age", ((Long) employee.get("age")).intValue());

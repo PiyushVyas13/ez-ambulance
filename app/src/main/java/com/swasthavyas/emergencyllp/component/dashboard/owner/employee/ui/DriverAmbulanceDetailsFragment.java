@@ -66,14 +66,18 @@ public class DriverAmbulanceDetailsFragment extends Fragment {
 
 
         ActivityResultLauncher<PickVisualMediaRequest> aadhaarPicker = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-           aadhaarUri = uri;
-           viewBinding.aahdaarFileName.setText(getFileNameFromUri(uri));
+            if(uri != null) {
+                aadhaarUri = uri;
+                viewBinding.aahdaarFileName.setText(getFileNameFromUri(uri));
+            }
 
         });
 
         ActivityResultLauncher<PickVisualMediaRequest> licensePicker = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri ->  {
-           licenseUri = uri;
-           viewBinding.licenseFileName.setText(getFileNameFromUri(uri));
+           if(uri != null) {
+               licenseUri = uri;
+               viewBinding.licenseFileName.setText(getFileNameFromUri(uri));
+           }
         });
 
 

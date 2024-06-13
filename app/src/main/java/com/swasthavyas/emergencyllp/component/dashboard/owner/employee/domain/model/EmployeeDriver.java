@@ -10,14 +10,22 @@ public class EmployeeDriver {
     private String userId;
     private int age;
 
+    private String email;
+
+    private String aadhaarImageRef;
+    private String licenceImageRef;
+
     private String phoneNumber;
 
-    private EmployeeDriver(String name, String driverId, String userId, int age, String phoneNumber) {
+    private EmployeeDriver(String name, String email, String driverId, String userId, int age, String phoneNumber, String aadhaarImageRef, String licenceImageRef) {
         this.name = name;
+        this.email = email;
         this.driverId = driverId;
         this.userId = userId;
         this.age = age;
         this.phoneNumber = phoneNumber;
+        this.aadhaarImageRef = aadhaarImageRef;
+        this.licenceImageRef = licenceImageRef;
     }
 
     public static EmployeeDriver createFromMap(Map<String, Object> map) {
@@ -38,8 +46,11 @@ public class EmployeeDriver {
 
         String phoneNumber = (String) map.get(ModelColumns.PHONE_NUMBER);
         String name = (String) map.get(ModelColumns.NAME);
+        String aadhaarImageRef = (String) map.get(ModelColumns.AADHAAR_IMAGE_REF);
+        String licenceImageRef = (String) map.get(ModelColumns.LICENSE_IMAGE_REF);
+        String email = (String) map.get(ModelColumns.EMAIL);
 
-        return new EmployeeDriver(name, driverId, userId, age, phoneNumber);
+        return new EmployeeDriver(name, email, driverId, userId, age, phoneNumber, aadhaarImageRef, licenceImageRef);
     }
 
     public String getDriverId() {
@@ -80,6 +91,30 @@ public class EmployeeDriver {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAadhaarImageRef() {
+        return aadhaarImageRef;
+    }
+
+    public void setAadhaarImageRef(String aadhaarImageRef) {
+        this.aadhaarImageRef = aadhaarImageRef;
+    }
+
+    public String getLicenceImageRef() {
+        return licenceImageRef;
+    }
+
+    public void setLicenceImageRef(String licenceImageRef) {
+        this.licenceImageRef = licenceImageRef;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public static class ModelColumns {
