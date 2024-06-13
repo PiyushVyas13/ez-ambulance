@@ -21,8 +21,8 @@
             android:layout_marginStart="@dimen/_16sdp"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/sr_number"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/employee_profile_pic"
                 android:layout_width="@dimen/_60sdp"
                 android:layout_height="@dimen/_60sdp"
                 android:text="1"
@@ -30,7 +30,7 @@
                 android:textStyle="bold"
                 android:textSize="@dimen/_20ssp"
                 android:gravity="center"
-                android:background="@drawable/background_round_primary"/>
+                />
         </RelativeLayout>
 
         <LinearLayout

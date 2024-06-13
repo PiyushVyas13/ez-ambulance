@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    function isOwner(ownerId) {
+    		return request.auth.uid == get(/databases/(default)/documents/owners/$(ownerId)).data.user_id;
+    }
+    
+    match /user_roles/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    match /owners/{ownerId} {
+    	allow read: if request.auth != null;
+    	allow write: if request.auth != null && request.auth.uid == request.resource.data.user_id; 
+    }
+    match /owners/{ownerId}/ambulances/{ambulanceId} {
+    	allow read: if request.auth != null;
+      allow write: if request.auth != null && isOwner(ownerId);
+      allow delete: if request.auth != null && isOwner(ownerId);
+    }
+    match /drivers/{driverId} {
+    	allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == request.resource.data.user_id;
+    }
+    match /owners/{ownerId}/employees/{employeeId} {
+    	allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+  }
+}

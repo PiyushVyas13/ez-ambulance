@@ -3,6 +3,7 @@ package com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.a
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,20 +20,20 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView driverName;
-        // private final ImageView profilePicture;
+         private final ImageView profilePicture;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             // We can attach some listeners here
             driverName = (TextView) itemView.findViewById(R.id.driver_name_holder);
-            // profilePicture = (ImageView) itemView.findViewById(R.id.employee_profile);
+             profilePicture = (ImageView) itemView.findViewById(R.id.employee_profile_pic);
         }
 
         public TextView getDriverName() {
             return driverName;
         }
-        // public ImageView getProfilePicture() {return profilePicture;}
+         public ImageView getProfilePicture() {return profilePicture;}
 
 
     }
@@ -53,7 +54,9 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getDriverName().setText(employeeDrivers.get(position).getName());
+        EmployeeDriver employee = employeeDrivers.get(position);
+        holder.getDriverName().setText(employee.getName());
+        //TODO: Load Profile pic from employee profile
     }
 
 
