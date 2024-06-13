@@ -22,7 +22,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
 
     public interface OnDeleteCallback {
-        void onDelete(String ambulanceId, String imageRef, int position);
+        void onDelete(String ambulanceId, String ambulanceNumber, String imageRef, int position);
     }
 
 
@@ -100,7 +100,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
                     .setMessage(String.format("Are you sure you want to delete Ambulance '%s'?", ambulance.getVehicleNumber()))
                     .setPositiveButton("Yes", (dialog, which) -> {
                         Toast.makeText(context, "Starting ambulance delete...", Toast.LENGTH_SHORT).show();
-                        deleteCallback.onDelete(ambulance.getId(), ambulance.getImageRef().toString(), position);
+                        deleteCallback.onDelete(ambulance.getId(), ambulance.getVehicleNumber(), ambulance.getImageRef().toString(), position);
                     })
                     .setNegativeButton("Cancel", (dialog, which) -> {})
                     .show();

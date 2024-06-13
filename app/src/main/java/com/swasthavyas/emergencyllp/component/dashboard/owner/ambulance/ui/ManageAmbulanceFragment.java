@@ -60,11 +60,12 @@ public class ManageAmbulanceFragment extends Fragment {
 
             AmbulanceAdapter.OnDeleteCallback deleteCallback = new AmbulanceAdapter.OnDeleteCallback() {
                 @Override
-                public void onDelete(String ambulanceId, String imageRef, int position) {
+                public void onDelete(String ambulanceId, String ambulanceNumber, String imageRef, int position) {
                     Data inputData = new Data.Builder()
                             .putString(Ambulance.ModelColumns.ID, ambulanceId)
                             .putString(Ambulance.ModelColumns.OWNER_ID, currentOwner.getId())
                             .putString(Ambulance.ModelColumns.IMAGE_REF, imageRef)
+                            .putString(Ambulance.ModelColumns.VEHICLE_NUMBER, ambulanceNumber)
                             .build();
 
                     OneTimeWorkRequest deleteAmbulanceRequest = new OneTimeWorkRequest.Builder(DeleteAmbulanceWorker.class)
