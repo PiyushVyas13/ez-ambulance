@@ -10,7 +10,20 @@
         android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ui.HomeFragment"
         android:label="1"
 
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_ownerHomeFragment_to_ambulanceDetailFragment"
+            app:destination="@id/ambulanceDetailFragment" />
+        <action
+            android:id="@+id/action_ownerHomeFragment_to_ownerAddAmbulanceFragment"
+            app:destination="@id/ownerAddAmbulanceFragment" />
+        <action
+            android:id="@+id/action_ownerHomeFragment_to_addDriverFragment"
+            app:destination="@id/addDriverFragment" />
+        <action
+            android:id="@+id/action_ownerHomeFragment_to_rideAssignmentFragment"
+            app:destination="@id/rideAssignmentFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/ownerAddAmbulanceFragment"
@@ -39,6 +52,11 @@
         android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.ui.AmbulanceDetailFragment"
         android:label="1"
         tools:layout="@layout/fragment_ambulance_detail" />
+    <fragment
+        android:id="@+id/rideAssignmentFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui.RideAssignmentFragment"
+        android:label="fragment_ride_assignment"
+        tools:layout="@layout/fragment_ride_assignment" />
 
 
 </navigation>

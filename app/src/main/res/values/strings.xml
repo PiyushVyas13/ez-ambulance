@@ -83,4 +83,19 @@
     <string name="assign_ride_text">Assign Ride</string>
     <string name="about_ambulance_text">About Ambulance</string>
     <string name="ambulance_on_ride_text">This Ambulance is on a ride!</string>
+    <string name="book_ride_text">Book a Ride</string>
+    <string name="customer_name_text">Customer Name</string>
+    <string name="customer_age_text">Customer Age</string>
+    <string name="estimated_price_text">Estimated Price</string>
+    <string name="is_this_an_emergency_ride_text">Is this an emergency ride?</string>
+    <string name="street_address">Street Address</string>
+    <string name="landmark">Landmark, Apt etc. (Optional)</string>
+    <string name="city_text">City</string>
+    <string name="address_state">State</string>
+    <string name="address_pin_code">Pin code</string>
+    <string name="enter_customer_information">Enter Customer Information</string>
+    <string name="enter_pickup_location">Enter Pickup Location</string>
+    <string name="back">Back</string>
+    <string name="enter_drop_location">Enter Drop Location</string>
+    <string name="book_ride">Book Ride</string>
 </resources>

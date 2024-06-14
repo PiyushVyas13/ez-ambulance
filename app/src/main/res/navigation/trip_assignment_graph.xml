@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trip_assignment_graph"
+    app:startDestination="@id/customerInfoFragment">
+
+    <fragment
+        android:id="@+id/customerInfoFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui.CustomerInfoFragment"
+        android:label="fragment_customer_info"
+        tools:layout="@layout/fragment_customer_info" >
+        <action
+            android:id="@+id/action_customerInfoFragment_to_pickupLocationFragment"
+            app:destination="@id/pickupLocationFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/dropLocationFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui.DropLocationFragment"
+        android:label="fragment_drop_location"
+        tools:layout="@layout/fragment_drop_location" />
+    <fragment
+        android:id="@+id/pickupLocationFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui.PickupLocationFragment"
+        android:label="fragment_pickup_location"
+        tools:layout="@layout/fragment_pickup_location" >
+        <action
+            android:id="@+id/action_pickupLocationFragment_to_dropLocationFragment"
+            app:destination="@id/dropLocationFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+</navigation>

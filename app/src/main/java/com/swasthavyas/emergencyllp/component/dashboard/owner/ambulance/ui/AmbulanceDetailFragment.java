@@ -82,7 +82,15 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.ownerHomeFragment, null, new NavOptions.Builder().setEnterAnim(android.R.anim.fade_in).setExitAnim(android.R.anim.slide_out_right).build());
+                Navigation.findNavController(viewBinding.getRoot())
+                        .navigate(
+                                R.id.ownerHomeFragment,
+                                null,
+                                new NavOptions.Builder().
+                                        setEnterAnim(android.R.anim.fade_in).
+                                        setExitAnim(android.R.anim.slide_out_right)
+                                        .build()
+                        );
             }
         };
 
@@ -107,17 +115,36 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
             viewBinding.assignedDriverName.setText("Assigned to: " + assignedDriver.getName());
         }
 
+        viewBinding.assignRideButton.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.rideAssignmentFragment, null,
+                    new NavOptions.Builder()
+                            .setEnterAnim(android.R.anim.slide_in_left)
+                            .setExitAnim(android.R.anim.fade_out)
+                            .setPopEnterAnim(android.R.anim.fade_in)
+                            .setPopExitAnim(R.anim.slide_out_left)
+                            .build());
+        });
+
         return viewBinding.getRoot();
     }
 
     private static final List<String> optionsList = Arrays.asList("About Ambulance", "History");
-    private static final List<String> optionDescList = Arrays.asList("Show information about the ambulance", "View past rides, earnings etc.");
+    private static final List<String> optionDescList = Arrays.asList(
+            "Show information about the ambulance",
+            "View past rides, earnings etc."
+    );
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         ambulanceLocationMap = googleMap;
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(21.1458, 79.0882)).title("Marker"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(21.1458, 79.0882), 15.0f));
+        googleMap.addMarker(
+                new MarkerOptions()
+                        .position(new LatLng(21.1458, 79.0882))
+                        .title("Marker")
+        );
+        googleMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(new LatLng(21.1458, 79.0882), 15.0f)
+        );
     }
 
     @Override
@@ -154,7 +181,8 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         public View getView(int position, View convertView, ViewGroup parent) {
 
             if(convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.ambulance_options_list_item, parent, false);
+                convertView = LayoutInflater.from(context)
+                        .inflate(R.layout.ambulance_options_list_item, parent, false);
             }
 
             TextView optionTitle = convertView.findViewById(R.id.option_title);

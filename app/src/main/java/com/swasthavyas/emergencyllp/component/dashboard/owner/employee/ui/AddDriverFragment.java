@@ -29,7 +29,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerVie
 import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.worker.AddDriverWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentAddDriverBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.RegistrationStep;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.DriverRegistrationStep;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,7 +42,7 @@ public class AddDriverFragment extends Fragment {
     DriverRegistrationViewModel driverRegistrationViewModel;
 
     FragmentAddDriverBinding viewBinding;
-    AtomicReference<RegistrationStep> currentStep;
+    AtomicReference<DriverRegistrationStep> currentStep;
 
 
     public AddDriverFragment() {
@@ -65,17 +65,17 @@ public class AddDriverFragment extends Fragment {
 
         viewBinding.addButton.setOnClickListener(v -> {
             Fragment currentFragment = getChildFragmentManager().findFragmentById(R.id.driver_registration_container).getChildFragmentManager().getPrimaryNavigationFragment();
-            if(currentStep.get().equals(RegistrationStep.PERSONAL_DETAILS)) {
+            if(currentStep.get().equals(DriverRegistrationStep.PERSONAL_DETAILS)) {
 
                 if(currentFragment instanceof DriverPersonalDetailsFragment) {
 
                     if(((DriverPersonalDetailsFragment) currentFragment).validateData()) {
                         Log.d(AppConstants.TAG, "primaryNavigationFragment: " + ( (DriverPersonalDetailsFragment) currentFragment).collectData());
 
-                        driverRegistrationViewModel.setRegistrationData(RegistrationStep.PERSONAL_DETAILS, ((DriverPersonalDetailsFragment) currentFragment).collectData());
+                        driverRegistrationViewModel.setRegistrationData(DriverRegistrationStep.PERSONAL_DETAILS, ((DriverPersonalDetailsFragment) currentFragment).collectData());
 
                         NavHostFragment.findNavController(viewBinding.driverRegistrationContainer.getFragment()).navigate(R.id.action_driverPersonalDetailsFragment_to_driverAmbulanceDetailsFragment);
-                        driverRegistrationViewModel.setRegistrationStep(RegistrationStep.AMBULANCE_DETAILS);
+                        driverRegistrationViewModel.setRegistrationStep(DriverRegistrationStep.AMBULANCE_DETAILS);
                     }
 
                 }
@@ -87,7 +87,7 @@ public class AddDriverFragment extends Fragment {
                     if(((DriverAmbulanceDetailsFragment) currentFragment).validateData()) {
                         Log.d(AppConstants.TAG, "primaryNavigationFragment (2): " + ( (DriverAmbulanceDetailsFragment) currentFragment).collectData());
 
-                        driverRegistrationViewModel.setRegistrationData(RegistrationStep.AMBULANCE_DETAILS, ((DriverAmbulanceDetailsFragment) currentFragment).collectData());
+                        driverRegistrationViewModel.setRegistrationData(DriverRegistrationStep.AMBULANCE_DETAILS, ((DriverAmbulanceDetailsFragment) currentFragment).collectData());
 
                         Toast.makeText(requireActivity(), "Add Driver", Toast.LENGTH_SHORT).show();
                     }
@@ -98,12 +98,12 @@ public class AddDriverFragment extends Fragment {
         });
 
         viewBinding.cancelButton.setOnClickListener(v -> {
-            if(currentStep.get().equals(RegistrationStep.PERSONAL_DETAILS)) {
+            if(currentStep.get().equals(DriverRegistrationStep.PERSONAL_DETAILS)) {
 
                 Navigation.findNavController(v).navigate(R.id.ownerHomeFragment, null, new NavOptions.Builder().setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.fade_out).build());
             }
             else {
-                driverRegistrationViewModel.setRegistrationStep(RegistrationStep.PERSONAL_DETAILS);
+                driverRegistrationViewModel.setRegistrationStep(DriverRegistrationStep.PERSONAL_DETAILS);
                 NavHostFragment.findNavController(viewBinding.driverRegistrationContainer.getFragment()).popBackStack();
             }
         });
@@ -123,14 +123,14 @@ public class AddDriverFragment extends Fragment {
 
         currentStep = new AtomicReference<>(driverRegistrationViewModel.getRegistrationStep().getValue());
 
-        driverRegistrationViewModel.getRegistrationStep().observe(getViewLifecycleOwner(), registrationStep -> {
-            currentStep.set(registrationStep);
-            if(registrationStep.equals(RegistrationStep.PERSONAL_DETAILS)) {
+        driverRegistrationViewModel.getRegistrationStep().observe(getViewLifecycleOwner(), driverRegistrationStep -> {
+            currentStep.set(driverRegistrationStep);
+            if(driverRegistrationStep.equals(DriverRegistrationStep.PERSONAL_DETAILS)) {
                 viewBinding.addButton.setText(getString(R.string.text_next));
                 viewBinding.cancelButton.setText(getString(R.string.cancel));
 
 
-            } else if(registrationStep.equals(RegistrationStep.AMBULANCE_DETAILS)) {
+            } else if(driverRegistrationStep.equals(DriverRegistrationStep.AMBULANCE_DETAILS)) {
                 viewBinding.addButton.setText("Add");
                 viewBinding.cancelButton.setText("Back");
             }
@@ -140,7 +140,7 @@ public class AddDriverFragment extends Fragment {
 
             if(registrationDataMap != null) {
 
-                if(registrationDataMap.containsKey(RegistrationStep.PERSONAL_DETAILS) && registrationDataMap.containsKey(RegistrationStep.AMBULANCE_DETAILS)) {
+                if(registrationDataMap.containsKey(DriverRegistrationStep.PERSONAL_DETAILS) && registrationDataMap.containsKey(DriverRegistrationStep.AMBULANCE_DETAILS)) {
                     Toast.makeText(requireActivity(), "Ready for registration", Toast.LENGTH_SHORT).show();
 
                     Owner owner = ownerViewModel.getOwner().getValue();
@@ -150,8 +150,8 @@ public class AddDriverFragment extends Fragment {
                         return;
                     }
 
-                    Data personalData = Objects.requireNonNull(registrationDataMap.get(RegistrationStep.PERSONAL_DETAILS));
-                    Data ambulanceData = Objects.requireNonNull(registrationDataMap.get(RegistrationStep.AMBULANCE_DETAILS));
+                    Data personalData = Objects.requireNonNull(registrationDataMap.get(DriverRegistrationStep.PERSONAL_DETAILS));
+                    Data ambulanceData = Objects.requireNonNull(registrationDataMap.get(DriverRegistrationStep.AMBULANCE_DETAILS));
 
 
                     OneTimeWorkRequest addDriverRequest = new OneTimeWorkRequest.Builder(AddDriverWorker.class)
