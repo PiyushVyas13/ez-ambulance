@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
@@ -28,10 +29,13 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentAmbulanceDetailBinding;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallback {
@@ -44,6 +48,9 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     }
 
     private Ambulance ambulance;
+    private EmployeeDriver assignedDriver;
+    private OwnerViewModel ownerViewModel;
+
     private GoogleMap ambulanceLocationMap;
 
 
@@ -51,6 +58,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
 
         if(getArguments() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -59,6 +67,13 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
             else {
                 ambulance = getArguments().getParcelable("ambulance");
             }
+
+            List<EmployeeDriver> employees = ownerViewModel.getOwner().getValue().getEmployees().getValue();
+            employees.stream()
+                    .filter(employeeDriver -> employeeDriver.getAssignedAmbulanceNumber().equals(ambulance.getVehicleNumber()))
+                    .findFirst()
+                    .ifPresent(employeeDriver -> assignedDriver = employeeDriver);
+
         }
         else  {
             Navigation.findNavController(viewBinding.getRoot()).popBackStack();
@@ -85,6 +100,12 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
 
         viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext()));
         viewBinding.ambulanceDetailTitle.setText(ambulance.getVehicleNumber());
+        if(assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
+            viewBinding.assignedDriverName.setText("Tap to select a driver");
+        }
+        else {
+            viewBinding.assignedDriverName.setText("Assigned to: " + assignedDriver.getName());
+        }
 
         return viewBinding.getRoot();
     }

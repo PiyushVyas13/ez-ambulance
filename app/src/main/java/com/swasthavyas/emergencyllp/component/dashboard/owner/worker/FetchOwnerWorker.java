@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 
+import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
@@ -100,12 +101,13 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                                            Log.d(AppConstants.TAG, String.format("fetchOwnerWorker: [%s => %s]", employee.getId(), employee.getData()));
                                                             Map<String, Object> employeeMap = new HashMap<>();
 
-                                                            employeeMap.put("email", employee.getId());
-                                                            employeeMap.put("driver_id", employee.getString("driver_id"));
-                                                            employeeMap.put("user_id", employee.getString("user_id"));
-                                                            employeeMap.put("phone_number", employee.getString("phone_number"));
-                                                            employeeMap.put("age", ((Long) employee.get("age")).intValue());
-                                                            employeeMap.put("name", employee.get("name"));
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.EMAIL, employee.getId());
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.DRIVER_ID, employee.getString(EmployeeDriver.ModelColumns.DRIVER_ID));
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.USER_ID, employee.getString(EmployeeDriver.ModelColumns.USER_ID));
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.PHONE_NUMBER, employee.getString(EmployeeDriver.ModelColumns.PHONE_NUMBER));
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.AGE, ((Long) employee.get(EmployeeDriver.ModelColumns.AGE)).intValue());
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.NAME, employee.get(EmployeeDriver.ModelColumns.NAME));
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, employee.getString(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER));
 
                                                             employees.add(employeeMap);
                                                        }

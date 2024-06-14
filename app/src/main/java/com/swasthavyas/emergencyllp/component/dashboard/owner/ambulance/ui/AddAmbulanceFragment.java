@@ -62,6 +62,8 @@ public class AddAmbulanceFragment extends Fragment {
             }
         });
 
+        viewBinding.vehicleType.setOnFocusChangeListener((v, hasFocus) -> viewBinding.vehicleType.setHint(hasFocus ? "Eg. Bolero, Omni, Traveller etc." : ""));
+
         viewBinding.cancelButton.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.ownerHomeFragment, null, new NavOptions.Builder().setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.fade_out).build());
         });

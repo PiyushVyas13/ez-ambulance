@@ -14,10 +14,11 @@ public class EmployeeDriver {
 
     private String aadhaarImageRef;
     private String licenceImageRef;
+    private String assignedAmbulanceNumber;
 
     private String phoneNumber;
 
-    private EmployeeDriver(String name, String email, String driverId, String userId, int age, String phoneNumber, String aadhaarImageRef, String licenceImageRef) {
+    private EmployeeDriver(String name, String email, String driverId, String userId, int age, String phoneNumber, String assignedAmbulanceNumber, String aadhaarImageRef, String licenceImageRef) {
         this.name = name;
         this.email = email;
         this.driverId = driverId;
@@ -26,6 +27,7 @@ public class EmployeeDriver {
         this.phoneNumber = phoneNumber;
         this.aadhaarImageRef = aadhaarImageRef;
         this.licenceImageRef = licenceImageRef;
+        this.assignedAmbulanceNumber = assignedAmbulanceNumber;
     }
 
     public static EmployeeDriver createFromMap(Map<String, Object> map) {
@@ -49,8 +51,9 @@ public class EmployeeDriver {
         String aadhaarImageRef = (String) map.get(ModelColumns.AADHAAR_IMAGE_REF);
         String licenceImageRef = (String) map.get(ModelColumns.LICENSE_IMAGE_REF);
         String email = (String) map.get(ModelColumns.EMAIL);
+        String assignedAmbulanceNumber = (String) map.get(ModelColumns.ASSIGNED_AMBULANCE_NUMBER);
 
-        return new EmployeeDriver(name, email, driverId, userId, age, phoneNumber, aadhaarImageRef, licenceImageRef);
+        return new EmployeeDriver(name, email, driverId, userId, age, phoneNumber, assignedAmbulanceNumber, aadhaarImageRef, licenceImageRef);
     }
 
     public String getDriverId() {
@@ -115,6 +118,14 @@ public class EmployeeDriver {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAssignedAmbulanceNumber() {
+        return assignedAmbulanceNumber;
+    }
+
+    public void setAssignedAmbulanceNumber(String assignedAmbulanceNumber) {
+        this.assignedAmbulanceNumber = assignedAmbulanceNumber;
     }
 
     public static class ModelColumns {
