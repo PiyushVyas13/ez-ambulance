@@ -6,9 +6,29 @@
     tools:context=".component.dashboard.owner.trip.ui.DropLocationFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/drop_location_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            />
+
+    </androidx.cardview.widget.CardView>
+
 
 </FrameLayout>

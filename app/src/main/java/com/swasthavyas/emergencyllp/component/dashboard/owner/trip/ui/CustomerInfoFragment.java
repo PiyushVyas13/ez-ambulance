@@ -4,63 +4,107 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.swasthavyas.emergencyllp.R;
+import com.swasthavyas.emergencyllp.databinding.FragmentCustomerInfoBinding;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CustomerInfoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CustomerInfoFragment extends Fragment {
+    FragmentCustomerInfoBinding viewBinding;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public CustomerInfoFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CustomerInfoFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CustomerInfoFragment newInstance(String param1, String param2) {
-        CustomerInfoFragment fragment = new CustomerInfoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        viewBinding = FragmentCustomerInfoBinding.inflate(getLayoutInflater());
+
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_customer_info, container, false);
+        return viewBinding.getRoot();
+    }
+
+    private boolean isIntegerNumeric(String s) {
+        try {
+            int x =  Integer.parseInt(s);
+            return true;
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isDoubleNumeric(String s) {
+        try {
+            double x = Double.parseDouble(s);
+            return true;
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    public boolean validateData() {
+        Editable customerName = viewBinding.customerName.getText();
+        Editable customerAge = viewBinding.customerAge.getText();
+        Editable estimatedPrice = viewBinding.estimatedPrice.getText();
+
+        if(customerName == null || customerAge == null || estimatedPrice == null) {
+            Toast.makeText(requireActivity(), "All fields are required!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(customerName.toString().isEmpty() || customerAge.toString().isEmpty() || estimatedPrice.toString().isEmpty()) {
+            Toast.makeText(requireActivity(), "All fields are required!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(!isIntegerNumeric(customerAge.toString()) || Integer.parseInt(customerAge.toString()) <= 0) {
+            Toast.makeText(requireActivity(), "Enter valid age!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(!isDoubleNumeric(estimatedPrice.toString()) || Double.parseDouble(estimatedPrice.toString()) < 0) {
+            Toast.makeText(requireActivity(), "Enter valid price!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public Bundle collectData() {
+        Bundle bundle = new Bundle();
+
+        Editable customerName = viewBinding.customerName.getText();
+        int customerAge = Integer.parseInt(viewBinding.customerAge.getText().toString());
+        double estimatedPrice = Double.parseDouble(viewBinding.estimatedPrice.getText().toString());
+        boolean isEmergencyRide = viewBinding.emergencyRideCheckbox.isChecked();
+
+        if(customerName == null || customerAge <= 0 || estimatedPrice < 0) {
+            return null;
+        }
+
+        bundle.putString("customer_name", customerName.toString());
+        bundle.putInt("customer_age", customerAge);
+        bundle.putDouble("estimated_price", estimatedPrice);
+        bundle.putBoolean("is_emergency_ride", isEmergencyRide);
+
+        return bundle;
     }
 }

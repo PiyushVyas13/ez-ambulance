@@ -1,66 +1,136 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.PlaceTypes;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.swasthavyas.emergencyllp.R;
+import com.swasthavyas.emergencyllp.databinding.FragmentDropLocationBinding;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DropLocationFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class DropLocationFragment extends Fragment {
+import java.util.Arrays;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class DropLocationFragment extends Fragment implements OnMapReadyCallback {
+
+    FragmentDropLocationBinding viewBinding;
+    private GoogleMap dropLocationMap;
+    private Marker marker;
+    private LatLng locationCoordinates;
+    private String dropLocationAddress;
 
     public DropLocationFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DropLocationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DropLocationFragment newInstance(String param1, String param2) {
-        DropLocationFragment fragment = new DropLocationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        viewBinding = FragmentDropLocationBinding.inflate(getLayoutInflater());
+
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_drop_location, container, false);
+        return viewBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        SupportMapFragment mapFragment = viewBinding.dropLocationMap.getFragment();
+        mapFragment.getMapAsync(this);
+
+        RectangularBounds bounds = RectangularBounds.newInstance(
+                new LatLng(20.5558, 78.6304),
+                new LatLng(21.2720, 79.4864)
+        );
+        AutocompleteSupportFragment autocompleteFragment = viewBinding.autocompleteFragment.getFragment();
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG, Place.Field.VIEWPORT, Place.Field.ADDRESS));
+        autocompleteFragment.setCountries("IN");
+        autocompleteFragment.setLocationRestriction(bounds);
+        autocompleteFragment.setTypesFilter(
+                Arrays.asList(
+                        PlaceTypes.HOSPITAL,
+                        PlaceTypes.PHARMACY
+                )
+        );
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.d(TAG, "onError: " + status.getStatusMessage());
+            }
+
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                LatLng coordinates = place.getLatLng();
+
+                if(coordinates != null) {
+                    Log.d(TAG, "onPlaceSelected: " + place.getAddress());
+
+                    locationCoordinates = place.getLatLng();
+                    dropLocationAddress = place.getAddress();
+
+                    marker.setPosition(coordinates);
+                    dropLocationMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20f));
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        dropLocationMap = googleMap;
+        marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
+
+    }
+
+    public boolean validateData() {
+        if(dropLocationAddress == null || dropLocationAddress.isEmpty() || locationCoordinates == null) {
+            Toast.makeText(requireActivity(), "Please select an address!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    public Bundle collectData() {
+        Bundle bundle = new Bundle();
+
+        bundle.putString("address", dropLocationAddress);
+        bundle.putParcelable("coordinates", locationCoordinates);
+
+        return bundle;
     }
 }

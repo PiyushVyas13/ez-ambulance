@@ -13,4 +13,5 @@ public class Trip {
     private EmployeeDriver assignedDriver;
     private Ambulance assignedAmbulance;
     private String ownerId;
+    private boolean isEmergencyRide;
 }

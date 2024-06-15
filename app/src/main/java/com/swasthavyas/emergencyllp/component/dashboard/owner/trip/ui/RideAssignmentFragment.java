@@ -11,6 +11,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.trip.domain.TripRegistrationStep;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.trip.viewmodel.TripAssignmentViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentRideAssignmentBinding;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -80,24 +82,69 @@ public class RideAssignmentFragment extends Fragment {
             }
         });
 
+        tripAssignmentViewModel.getRegistrationData().observe(getViewLifecycleOwner(), tripRegistrationData -> {
+            if(tripRegistrationData != null) {
+                Log.d(AppConstants.TAG, "registrationData: " + tripRegistrationData);
 
+                if(tripRegistrationData.containsKey(TripRegistrationStep.CUSTOMER_INFO) && tripRegistrationData.containsKey(TripRegistrationStep.PICKUP_LOCATION) && tripRegistrationData.containsKey(TripRegistrationStep.DROP_LOCATION)) {
+                    Toast.makeText(requireActivity(), "Ready for registration", Toast.LENGTH_SHORT).show();
+
+                    Bundle customerInfoData = tripRegistrationData.get(TripRegistrationStep.CUSTOMER_INFO);
+                    Bundle pickupLocationData = tripRegistrationData.get(TripRegistrationStep.PICKUP_LOCATION);
+                    Bundle dropLocationData = tripRegistrationData.get(TripRegistrationStep.DROP_LOCATION);
+
+                    //TODO: Process this data here (Call a method)
+                }
+            }
+        });
 
         viewBinding.nextOrAssignButton.setOnClickListener(v -> {
-
+            Fragment currentFragment = viewBinding.tripRegistrationContainer.getFragment().getChildFragmentManager().getPrimaryNavigationFragment();
             switch (currentStep.get()) {
                 case CUSTOMER_INFO:
+                    if(currentFragment instanceof CustomerInfoFragment) {
+                        CustomerInfoFragment customerInfoFragment = (CustomerInfoFragment) currentFragment;
 
-                    tripAssignmentViewModel.setCurrentStep(TripRegistrationStep.PICKUP_LOCATION);
-                    registrationNavController.navigate(R.id.action_customerInfoFragment_to_pickupLocationFragment);
+                        if(customerInfoFragment.validateData()) {
+                            Bundle customerInfoData = customerInfoFragment.collectData();
+                            tripAssignmentViewModel.addRegistrationData(TripRegistrationStep.CUSTOMER_INFO, customerInfoData);
+                            tripAssignmentViewModel.setCurrentStep(TripRegistrationStep.PICKUP_LOCATION);
+                            registrationNavController.navigate(R.id.action_customerInfoFragment_to_pickupLocationFragment);
+                        }
+
+                    }
+                    else {
+                        Toast.makeText(requireActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case PICKUP_LOCATION:
+                    if(currentFragment instanceof PickupLocationFragment) {
+                        PickupLocationFragment pickupLocationFragment =(PickupLocationFragment) currentFragment;
 
-                    tripAssignmentViewModel.setCurrentStep(TripRegistrationStep.DROP_LOCATION);
-                    registrationNavController.navigate(R.id.action_pickupLocationFragment_to_dropLocationFragment);
+                        if(pickupLocationFragment.validateData()) {
+                            Bundle pickupLocationData = pickupLocationFragment.collectData();
+                            tripAssignmentViewModel.addRegistrationData(TripRegistrationStep.PICKUP_LOCATION, pickupLocationData);
+                            tripAssignmentViewModel.setCurrentStep(TripRegistrationStep.DROP_LOCATION);
+                            registrationNavController.navigate(R.id.action_pickupLocationFragment_to_dropLocationFragment);
+                        }
+                    }
+                    else {
+                        Toast.makeText(requireActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case DROP_LOCATION:
-                    //TODO: Final Navigation flow yet to be decided for this action.
-                    dashboardNavController.navigateUp();
+
+                    if(currentFragment instanceof DropLocationFragment) {
+                        DropLocationFragment dropLocationFragment = (DropLocationFragment) currentFragment;
+
+                        if(dropLocationFragment.validateData()) {
+                            Bundle dropLocationData = dropLocationFragment.collectData();
+                            tripAssignmentViewModel.addRegistrationData(TripRegistrationStep.DROP_LOCATION, dropLocationData);
+
+                            //TODO: Final Navigation flow yet to be decided for this action.
+                            dashboardNavController.navigateUp();
+                        }
+                    }
                     break;
             }
         });

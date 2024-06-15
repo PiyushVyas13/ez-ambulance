@@ -20,6 +20,7 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 
+import com.google.android.libraries.places.api.Places;
 import com.google.firebase.auth.FirebaseUser;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.ui.DriverDashboardFragment;
@@ -140,6 +141,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final String apiKey = BuildConfig.MAPS_API_KEY;
+
+        if(!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), apiKey);
+        }
 
     }
 
