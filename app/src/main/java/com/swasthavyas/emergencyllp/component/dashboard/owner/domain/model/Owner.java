@@ -1,17 +1,11 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
-import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.domain.model.Ambulance;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.worker.DeleteAmbulanceWorker;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 
 import java.util.ArrayList;
 import java.util.List;

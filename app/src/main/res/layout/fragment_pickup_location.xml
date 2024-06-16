@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".component.dashboard.owner.trip.ui.PickupLocationFragment">
+    tools:context=".component.dashboard.owner.component.trip.ui.PickupLocationFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/street_address_layout"

@@ -18,7 +18,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.adapter.DisplayModeAdapter;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.employee.viewmodel.DriverRegistrationViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.viewmodel.DriverRegistrationViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentHomeBinding;
 

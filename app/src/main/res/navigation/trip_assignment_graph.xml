@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/customerInfoFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui.CustomerInfoFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.ui.CustomerInfoFragment"
         android:label="fragment_customer_info"
         tools:layout="@layout/fragment_customer_info" >
         <action
@@ -20,12 +20,12 @@
     </fragment>
     <fragment
         android:id="@+id/dropLocationFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui.DropLocationFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.ui.DropLocationFragment"
         android:label="fragment_drop_location"
         tools:layout="@layout/fragment_drop_location" />
     <fragment
         android:id="@+id/pickupLocationFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui.PickupLocationFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.ui.PickupLocationFragment"
         android:label="fragment_pickup_location"
         tools:layout="@layout/fragment_pickup_location" >
         <action

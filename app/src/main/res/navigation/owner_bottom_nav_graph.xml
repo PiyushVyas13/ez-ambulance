@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/ownerAddAmbulanceFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.ui.AddAmbulanceFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.AddAmbulanceFragment"
         android:label="2"
         tools:layout="@layout/fragment_add_ambulance" />
 
@@ -44,17 +44,17 @@
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/addDriverFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.employee.ui.AddDriverFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.ui.AddDriverFragment"
         android:label="2"
         tools:layout="@layout/fragment_add_driver" />
     <fragment
         android:id="@+id/ambulanceDetailFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.ambulance.ui.AmbulanceDetailFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.AmbulanceDetailFragment"
         android:label="1"
         tools:layout="@layout/fragment_ambulance_detail" />
     <fragment
         android:id="@+id/rideAssignmentFragment"
-        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.trip.ui.RideAssignmentFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.ui.RideAssignmentFragment"
         android:label="fragment_ride_assignment"
         tools:layout="@layout/fragment_ride_assignment" />
 
