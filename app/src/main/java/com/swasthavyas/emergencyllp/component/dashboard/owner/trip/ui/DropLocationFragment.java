@@ -29,11 +29,12 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.databinding.FragmentDropLocationBinding;
+import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
 
 import java.util.Arrays;
 
 
-public class DropLocationFragment extends Fragment implements OnMapReadyCallback {
+public class DropLocationFragment extends NavigationStepFragment implements OnMapReadyCallback {
 
     FragmentDropLocationBinding viewBinding;
     private GoogleMap dropLocationMap;
@@ -116,6 +117,7 @@ public class DropLocationFragment extends Fragment implements OnMapReadyCallback
 
     }
 
+    @Override
     public boolean validateData() {
         if(dropLocationAddress == null || dropLocationAddress.isEmpty() || locationCoordinates == null) {
             Toast.makeText(requireActivity(), "Please select an address!", Toast.LENGTH_SHORT).show();
@@ -125,6 +127,7 @@ public class DropLocationFragment extends Fragment implements OnMapReadyCallback
         return true;
     }
 
+    @Override
     public Bundle collectData() {
         Bundle bundle = new Bundle();
 

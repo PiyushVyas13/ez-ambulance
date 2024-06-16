@@ -37,6 +37,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.databinding.FragmentPickupLocationBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
+import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class PickupLocationFragment extends Fragment implements OnMapReadyCallback {
+public class PickupLocationFragment extends NavigationStepFragment implements OnMapReadyCallback {
 
     FragmentPickupLocationBinding viewBinding;
     GoogleMap pickupLocationMap;
@@ -181,6 +182,7 @@ public class PickupLocationFragment extends Fragment implements OnMapReadyCallba
 
     }
 
+    @Override
     public boolean validateData() {
         String streetAdress = viewBinding.streetAddressInput.getText().toString();
         String city = viewBinding.city.getText().toString();
@@ -199,7 +201,7 @@ public class PickupLocationFragment extends Fragment implements OnMapReadyCallba
 
         return true;
     }
-
+    @Override
     public Bundle collectData() {
         String streetAdress = viewBinding.streetAddressInput.getText().toString();
         String city = viewBinding.city.getText().toString();

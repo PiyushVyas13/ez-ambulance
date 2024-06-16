@@ -12,9 +12,10 @@ import android.widget.Toast;
 
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.databinding.FragmentCustomerInfoBinding;
+import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
 
 
-public class CustomerInfoFragment extends Fragment {
+public class CustomerInfoFragment extends NavigationStepFragment {
     FragmentCustomerInfoBinding viewBinding;
 
 
@@ -40,25 +41,7 @@ public class CustomerInfoFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
-    private boolean isIntegerNumeric(String s) {
-        try {
-            int x =  Integer.parseInt(s);
-            return true;
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private boolean isDoubleNumeric(String s) {
-        try {
-            double x = Double.parseDouble(s);
-            return true;
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
-    }
+    @Override
     public boolean validateData() {
         Editable customerName = viewBinding.customerName.getText();
         Editable customerAge = viewBinding.customerAge.getText();
@@ -88,6 +71,7 @@ public class CustomerInfoFragment extends Fragment {
 
     }
 
+    @Override
     public Bundle collectData() {
         Bundle bundle = new Bundle();
 
