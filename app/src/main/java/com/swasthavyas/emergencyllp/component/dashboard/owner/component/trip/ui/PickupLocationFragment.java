@@ -145,12 +145,17 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
                         streetAddress.insert(0, addressComponent.getName());
                         break;
                     case "route":
-                        streetAddress.append(" ").append(addressComponent.getShortName());
+                        if(!addressComponent.getName().isEmpty()) {
+                            streetAddress.append(" ").append(addressComponent.getShortName()).append(", ");
+                        }
+
                         break;
                     case "sublocality":
                     case "sublocality_level_1":
                     case "locality":
-                        streetAddress.append(", ").append(addressComponent.getName());
+                        if(!addressComponent.getName().isEmpty()) {
+                            streetAddress.append(addressComponent.getName()).append(", ");
+                        }
                         break;
                     case "administrative_area_level_3":
                     case "city":
@@ -164,13 +169,31 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
                         break;
                 }
             }
-            viewBinding.streetAddressInput.setText(streetAddress.toString());
+            viewBinding.streetAddressInput.setText(sanitizeAddress(streetAddress.toString()));
             viewBinding.landmark.requestFocus();
 
             showMap(place);
             locationCoordinates = place.getLatLng();
         }
 
+    }
+
+    private static String sanitizeAddress(String rawAddressString) {
+        if(rawAddressString == null || rawAddressString.isEmpty()) {
+            return rawAddressString;
+        }
+
+        String sanitizedString = rawAddressString
+                .trim()
+                .replaceAll(",+", ",")
+                .replaceAll("\\s+", " ")
+                .replaceAll("\\s*,\\s*", ",");
+
+        if(sanitizedString.endsWith(",")) {
+            sanitizedString = sanitizedString.substring(0, sanitizedString.length()-1);
+        }
+
+        return sanitizedString;
     }
 
     private void showMap(@NonNull Place place) {
@@ -230,7 +253,7 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
                 .trimToSize();
 
 
-        dataBundle.putString("address", pickupLocationAddress.toString());
+        dataBundle.putString("address", sanitizeAddress(pickupLocationAddress.toString()));
         dataBundle.putParcelable("coordinates", locationCoordinates);
 
         return dataBundle;

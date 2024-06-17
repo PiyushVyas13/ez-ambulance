@@ -10,6 +10,8 @@ public class Trip {
     private double price;
     private LatLng pickupLocation;
     private LatLng dropLocation;
+    private String pickupLocationAddress;
+    private String dropLocationAddress;
     private EmployeeDriver assignedDriver;
     private Ambulance assignedAmbulance;
     private String ownerId;

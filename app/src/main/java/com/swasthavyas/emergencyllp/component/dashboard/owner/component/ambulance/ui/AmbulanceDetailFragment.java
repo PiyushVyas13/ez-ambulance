@@ -106,6 +106,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         viewBinding.ambulanceDetailTitle.setText(ambulance.getVehicleNumber());
         if(assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
             viewBinding.assignedDriverName.setText("Tap to select a driver");
+            viewBinding.assignRideButton.setEnabled(false);
         }
         else {
             viewBinding.assignedDriverName.setText("Assigned to: " + assignedDriver.getName());
