@@ -33,6 +33,9 @@
       "enabled": true,
       "port": 4000
     },
-    "singleProjectMode": true
+    "singleProjectMode": true,
+    "database": {
+      "port": 8000
+    }
   }
 }
