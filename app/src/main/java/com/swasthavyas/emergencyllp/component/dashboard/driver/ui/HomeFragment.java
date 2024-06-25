@@ -104,8 +104,7 @@ public class HomeFragment extends Fragment {
                                                     .addOnCompleteListener(task -> {
                                                        if(task.isSuccessful()) {
                                                            Toast.makeText(requireContext(), "Status Updated!", Toast.LENGTH_SHORT).show();
-                                                           dashboardViewModel.setDriverStatus(DriverStatus.OFF_DUTY);
-                                                           LocationService.stopService(requireContext());
+                                                           LocationService.stopService(requireContext(), employeeDriver.getEmail());
                                                        }
                                                        else {
                                                            Log.d(TAG, "onCreateView: " + task.getException());
@@ -166,7 +165,6 @@ public class HomeFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
                         Toast.makeText(requireActivity(), "Status updated!", Toast.LENGTH_SHORT).show();
-                        dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
                         LocationService.startService(requireContext(), employeeDriver.getDriverId());
                     }
                     else {

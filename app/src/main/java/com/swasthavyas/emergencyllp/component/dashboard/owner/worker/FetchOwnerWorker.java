@@ -108,6 +108,7 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                                             employeeMap.put(EmployeeDriver.ModelColumns.NAME, employee.get(EmployeeDriver.ModelColumns.NAME));
                                                             employeeMap.put(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, employee.getString(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER));
                                                             employeeMap.put(EmployeeDriver.ModelColumns.OWNER_ID, employee.getString(EmployeeDriver.ModelColumns.OWNER_ID));
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.LAST_LOCATION, employee.get(EmployeeDriver.ModelColumns.LAST_LOCATION));
                                                             employees.add(employeeMap);
                                                        }
 

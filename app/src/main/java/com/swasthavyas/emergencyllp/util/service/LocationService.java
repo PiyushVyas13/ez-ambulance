@@ -15,12 +15,14 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.location.DefaultLocationClient;
 import com.swasthavyas.emergencyllp.util.location.LocationClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +39,7 @@ public class LocationService extends Service {
 
     private LocationClient locationClient;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private String driverId;
+    private String driverId, driverMail;
     private final FirebaseDatabase database = FirebaseService.getInstance().getDatabaseInstance();
 
     @Override
@@ -52,6 +54,9 @@ public class LocationService extends Service {
             String action = intent.getAction();
             if(intent.hasExtra("driver_id")) {
                 this.driverId = intent.getStringExtra("driver_id");
+            }
+            if(intent.hasExtra("driver_mail")) {
+                this.driverMail = intent.getStringExtra("driver_mail");
             }
 
             switch (Objects.requireNonNull(action)) {
@@ -98,6 +103,8 @@ public class LocationService extends Service {
         startForeground(1, notificationBuilder.build());
     }
 
+    private Location currentLocation;
+
     private void sendLocationToDatabase(Location location) {
         List<Double> coords = new ArrayList<>();
         coords.add(location.getLatitude());
@@ -113,6 +120,7 @@ public class LocationService extends Service {
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful()) {
                             Log.d(TAG, "location updated: " + location.toString());
+                            currentLocation = location;
                         }
                         else {
                             Log.d(TAG, "sendLocationToDatabase: " + task.getException());
@@ -125,6 +133,28 @@ public class LocationService extends Service {
         stopForeground(true);
         stopSelf();
         compositeDisposable.clear();
+        if(this.driverMail != null && currentLocation != null) {
+            saveLastLocation(driverMail);
+        }
+
+    }
+
+    private void saveLastLocation(String driverMail) {
+        FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
+
+
+        dbInstance
+                .collection("employees")
+                .document(driverMail)
+                .update("last_location", Arrays.asList(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                .addOnCompleteListener(task -> {
+                   if(task.isSuccessful()) {
+                       Log.d(TAG, "saveLastLocation: location saved in firestore");
+                   }
+                   else {
+                       Log.d(TAG, "saveLastLocation: failed to save last location" + task.getException());
+                   }
+                });
     }
 
     @Override
@@ -140,9 +170,10 @@ public class LocationService extends Service {
         context.startService(startIntent);
     }
 
-    public static void stopService(Context context) {
+    public static void stopService(Context context, String driverMail) {
         Intent stopIntent = new Intent(context, LocationService.class);
         stopIntent.setAction(ACTION_STOP);
+        stopIntent.putExtra("driver_mail", driverMail);
         context.startService(stopIntent);
     }
 

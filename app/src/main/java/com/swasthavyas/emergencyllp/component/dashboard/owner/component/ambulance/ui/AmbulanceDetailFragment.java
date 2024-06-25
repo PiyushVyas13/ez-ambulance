@@ -54,6 +54,7 @@ import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallback {
@@ -72,6 +73,9 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
 
     private GoogleMap ambulanceLocationMap;
     private Marker marker;
+
+    private AtomicReference<Boolean> isActiveRef = new AtomicReference<>(false);
+    private AtomicReference<Boolean> isOnRideRef = new AtomicReference<>(false);
 
     private DatabaseReference tripReference;
     private final ValueEventListener tripListener  = new ValueEventListener() {
@@ -169,7 +173,6 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                         .filter(driver -> driver.getAssignedAmbulanceNumber().equals(ambulance.getVehicleNumber()))
                         .findFirst()
                         .ifPresent(driver -> assignedDriver = driver);
-                Toast.makeText(requireContext(), "GELLO", Toast.LENGTH_SHORT).show();
 
 
                 if (assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
@@ -222,7 +225,9 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                         List<Double> coords = (List<Double>) snapshot.getValue();
 
                                         viewBinding.assignedDriverName.setText(String.format("Assigned to: %s (active)", assignedDriver.getName()));
-                                        viewBinding.assignRideButton.setEnabled(true);
+                                        isActiveRef.set(true);
+
+                                        viewBinding.assignRideButton.setEnabled(!isOnRideRef.get() && isActiveRef.get());
 
                                         LatLng coordinates = new LatLng(coords.get(0), coords.get(1));
                                         if (ambulanceLocationMap != null) {
@@ -238,7 +243,19 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                     } else {
                                         viewBinding.assignRideButton.setEnabled(false);
                                         viewBinding.assignedDriverName.setText(String.format("Assigned to: %s (inactive)", assignedDriver.getName()));
+                                        isActiveRef.set(false);
                                         Log.d(TAG, "onDataChange: snapshot does not exist (yet).");
+                                        if(assignedDriver.getLastLocation() != null) {
+                                            LatLng coordinates = new LatLng(assignedDriver.getLastLocation().get(0), assignedDriver.getLastLocation().get(1));
+                                            if (ambulanceLocationMap != null) {
+                                                if (marker == null) {
+                                                    marker = ambulanceLocationMap.addMarker(new MarkerOptions().position(coordinates).title("Driver Location"));
+                                                } else {
+                                                    marker.setPosition(coordinates);
+                                                }
+                                                ambulanceLocationMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20f));
+                                            }
+                                        }
                                         //TODO: Get the last known location from persistent database.
                                     }
                                 }
@@ -266,10 +283,11 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                     .child(tripId)
                                     .child("status");
 
-
+                            isOnRideRef.set(true);
                             tripReference.addValueEventListener(tripListener);
                         } else {
-                            viewBinding.assignRideButton.setEnabled(true);
+                            viewBinding.assignRideButton.setEnabled(isActiveRef.get());
+                            isOnRideRef.set(false);
                             viewBinding.assignRideButton.setText("Assign Ride");
                             viewBinding.ambulanceRideIndicator.setVisibility(View.GONE);
                         }
