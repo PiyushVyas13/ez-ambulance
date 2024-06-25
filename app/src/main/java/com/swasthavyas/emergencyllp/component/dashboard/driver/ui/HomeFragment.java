@@ -47,6 +47,8 @@ public class HomeFragment extends Fragment {
         employeeViewModel = new ViewModelProvider(requireActivity()).get(EmployeeViewModel.class);
         database = FirebaseService.getInstance().getDatabaseInstance();
 
+        viewBinding.goTo.setEnabled(false);
+
         dashboardViewModel.getUserRole().observe(getViewLifecycleOwner(), userRole -> {
             switch (userRole) {
                 case EMPLOYEE_DRIVER:
@@ -60,25 +62,25 @@ public class HomeFragment extends Fragment {
                             dashboardViewModel.getDriverStatus().observe(getViewLifecycleOwner(), driverStatus -> {
                                 switch (driverStatus) {
                                     case OFF_DUTY:
-                                        viewBinding.goTo.setImageResource(R.drawable.number3_stepper_top);
                                         viewBinding.offDuty.setImageResource(R.drawable.right);
                                         viewBinding.onDuty.setImageResource(R.drawable.number2_stepper_top);
-                                        viewBinding.onDuty.setEnabled(true);
+                                        viewBinding.goTo.setImageResource(R.drawable.number3_stepper_top);
                                         viewBinding.offDuty.setEnabled(false);
+                                        viewBinding.onDuty.setEnabled(true);
                                         break;
                                     case ON_DUTY:
+                                        viewBinding.offDuty.setImageResource(R.drawable.number1_stepper_top);
                                         viewBinding.onDuty.setImageResource(R.drawable.right);
                                         viewBinding.goTo.setImageResource(R.drawable.number3_stepper_top);
-                                        viewBinding.offDuty.setImageResource(R.drawable.number2_stepper_top);
-                                        viewBinding.onDuty.setEnabled(false);
                                         viewBinding.offDuty.setEnabled(true);
+                                        viewBinding.onDuty.setEnabled(false);
                                         break;
                                     case ON_TRIP:
-                                        viewBinding.onDuty.setEnabled(false);
-                                        viewBinding.offDuty.setEnabled(false);
-                                        viewBinding.goTo.setImageResource(R.drawable.right);
-                                        viewBinding.offDuty.setImageResource(R.drawable.number3_stepper_top);
+                                        viewBinding.offDuty.setImageResource(R.drawable.number1_stepper_top);
                                         viewBinding.onDuty.setImageResource(R.drawable.number2_stepper_top);
+                                        viewBinding.goTo.setImageResource(R.drawable.right);
+                                        viewBinding.offDuty.setEnabled(false);
+                                        viewBinding.onDuty.setEnabled(false);
                                         break;
                                 }
                             });
