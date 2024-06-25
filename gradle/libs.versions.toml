@@ -22,6 +22,8 @@ navigationUi = "2.7.7"
 otpView = "1.1"
 places = "3.5.0"
 playServicesMaps = "18.2.0"
+rxandroid = "3.0.2"
+rxjava = "3.1.5"
 sdpAndroid = "1.1.1"
 secretsGradlePlugin = "2.0.1"
 sspAndroid = "1.1.1"
@@ -59,6 +61,8 @@ material-v190 = { module = "com.google.android.material:material", version.ref =
 otp-view = { module = "com.github.appsfeature:otp-view", version.ref = "otpView" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
+rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
 secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }

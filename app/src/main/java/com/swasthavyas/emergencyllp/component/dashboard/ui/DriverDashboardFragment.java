@@ -1,12 +1,15 @@
 package com.swasthavyas.emergencyllp.component.dashboard.ui;
 
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +19,8 @@ import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -50,6 +55,8 @@ import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -141,6 +148,7 @@ public class DriverDashboardFragment extends Fragment {
                           String tripId = intent.getStringExtra("trip_id");
                           Toast.makeText(context, tripId, Toast.LENGTH_SHORT).show();
                           receivedTripId = tripId;
+                          showRequestDialog(tripId);
                       }
             }
         };
@@ -262,6 +270,21 @@ public class DriverDashboardFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        if(!hasLocationPermissions()) {
+            List<String> permissions = new ArrayList<>();
+            permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissions.add(Manifest.permission.POST_NOTIFICATIONS);
+            }
+            String[] permissionArray = permissions.toArray(new String[0]);
+
+            ActivityCompat
+                    .requestPermissions(requireActivity(), permissionArray, 111);
+        }
+
         registerForegroundRequestReceiver();
         registerBackgroundRequestReceiver();
     }
@@ -312,5 +335,11 @@ public class DriverDashboardFragment extends Fragment {
                     reference.setValue(TripStatus.REJECTED);
                 })
                 .show();
+    }
+
+    private boolean hasLocationPermissions() {
+        return
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 }

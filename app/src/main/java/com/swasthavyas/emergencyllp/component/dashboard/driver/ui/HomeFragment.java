@@ -21,6 +21,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.Employe
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.databinding.FragmentHomeDriverBinding;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
+import com.swasthavyas.emergencyllp.util.service.LocationService;
 import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 
 import java.util.ArrayList;
@@ -103,6 +104,8 @@ public class HomeFragment extends Fragment {
                                                     .addOnCompleteListener(task -> {
                                                        if(task.isSuccessful()) {
                                                            Toast.makeText(requireContext(), "Status Updated!", Toast.LENGTH_SHORT).show();
+                                                           dashboardViewModel.setDriverStatus(DriverStatus.OFF_DUTY);
+                                                           LocationService.stopService(requireContext());
                                                        }
                                                        else {
                                                            Log.d(TAG, "onCreateView: " + task.getException());
@@ -164,6 +167,7 @@ public class HomeFragment extends Fragment {
                     if(task.isSuccessful()) {
                         Toast.makeText(requireActivity(), "Status updated!", Toast.LENGTH_SHORT).show();
                         dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
+                        LocationService.startService(requireContext(), employeeDriver.getDriverId());
                     }
                     else {
                         Log.d(TAG, "updateDriverStatus: " + task.getException());

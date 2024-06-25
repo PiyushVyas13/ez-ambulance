@@ -47,6 +47,8 @@ dependencies {
     implementation libs.gson
     implementation libs.datastore.preferences
     implementation libs.datastore.rxjava2
+    implementation libs.rxandroid
+    implementation libs.rxjava
 
     // UI Components
     implementation libs.material
