@@ -18,6 +18,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
+import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,14 +45,17 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
 
 
         // Initialize Firestore and Storage
-        dbInstance = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
+        dbInstance = FirebaseService.getInstance().getFirestoreInstance();
+        storage = FirebaseService.getInstance().getStorageInstance();
         rootRef = storage.getReference();
 
-        DocumentReference newDriverReference = dbInstance.collection("owners").document(Objects.requireNonNull(receivedData.getString("owner_id"))).collection("employees").document(Objects.requireNonNull(receivedData.getString("email")));
+        // DocumentReference newDriverReference = dbInstance.collection("owners").document(Objects.requireNonNull(receivedData.getString("owner_id"))).collection("employees").document(Objects.requireNonNull(receivedData.getString("email")));
+        DocumentReference updatedDriverReference = dbInstance
+                .collection("employees")
+                        .document(Objects.requireNonNull(receivedData.getString("email")));
 
         // Perform pre-insertion check (email)
-        newDriverReference.get().addOnCompleteListener(checkEmailTask -> {
+        updatedDriverReference.get().addOnCompleteListener(checkEmailTask -> {
            if(checkEmailTask.isSuccessful()) {
                DocumentSnapshot snapshot = checkEmailTask.getResult();
                if(snapshot.exists()) {
@@ -105,9 +109,7 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
      * Perform pre-insertion check (phone number).
      */
     private void checkPhoneNumber() {
-        dbInstance.collection("owners")
-                .document(Objects.requireNonNull(receivedData.getString("owner_id")))
-                .collection("employees")
+        dbInstance.collection("employees")
                 .whereEqualTo("phone_number", Objects.requireNonNull(receivedData.getString("phone_number")))
                 .get()
                 .addOnCompleteListener(checkPhoneNumberTask -> {
@@ -135,10 +137,10 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
         inputData.put(EmployeeDriver.ModelColumns.PHONE_NUMBER, Objects.requireNonNull(receivedData.getString("phone_number")));
         inputData.put(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, Objects.requireNonNull(receivedData.getString("assigned_ambulance")));
         inputData.put(EmployeeDriver.ModelColumns.DRIVER_ID, driverId);
+        inputData.put(EmployeeDriver.ModelColumns.OWNER_ID, Objects.requireNonNull(receivedData.getString("owner_id")));
 
+        Log.d(AppConstants.TAG, "insertData: " + inputData);
         dbInstance
-                .collection("owners")
-                .document(Objects.requireNonNull(receivedData.getString("owner_id")))
                 .collection("employees")
                 .document(Objects.requireNonNull(receivedData.getString("email")))
                 .set(inputData)
@@ -180,8 +182,6 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
 
     private void updateDocument(Map<String, Object> inputData) {
         dbInstance
-                .collection("owners")
-                .document(Objects.requireNonNull(receivedData.getString("owner_id")))
                 .collection("employees")
                 .document(Objects.requireNonNull(receivedData.getString("email")))
                 .update(
@@ -200,8 +200,6 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
 
     private void fetchAndInsertUserId(Map<String, Object> inputData) {
         dbInstance
-                .collection("owners")
-                .document(Objects.requireNonNull(receivedData.getString("owner_id")))
                 .collection("employees")
                 .document(Objects.requireNonNull(receivedData.getString("email")))
                 .addSnapshotListener((value, error) -> {
@@ -213,6 +211,14 @@ public class AddDriverWorker extends ListenableWorkerAdapter {
 
                            Data.Builder opDataBuilder = new Data.Builder()
                                    .putAll(inputData);
+
+                           Map<String, Object> roleMap = new HashMap<>();
+                           roleMap.put("role", "employee_driver");
+
+                           dbInstance
+                                   .collection("user_roles")
+                                   .document((String) data.get("user_id"))
+                                   .set(roleMap);
 
                            callback.onSuccess(opDataBuilder.build());
                        }

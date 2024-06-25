@@ -1,66 +1,171 @@
 package com.swasthavyas.emergencyllp.component.dashboard.driver.ui;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.database.FirebaseDatabase;
 import com.swasthavyas.emergencyllp.R;
+import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.databinding.FragmentHomeDriverBinding;
+import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
+import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class HomeFragment extends Fragment {
+    FragmentHomeDriverBinding viewBinding;
+    DashboardViewModel dashboardViewModel;
+    EmployeeViewModel employeeViewModel;
+    FirebaseDatabase database;
+    EmployeeDriver employeeDriver;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        viewBinding = FragmentHomeDriverBinding.inflate(getLayoutInflater());
+        dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
+        employeeViewModel = new ViewModelProvider(requireActivity()).get(EmployeeViewModel.class);
+        database = FirebaseService.getInstance().getDatabaseInstance();
+
+        dashboardViewModel.getUserRole().observe(getViewLifecycleOwner(), userRole -> {
+            switch (userRole) {
+                case EMPLOYEE_DRIVER:
+                    EmployeeViewModel employeeViewModel = new ViewModelProvider(requireActivity()).get(EmployeeViewModel.class);
+
+                    employeeViewModel.getCurrentEmployee().observe(getViewLifecycleOwner(), employeeDriver -> {
+                        if(employeeDriver != null) {
+                            viewBinding.changeAmbulanceFab.setText(employeeDriver.getName());
+                            Log.d(TAG, "onCreateView: " + employeeDriver);
+
+                            dashboardViewModel.getDriverStatus().observe(getViewLifecycleOwner(), driverStatus -> {
+                                switch (driverStatus) {
+                                    case OFF_DUTY:
+                                        viewBinding.goTo.setImageResource(R.drawable.number3_stepper_top);
+                                        viewBinding.offDuty.setImageResource(R.drawable.right);
+                                        viewBinding.onDuty.setImageResource(R.drawable.number2_stepper_top);
+                                        viewBinding.onDuty.setEnabled(true);
+                                        viewBinding.offDuty.setEnabled(false);
+                                        break;
+                                    case ON_DUTY:
+                                        viewBinding.onDuty.setImageResource(R.drawable.right);
+                                        viewBinding.goTo.setImageResource(R.drawable.number3_stepper_top);
+                                        viewBinding.offDuty.setImageResource(R.drawable.number2_stepper_top);
+                                        viewBinding.onDuty.setEnabled(false);
+                                        viewBinding.offDuty.setEnabled(true);
+                                        break;
+                                    case ON_TRIP:
+                                        viewBinding.onDuty.setEnabled(false);
+                                        viewBinding.offDuty.setEnabled(false);
+                                        viewBinding.goTo.setImageResource(R.drawable.right);
+                                        viewBinding.offDuty.setImageResource(R.drawable.number3_stepper_top);
+                                        viewBinding.onDuty.setImageResource(R.drawable.number2_stepper_top);
+                                        break;
+                                }
+                            });
+
+                            viewBinding.onDuty.setOnClickListener(v -> {
+                                showConfirmationDialog();
+                            });
+
+                            viewBinding.offDuty.setOnClickListener(v -> {
+                                new MaterialAlertDialogBuilder(requireContext())
+                                        .setTitle("Confirm status change")
+                                        .setMessage("You will not receive any rides while you are off duty")
+                                        .setPositiveButton("Ok", (dialog, which) -> {
+                                            database
+                                                    .getReference()
+                                                    .getRoot()
+                                                    .child("active_drivers")
+                                                    .child(employeeDriver.getDriverId())
+                                                    .removeValue()
+                                                    .addOnCompleteListener(task -> {
+                                                       if(task.isSuccessful()) {
+                                                           Toast.makeText(requireContext(), "Status Updated!", Toast.LENGTH_SHORT).show();
+                                                       }
+                                                       else {
+                                                           Log.d(TAG, "onCreateView: " + task.getException());
+                                                       }
+                                                    });
+                                        })
+                                        .setNegativeButton("Cancel", (dialog, which) -> {})
+                                        .show();
+                            });
+
+                        }
+                    });
+
+                    break;
+                case DRIVER:
+                    throw new UnsupportedOperationException("Not yet implemented");
+            }
+        });
+
+
+
+        employeeViewModel.getCurrentEmployee().observe(getViewLifecycleOwner(), employeeDriver -> {
+            if(employeeDriver != null) {
+                this.employeeDriver = employeeDriver;
+
+            }
+        });
+
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_driver, container, false);
+        return viewBinding.getRoot();
+    }
+
+    private void showConfirmationDialog() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Confirm Status Change")
+                .setMessage("You are about to change your status from 'OFF DUTY' to 'ON DUTY'." +
+                        "This will allow the fleet owner to view your live location. To turn off location sharing, switch to OFF DUTY mode.")
+                .setPositiveButton("I Understand", (dialog, which) -> {
+                    updateDriverStatus();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {})
+                .show();
+    }
+
+    private void updateDriverStatus() {
+
+        List<Double> coords = new ArrayList<>();
+        coords.add(24.422342342);
+        coords.add(53.535234234);
+
+        database
+                .getReference()
+                .child("active_drivers")
+                .child(employeeDriver.getDriverId())
+                .setValue(coords)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        Toast.makeText(requireActivity(), "Status updated!", Toast.LENGTH_SHORT).show();
+                        dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
+                    }
+                    else {
+                        Log.d(TAG, "updateDriverStatus: " + task.getException());
+                    }
+                });
     }
 }

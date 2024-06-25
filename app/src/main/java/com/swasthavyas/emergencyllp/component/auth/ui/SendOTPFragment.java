@@ -21,7 +21,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.databinding.FragmentSendOtpBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
-import com.swasthavyas.emergencyllp.util.FirebaseAuthUtil;
+import com.swasthavyas.emergencyllp.util.firebase.FirebaseAuthUtil;
 
 import java.util.concurrent.TimeUnit;
 

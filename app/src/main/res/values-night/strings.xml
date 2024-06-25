@@ -65,4 +65,5 @@
     <string name="back">Back</string>
     <string name="enter_drop_location">Enter Drop Location</string>
     <string name="book_ride">Book Ride</string>
+    <string name="tap_to_select_a_driver">Tap to select a driver</string>
 </resources>

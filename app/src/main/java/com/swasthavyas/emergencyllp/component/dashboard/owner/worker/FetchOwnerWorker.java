@@ -90,9 +90,8 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                             modifiedResult.put("ambulances", getSerializedString(ambulances));
 
                                             dbInstance
-                                                    .collection("owners")
-                                                    .document(document.getId())
                                                     .collection("employees")
+                                                    .whereEqualTo("owner_id", document.getId())
                                                     .get()
                                                     .addOnCompleteListener(employeeTask -> {
                                                        List<Map<String, Object>> employees = new ArrayList<>();
@@ -108,7 +107,7 @@ public class FetchOwnerWorker extends ListenableWorkerAdapter {
                                                             employeeMap.put(EmployeeDriver.ModelColumns.AGE, ((Long) employee.get(EmployeeDriver.ModelColumns.AGE)).intValue());
                                                             employeeMap.put(EmployeeDriver.ModelColumns.NAME, employee.get(EmployeeDriver.ModelColumns.NAME));
                                                             employeeMap.put(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, employee.getString(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER));
-
+                                                            employeeMap.put(EmployeeDriver.ModelColumns.OWNER_ID, employee.getString(EmployeeDriver.ModelColumns.OWNER_ID));
                                                             employees.add(employeeMap);
                                                        }
 

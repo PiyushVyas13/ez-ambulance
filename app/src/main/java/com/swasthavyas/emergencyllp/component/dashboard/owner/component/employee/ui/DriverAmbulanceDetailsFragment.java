@@ -54,7 +54,13 @@ public class DriverAmbulanceDetailsFragment extends Fragment {
         ownerViewModel.getOwner().observe(getViewLifecycleOwner(), owner -> {
             List<Ambulance> ambulances = owner.getAmbulances().getValue();
 
+            List<String> assingedAmbulances = owner.getEmployees().getValue().stream()
+                    .filter(employeeDriver -> !employeeDriver.getAssignedAmbulanceNumber().isEmpty() && !employeeDriver.getAssignedAmbulanceNumber().equals("None"))
+                    .map(EmployeeDriver::getAssignedAmbulanceNumber)
+                    .collect(Collectors.toList());
+
             List<String> ambulanceNumbers = ambulances.stream()
+                    .filter(ambulance -> !assingedAmbulances.contains(ambulance.getVehicleNumber()))
                     .map(Ambulance::getVehicleNumber)
                     .collect(Collectors.toList());
 

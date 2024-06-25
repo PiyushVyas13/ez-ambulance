@@ -1,16 +1,14 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.ui;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.swasthavyas.emergencyllp.R;
+import androidx.work.Data;
+
 import com.swasthavyas.emergencyllp.databinding.FragmentCustomerInfoBinding;
 import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
 
@@ -72,8 +70,8 @@ public class CustomerInfoFragment extends NavigationStepFragment {
     }
 
     @Override
-    public Bundle collectData() {
-        Bundle bundle = new Bundle();
+    public Data collectData() {
+        Data.Builder dataBuilder = new Data.Builder();
 
         Editable customerName = viewBinding.customerName.getText();
         int customerAge = Integer.parseInt(viewBinding.customerAge.getText().toString());
@@ -84,11 +82,11 @@ public class CustomerInfoFragment extends NavigationStepFragment {
             return null;
         }
 
-        bundle.putString("customer_name", customerName.toString());
-        bundle.putInt("customer_age", customerAge);
-        bundle.putDouble("estimated_price", estimatedPrice);
-        bundle.putBoolean("is_emergency_ride", isEmergencyRide);
+        dataBuilder.putString("customer_name", customerName.toString());
+        dataBuilder.putInt("customer_age", customerAge);
+        dataBuilder.putDouble("estimated_price", estimatedPrice);
+        dataBuilder.putBoolean("is_emergency_ride", isEmergencyRide);
 
-        return bundle;
+        return dataBuilder.build();
     }
 }

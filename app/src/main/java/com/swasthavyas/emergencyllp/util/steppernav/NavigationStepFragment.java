@@ -1,14 +1,13 @@
 package com.swasthavyas.emergencyllp.util.steppernav;
 
-import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
+import androidx.work.Data;
 
 public abstract class NavigationStepFragment extends Fragment {
 
     protected boolean isIntegerNumeric(String s) {
         try {
-            int x =  Integer.parseInt(s);
+            Integer.parseInt(s);
             return true;
         }
         catch (NumberFormatException e) {
@@ -27,5 +26,5 @@ public abstract class NavigationStepFragment extends Fragment {
     }
 
     public abstract boolean validateData();
-    public abstract Bundle collectData();
+    public abstract Data collectData();
 }

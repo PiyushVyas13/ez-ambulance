@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.util;
+package com.swasthavyas.emergencyllp.util.firebase;
 
 import android.util.Log;
 
@@ -10,6 +10,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.swasthavyas.emergencyllp.util.AppConstants;
 
 public class FirebaseAuthUtil {
     public static FirebaseUser signInWithPhoneNumber(PhoneAuthCredential credential) {

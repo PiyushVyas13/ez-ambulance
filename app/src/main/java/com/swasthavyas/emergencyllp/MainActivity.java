@@ -1,5 +1,7 @@
 package com.swasthavyas.emergencyllp;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,14 +21,12 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
-
 import com.google.android.libraries.places.api.Places;
 import com.google.firebase.auth.FirebaseUser;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.ui.DriverDashboardFragment;
 import com.swasthavyas.emergencyllp.component.dashboard.ui.OwnerDashboardFragment;
 import com.swasthavyas.emergencyllp.component.dashboard.worker.FetchRoleWorker;
-import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
 import java.util.Locale;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         AtomicBoolean lock = new AtomicBoolean(false);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        Log.d(AppConstants.TAG, "In MainActivity");
+        Log.d(TAG, "In MainActivity");
 
 
         authViewModel.getCurrentUser().observe(this, firebaseUser -> {
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (!lock.get()) {
                 this.currentUser = firebaseUser;
-                Log.d(AppConstants.TAG, "MainActivity.Observer: " + this.currentUser);
+                Log.d(TAG, "MainActivity.Observer: " + this.currentUser);
 
                 if (this.currentUser != null) {
                     OneTimeWorkRequest fetchRoleRequest = new OneTimeWorkRequest.Builder(FetchRoleWorker.class)
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                                     if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
                                         String role = workInfo.getOutputData().getString("role");
                                         if(role == null) {
-                                            Log.d(AppConstants.TAG, "MainActivity.onCreate: role not received.");
+                                            Log.d(TAG, "MainActivity.onCreate: role not received.");
                                             return;
 
                                         }
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                                                 break;
                                             default:
                                                 Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-                                                Log.d(AppConstants.TAG, "MainActivity.onCreate: invalid role - [ " + role + " ]");
+                                                Log.d(TAG, "MainActivity.onCreate: invalid role - [ " + role + " ]");
                                         }
 
                                         fragmentTransaction.commit();
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                                         if(workInfo.getOutputData().getString("exception").equals("NoSuchElementException")) {
                                             // TODO: Redirect to registration UI
     //                                    FirebaseAuth.getInstance().signOut();
-                                            Log.d(AppConstants.TAG, "fetchRoleObserver: " + workInfo.getId() + ": " +workInfo.getState());
+                                            Log.d(TAG, "fetchRoleObserver: " + workInfo.getId() + ": " +workInfo.getState());
                                             Toast.makeText(this, "Redirecting to registration UI...", Toast.LENGTH_SHORT).show();
 
                                             Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         else {
                                             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-                                            Log.d(AppConstants.TAG, "onCreate: " + workInfo.getOutputData().getString("message"));
+                                            Log.d(TAG, "onCreate: " + workInfo.getOutputData().getString("message"));
                                         }
                                     }
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, AuthActivity.class);
                     startActivity(intent);
                     Toast.makeText(this, "You are not logged in", Toast.LENGTH_SHORT).show();
-                    Log.d(AppConstants.TAG, "Not logged in");
+                    Log.d(TAG, "Not logged in");
                     finish();
                 }
 
@@ -145,6 +145,14 @@ public class MainActivity extends AppCompatActivity {
 
         if(!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), apiKey);
+        }
+
+        if(getIntent().getExtras() != null) {
+            Log.d(TAG, "MainActivity.onCreate: " + getIntent().getExtras().keySet());
+            for (String key :
+                    getIntent().getExtras().keySet())    {
+                Log.d(TAG, key + "=>" + getIntent().getExtras().get(key));
+            }
         }
 
     }
