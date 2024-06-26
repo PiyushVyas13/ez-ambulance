@@ -49,6 +49,8 @@ dependencies {
     implementation libs.datastore.rxjava2
     implementation libs.rxandroid
     implementation libs.rxjava
+    implementation libs.kotlin.stdlib
+    implementation libs.input.mask.android
 
     // UI Components
     implementation libs.material

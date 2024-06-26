@@ -55,6 +55,7 @@ import com.swasthavyas.emergencyllp.util.types.TripStatus;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 
 public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallback {
@@ -74,8 +75,8 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     private GoogleMap ambulanceLocationMap;
     private Marker marker;
 
-    private AtomicReference<Boolean> isActiveRef = new AtomicReference<>(false);
-    private AtomicReference<Boolean> isOnRideRef = new AtomicReference<>(false);
+    private final AtomicReference<Boolean> isActiveRef = new AtomicReference<>(false);
+    private final AtomicReference<Boolean> isOnRideRef = new AtomicReference<>(false);
 
     private DatabaseReference tripReference;
     private final ValueEventListener tripListener  = new ValueEventListener() {
@@ -245,6 +246,8 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                         viewBinding.assignedDriverName.setText(String.format("Assigned to: %s (inactive)", assignedDriver.getName()));
                                         isActiveRef.set(false);
                                         Log.d(TAG, "onDataChange: snapshot does not exist (yet).");
+
+                                        // Get the last known location from persistent database.
                                         if(assignedDriver.getLastLocation() != null) {
                                             LatLng coordinates = new LatLng(assignedDriver.getLastLocation().get(0), assignedDriver.getLastLocation().get(1));
                                             if (ambulanceLocationMap != null) {
@@ -256,7 +259,12 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                                 ambulanceLocationMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20f));
                                             }
                                         }
-                                        //TODO: Get the last known location from persistent database.
+                                        else {
+                                            if(ambulanceLocationMap != null) {
+                                                LatLng coordinates = new LatLng(21.1458, 79.0882);
+                                                ambulanceLocationMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20f));
+                                            }
+                                        }
                                     }
                                 }
 
@@ -332,9 +340,16 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                     });
         };
 
+        List<EmployeeDriver> availableEmployees =
+                owner.getEmployees().getValue()
+                        .stream()
+                        .filter(driver -> driver.getAssignedAmbulanceNumber() == null || driver.getAssignedAmbulanceNumber().equals("None"))
+                        .collect(Collectors.toList());
+
         DriverSearchFragment dialogFragment = new DriverSearchFragment(
-                owner.getEmployees().getValue(), searchDialogListener
+                availableEmployees, searchDialogListener
         );
+
         return dialogFragment;
     }
 

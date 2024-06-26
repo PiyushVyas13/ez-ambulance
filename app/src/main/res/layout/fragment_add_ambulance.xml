@@ -153,6 +153,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_43sdp"
                 android:textColor="@color/black"
+                android:digits="1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-"
+                android:inputType="text"
                 android:textStyle="bold|italic" />
 
         </com.google.android.material.textfield.TextInputLayout>
