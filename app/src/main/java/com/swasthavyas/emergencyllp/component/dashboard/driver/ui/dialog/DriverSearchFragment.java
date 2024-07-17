@@ -49,7 +49,7 @@ public class DriverSearchFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewBinding = SearchDriverDialogBinding.inflate(inflater);
-        searchListAdapter = new DriverSearchListAdapter(requireContext(), itemClickListener, employeeList);
+        searchListAdapter = new DriverSearchListAdapter(requireContext(), itemClickListener);
         viewBinding.driverSearchResultList.setLayoutManager(new LinearLayoutManager(requireContext()));
         viewBinding.driverSearchResultList.setAdapter(searchListAdapter);
 

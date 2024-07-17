@@ -43,14 +43,15 @@ public class CustomerInfoFragment extends NavigationStepFragment {
     public boolean validateData() {
         Editable customerName = viewBinding.customerName.getText();
         Editable customerAge = viewBinding.customerAge.getText();
+        Editable customerMobile = viewBinding.customerMobile.getText();
         Editable estimatedPrice = viewBinding.estimatedPrice.getText();
 
-        if(customerName == null || customerAge == null || estimatedPrice == null) {
+        if(customerName == null || customerAge == null || estimatedPrice == null || customerMobile == null) {
             Toast.makeText(requireActivity(), "All fields are required!", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if(customerName.toString().isEmpty() || customerAge.toString().isEmpty() || estimatedPrice.toString().isEmpty()) {
+        if(customerName.toString().isEmpty() || customerAge.toString().isEmpty() || estimatedPrice.toString().isEmpty() || customerMobile.toString().isEmpty()) {
             Toast.makeText(requireActivity(), "All fields are required!", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -65,6 +66,11 @@ public class CustomerInfoFragment extends NavigationStepFragment {
             return false;
         }
 
+        if(customerMobile.toString().length() != 10) {
+            Toast.makeText(requireActivity(), "Enter valid phone number!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return true;
 
     }
@@ -74,15 +80,17 @@ public class CustomerInfoFragment extends NavigationStepFragment {
         Data.Builder dataBuilder = new Data.Builder();
 
         Editable customerName = viewBinding.customerName.getText();
+        Editable customerMobile = viewBinding.customerMobile.getText();
         int customerAge = Integer.parseInt(viewBinding.customerAge.getText().toString());
         double estimatedPrice = Double.parseDouble(viewBinding.estimatedPrice.getText().toString());
         boolean isEmergencyRide = viewBinding.emergencyRideCheckbox.isChecked();
 
-        if(customerName == null || customerAge <= 0 || estimatedPrice < 0) {
+        if(customerName == null || customerMobile == null || customerAge <= 0 || estimatedPrice < 0) {
             return null;
         }
 
         dataBuilder.putString("customer_name", customerName.toString());
+        dataBuilder.putString("customer_mobile", "91" + customerMobile.toString());
         dataBuilder.putInt("customer_age", customerAge);
         dataBuilder.putDouble("estimated_price", estimatedPrice);
         dataBuilder.putBoolean("is_emergency_ride", isEmergencyRide);

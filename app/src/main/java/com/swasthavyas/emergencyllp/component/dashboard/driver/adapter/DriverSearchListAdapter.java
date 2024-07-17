@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DriverSearchListAdapter extends RecyclerView.Adapter<DriverSearchListAdapter.ViewHolder> {
@@ -57,9 +58,9 @@ public class DriverSearchListAdapter extends RecyclerView.Adapter<DriverSearchLi
 
     private final ItemClickListener itemClickListener;
 
-    public DriverSearchListAdapter(Context context, ItemClickListener itemClickListener, List<EmployeeDriver> drivers) {
+    public DriverSearchListAdapter(Context context, ItemClickListener itemClickListener) {
         appContext = context;
-        employeeDrivers = drivers;
+        employeeDrivers = new ArrayList<>();
         this.itemClickListener = itemClickListener;
     }
 

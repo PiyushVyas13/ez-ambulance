@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:background="@drawable/background_round_corner_white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/title_text"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/emergency_ride_text"
+            android:textColor="@color/error"
+            android:layout_gravity="center"
+            android:textSize="@dimen/_20ssp"
+            android:textStyle="bold"/>
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/message_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="@string/new_request_text"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold"/>
+
+        <FrameLayout
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/negative_button"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="match_parent"
+                android:text="@string/decline_text"
+                android:background="@drawable/btn_background_white_black_border"
+                app:backgroundTintMode="multiply"
+                app:backgroundTint="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/_14ssp"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/positive_button"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:textSize="@dimen/_14ssp"
+                android:background="@drawable/background_round_primary"
+                app:backgroundTint="@color/primary"
+                android:text="@string/accept_text"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,8 @@
 package com.swasthavyas.emergencyllp.component.dashboard.ui;
 
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -40,6 +42,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.swasthavyas.emergencyllp.AuthActivity;
 import com.swasthavyas.emergencyllp.R;
@@ -48,16 +51,25 @@ import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.Dashboa
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.FetchEmployeeWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.databinding.FragmentDriverDashboardBinding;
+import com.swasthavyas.emergencyllp.network.SendSmsRequest;
+import com.swasthavyas.emergencyllp.network.TextLocalRepository;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Parent container fragment for the Driver's Dashboard
@@ -107,6 +119,90 @@ public class DriverDashboardFragment extends Fragment {
 
     }
 
+    private void observeTripStatus(String tripId) {
+        database
+                .getReference()
+                .getRoot()
+                .child("trips")
+                .child(employeeViewModel.getCurrentEmployee().getValue().getOwnerId())
+                .child(tripId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()) {
+                            Trip trip = snapshot.getValue(Trip.class);
+                            if(trip == null) {
+                                return;
+                            }
+
+                            switch (trip.getStatus()) {
+                                case INITIATED:
+                                    Toast.makeText(requireContext(), "Trip Initiated", Toast.LENGTH_SHORT).show();
+                                    // TODO: Send SMS to user
+                                    //sendUserConfirmationSms(trip.getCustomerMobile());
+                                    break;
+                            }
+
+
+                        } else {
+                            Log.d(TAG, "onDataChange: trip to observe does not exist.");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void retrievePotentialTrip() {
+
+        database
+                .getReference()
+                .getRoot()
+                .child("trips")
+                .child(employeeViewModel.getCurrentEmployee().getValue().getOwnerId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            Trip trip = dataSnapshot.getValue(Trip.class);
+                            if(trip.getAssignedDriverId().equals(employeeViewModel.getCurrentEmployee().getValue().getDriverId())) {
+                                observeTripStatus(trip.getId());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void sendUserConfirmationSms(String customerMobile) {
+        final String SMS_SENDER = "600010";
+        EmployeeDriver driver = employeeViewModel.getCurrentEmployee().getValue();
+
+        String message = "Your EZ ride has been confirmed! Driver details are as follows: \n" +
+                String.format("Driver Name: %s", driver.getName());
+
+        SendSmsRequest smsRequest = new SendSmsRequest(AppConstants.TEXTLOCAL_API_KEY, customerMobile, SMS_SENDER, message);
+        TextLocalRepository repository = new TextLocalRepository();
+        repository.sendSMS(smsRequest, new Callback<String>() {
+            @Override
+            public void onResponse(@NonNull Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: " + response.message());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable throwable) {
+                Log.d(TAG, "onResponse: " + throwable);
+            }
+        });
+    }
+
     private void observeDriverStatus(String driverId) {
         database
                 .getReference()
@@ -148,6 +244,7 @@ public class DriverDashboardFragment extends Fragment {
                           String tripId = intent.getStringExtra("trip_id");
                           Toast.makeText(context, tripId, Toast.LENGTH_SHORT).show();
                           receivedTripId = tripId;
+                          observeTripStatus(tripId);
                           showRequestDialog(tripId);
                       }
             }
@@ -198,9 +295,11 @@ public class DriverDashboardFragment extends Fragment {
                                         EmployeeDriver employee = EmployeeDriver.createFromMap(employeeMap);
                                         employeeViewModel.setEmployee(employee);
                                         if(receivedTripId != null) {
+                                            observeTripStatus(receivedTripId);
                                             showRequestDialog(receivedTripId);
                                         }
                                         observeDriverStatus(employee.getDriverId());
+                                        retrievePotentialTrip();
                                     }
 
 
@@ -216,6 +315,7 @@ public class DriverDashboardFragment extends Fragment {
                                     viewBinding.driverDashboardProgressbar.setVisibility(View.VISIBLE);
                                 }
                             });
+
                     break;
                 case DRIVER:
                     throw new UnsupportedOperationException("not yet implemented.");
@@ -301,15 +401,15 @@ public class DriverDashboardFragment extends Fragment {
     private final DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            Log.d(AppConstants.TAG, "showRequestDialog: " + reference);
+            Log.d(TAG, "showRequestDialog: " + reference);
             reference.setValue(TripStatus.INITIATED)
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful()) {
-                            Log.d(AppConstants.TAG, "showRequestDialog: status updated to 'initiated'");
+                            Log.d(TAG, "showRequestDialog: status updated to 'initiated'");
                             dashboardViewModel.setDriverStatus(DriverStatus.ON_TRIP);
                         }
                         else {
-                            Log.d(AppConstants.TAG, "showRequestDialog: " + task.getException());
+                            Log.d(TAG, "showRequestDialog: " + task.getException());
                         }
                     });
         }

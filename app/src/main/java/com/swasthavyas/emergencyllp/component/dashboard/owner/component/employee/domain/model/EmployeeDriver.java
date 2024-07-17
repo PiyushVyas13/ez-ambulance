@@ -6,12 +6,16 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.common.primitives.Doubles;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.DoubleStream;
 
 public class EmployeeDriver implements Parcelable {
     private String driverId;
@@ -80,7 +84,7 @@ public class EmployeeDriver implements Parcelable {
                 ", assignedAmbulanceNumber='" + assignedAmbulanceNumber + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", ownerId='" + ownerId + '\'' +
-                ", lastLocation='" + "[" + lastLocation.get(0) + ", " + lastLocation.get(1) + "]" + '\'' +
+                ", lastLocation='" + (lastLocation == null ? "[Not Available]" : String.format(Locale.getDefault(), "[%f, %f]", lastLocation.get(0), lastLocation.get(1))) + '\'' +
                 '}';
     }
 
@@ -125,9 +129,31 @@ public class EmployeeDriver implements Parcelable {
         String assignedAmbulanceNumber = (String) map.get(ModelColumns.ASSIGNED_AMBULANCE_NUMBER);
         String ownerId = (String) map.get(ModelColumns.OWNER_ID);
         String aadhaarNumber = (String) map.get(ModelColumns.AADHAAR_NUMBER);
-        List<Double> lastLocation = (List<Double>) map.get(ModelColumns.LAST_LOCATION);
 
-        return new EmployeeDriver(name, email, ownerId, driverId, userId, age, phoneNumber, assignedAmbulanceNumber, aadhaarNumber, aadhaarImageRef, licenceImageRef, lastLocation);
+        Object receivedLocation = map.get(ModelColumns.LAST_LOCATION);
+        List<Double> lastLocation;
+
+        if(receivedLocation instanceof Double[]) {
+            lastLocation = Arrays.asList((Double[]) receivedLocation);
+        }
+        else {
+            lastLocation = (List<Double>) receivedLocation;
+        }
+
+        return new EmployeeDriver(
+                name,
+                email,
+                ownerId,
+                driverId,
+                userId,
+                age,
+                phoneNumber,
+                assignedAmbulanceNumber,
+                aadhaarNumber,
+                aadhaarImageRef,
+                licenceImageRef,
+                lastLocation
+        );
     }
 
     public String getDriverId() {

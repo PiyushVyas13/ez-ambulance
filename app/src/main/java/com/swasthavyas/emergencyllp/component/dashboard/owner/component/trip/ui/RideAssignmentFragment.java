@@ -187,6 +187,7 @@ public class RideAssignmentFragment extends Fragment {
                     if(task.isSuccessful()) {
                         String driverUid = assignedDriver.getUserId();
                         String customerName = trip.getCustomerName();
+                        String customerMobile = trip.getCustomerMobile();
                         int customerAge = trip.getCustomerAge();
                         double estimatedPrice = trip.getPrice();
                         String pickupLocationAddress = trip.getPickupLocationAddress();
@@ -201,6 +202,7 @@ public class RideAssignmentFragment extends Fragment {
                                 .putString("driver_uid", driverUid)
                                 .putString("customer_name",customerName)
                                 .putInt("customer_age", customerAge)
+                                .putString("customer_mobile", customerMobile)
                                 .putDouble("estimated_price", estimatedPrice)
                                 .putString("pickup_location_address", pickupLocationAddress)
                                 .putString("drop_location_address", dropLocationAddress)

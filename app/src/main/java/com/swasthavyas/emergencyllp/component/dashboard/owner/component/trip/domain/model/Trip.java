@@ -20,9 +20,10 @@ public class Trip {
     private String ownerId;
     private boolean isEmergencyRide;
     private TripStatus status;
+    private String customerMobile;
 
 
-    private Trip(String tripId, String customerName, int customerAge, double price, List<Double> pickupLocation, List<Double> dropLocation, String pickupLocationAddress, String dropLocationAddress, String assignedDriverId, String assignedAmbulanceId, String ownerId, TripStatus status, boolean isEmergencyRide) {
+    private Trip(String tripId, String customerName, int customerAge, double price, List<Double> pickupLocation, List<Double> dropLocation, String pickupLocationAddress, String dropLocationAddress, String assignedDriverId, String assignedAmbulanceId, String ownerId, TripStatus status, String customerMobile, boolean isEmergencyRide) {
         this.id = tripId;
         this.customerName = customerName;
         this.customerAge = customerAge;
@@ -35,6 +36,7 @@ public class Trip {
         this.assignedDriverId = assignedDriverId;
         this.status = status;
         this.ownerId = ownerId;
+        this.customerMobile = customerMobile;
         this.isEmergencyRide = isEmergencyRide;
     }
 
@@ -57,9 +59,10 @@ public class Trip {
         String ownerId = (String) map.get("owner_id");
         String driverId = (String) map.get("assigned_driver_id");
         String ambulanceId = (String) map.get("ambulance_id");
+        String customerMobile = (String) map.get("customer_mobile");
 
 
-        return new Trip(tripId, customerName, customerAge, estimatedPrice, pickupLocationCoordinates, dropLocationCoordinates, pickupLocationAddress, dropLocationAddress, driverId, ambulanceId ,ownerId, tripStatus,isEmergencyRide);
+        return new Trip(tripId, customerName, customerAge, estimatedPrice, pickupLocationCoordinates, dropLocationCoordinates, pickupLocationAddress, dropLocationAddress, driverId, ambulanceId ,ownerId, tripStatus, customerMobile, isEmergencyRide);
     }
 
     public String getId() {
@@ -80,6 +83,14 @@ public class Trip {
 
     public int getCustomerAge() {
         return customerAge;
+    }
+
+    public String getCustomerMobile() {
+        return customerMobile;
+    }
+
+    public void setCustomerMobile(String mobile) {
+        this.customerMobile = mobile;
     }
 
     public void setCustomerAge(int customerAge) {

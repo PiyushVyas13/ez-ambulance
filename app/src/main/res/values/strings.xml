@@ -12,9 +12,9 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="have_an_account">Already Have an Account?</string>
     <string name="OTP">OTP Verification</string>
-    <string name="txt_OTP">You will receive a verification OTP on this number</string>
+    <string name="txt_OTP">You will receive a verification OTP on this numbers</string>
     <string name="btn_send_otp">Send OTP</string>
-    <string name="otp_sent_text">Enter the OTP sent to your number</string>
+    <string name="otp_sent_text">Enter the OTP sent to your numbers</string>
     <string name="otp_not_receive">Didn\'t receive OTP?</string>
     <string name="otp_resend">Resend OTP</string>
     <string name="otp_verify_btn">Verify OTP</string>
@@ -63,7 +63,7 @@
     <string name="upload_aadhar_photo_text">Upload aadhaar photo</string>
     <string name="finish">Finish</string>
     <string name="go_to_dashboard">Go to Dashboard</string>
-    <string name="otp_send_text">We will send you an One Time Password on this mobile number</string>
+    <string name="otp_send_text">We will send you an One Time Password on this mobile numbers</string>
     <string name="off_duty_text">Off Duty</string>
     <string name="on_duty_text">On Duty</string>
     <string name="go_to_text">Go to</string>
@@ -103,4 +103,5 @@
     <string name="new_request_text">New Request</string>
     <string name="decline_text">Decline</string>
     <string name="accept_text">Accept</string>
+    <string name="customer_mobile">Customer Mobile</string>
 </resources>

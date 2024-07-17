@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
@@ -25,6 +26,7 @@ import com.swasthavyas.emergencyllp.util.service.LocationService;
 import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -95,21 +97,7 @@ public class HomeFragment extends Fragment {
                                         .setTitle("Confirm status change")
                                         .setMessage("You will not receive any rides while you are off duty")
                                         .setPositiveButton("Ok", (dialog, which) -> {
-                                            database
-                                                    .getReference()
-                                                    .getRoot()
-                                                    .child("active_drivers")
-                                                    .child(employeeDriver.getDriverId())
-                                                    .removeValue()
-                                                    .addOnCompleteListener(task -> {
-                                                       if(task.isSuccessful()) {
-                                                           Toast.makeText(requireContext(), "Status Updated!", Toast.LENGTH_SHORT).show();
-                                                           LocationService.stopService(requireContext(), employeeDriver.getEmail());
-                                                       }
-                                                       else {
-                                                           Log.d(TAG, "onCreateView: " + task.getException());
-                                                       }
-                                                    });
+                                            updateDriverActiveStatus(employeeDriver, DriverStatus.OFF_DUTY);
                                         })
                                         .setNegativeButton("Cancel", (dialog, which) -> {})
                                         .show();
@@ -139,37 +127,56 @@ public class HomeFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
+    private void updateDriverActiveStatus(EmployeeDriver employeeDriver, DriverStatus status) {
+
+        DatabaseReference activeDriverReference = database
+                .getReference()
+                .getRoot()
+                .child("active_drivers")
+                .child(employeeDriver.getDriverId());
+
+        switch (status) {
+            case OFF_DUTY:
+                activeDriverReference.removeValue()
+                        .addOnCompleteListener(task -> {
+                            if(task.isSuccessful()) {
+                                Toast.makeText(requireContext(), "Status Updated!", Toast.LENGTH_SHORT).show();
+                                LocationService.stopService(requireContext(), employeeDriver.getEmail());
+                            }
+                            else {
+                                Log.d(TAG, "onCreateView: " + task.getException());
+                            }
+                        });
+                break;
+            case ON_DUTY:
+                List<Double> coords = employeeDriver.getLastLocation() == null ? Arrays.asList(21.1458, 79.0882) : employeeDriver.getLastLocation();
+
+                activeDriverReference.setValue(coords)
+                        .addOnCompleteListener(task -> {
+                            if(task.isSuccessful()) {
+                                Toast.makeText(requireActivity(), "Status updated!", Toast.LENGTH_SHORT).show();
+                                LocationService.startService(requireContext(), employeeDriver.getDriverId());
+                            }
+                            else {
+                                Log.d(TAG, "updateDriverStatus: " + task.getException());
+                            }
+                        });
+                break;
+        }
+
+    }
+
     private void showConfirmationDialog() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Confirm Status Change")
                 .setMessage("You are about to change your status from 'OFF DUTY' to 'ON DUTY'." +
                         "This will allow the fleet owner to view your live location. To turn off location sharing, switch to OFF DUTY mode.")
                 .setPositiveButton("I Understand", (dialog, which) -> {
-                    updateDriverStatus();
+                    updateDriverActiveStatus(employeeDriver, DriverStatus.ON_DUTY);
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> {})
                 .show();
-    }
 
-    private void updateDriverStatus() {
 
-        List<Double> coords = new ArrayList<>();
-        coords.add(24.422342342);
-        coords.add(53.535234234);
-
-        database
-                .getReference()
-                .child("active_drivers")
-                .child(employeeDriver.getDriverId())
-                .setValue(coords)
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
-                        Toast.makeText(requireActivity(), "Status updated!", Toast.LENGTH_SHORT).show();
-                        LocationService.startService(requireContext(), employeeDriver.getDriverId());
-                    }
-                    else {
-                        Log.d(TAG, "updateDriverStatus: " + task.getException());
-                    }
-                });
     }
 }

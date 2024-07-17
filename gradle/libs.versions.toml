@@ -1,7 +1,8 @@
 [versions]
-agp = "8.4.2"
+agp = "8.5.0"
 circleimageview = "3.1.0"
 compiler = "4.14.2"
+converterGson = "2.11.0"
 datastorePreferences = "1.1.1"
 firebaseUiStorage = "7.2.0"
 glide = "4.14.2"
@@ -16,6 +17,7 @@ junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
 kotlinStdlib = "2.0.0"
+loggingInterceptor = "4.9.0"
 material = "1.12.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
@@ -24,6 +26,7 @@ navigationUi = "2.7.7"
 otpView = "1.1"
 places = "3.5.0"
 playServicesMaps = "18.2.0"
+retrofit = "2.11.0"
 rxandroid = "3.0.2"
 rxjava = "3.1.5"
 sdpAndroid = "1.1.1"
@@ -35,6 +38,7 @@ workRuntime = "2.9.0"
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 datastore-rxjava2 = { module = "androidx.datastore:datastore-rxjava2", version.ref = "datastorePreferences" }
 datastore-rxjava3 = { module = "androidx.datastore:datastore-rxjava3", version.ref = "datastorePreferences" }
@@ -55,6 +59,7 @@ ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitV
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
@@ -65,6 +70,7 @@ material-v190 = { module = "com.google.android.material:material", version.ref =
 otp-view = { module = "com.github.appsfeature:otp-view", version.ref = "otpView" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
