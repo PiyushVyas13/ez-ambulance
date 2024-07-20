@@ -1,4 +1,6 @@
-package com.swasthavyas.emergencyllp.network;
+package com.swasthavyas.emergencyllp.network.retrofit.service;
+
+import com.swasthavyas.emergencyllp.network.retrofit.model.SendSmsRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

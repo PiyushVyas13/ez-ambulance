@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TripActivity">
+    tools:context=".component.trip.ui.TripActivity">
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -52,11 +52,17 @@
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
-        <androidx.fragment.app.FragmentContainerView
+<!--        <androidx.fragment.app.FragmentContainerView-->
+<!--            android:id="@+id/navigation_map"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:name="com.google.android.gms.maps.SupportMapFragment"-->
+<!--            />-->
+
+        <com.ola.maps.navigation.v5.navigation.OlaMapView
             android:id="@+id/navigation_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
             />
 
         <LinearLayout

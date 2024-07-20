@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.network;
+package com.swasthavyas.emergencyllp.network.retrofit;
 
 import retrofit2.Retrofit;
 

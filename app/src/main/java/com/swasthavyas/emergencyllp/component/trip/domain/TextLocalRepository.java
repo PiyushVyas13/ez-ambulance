@@ -1,4 +1,8 @@
-package com.swasthavyas.emergencyllp.network;
+package com.swasthavyas.emergencyllp.component.trip.domain;
+
+import com.swasthavyas.emergencyllp.network.retrofit.ServiceGenerator;
+import com.swasthavyas.emergencyllp.network.retrofit.model.SendSmsRequest;
+import com.swasthavyas.emergencyllp.network.retrofit.service.TextLocalService;
 
 import retrofit2.Call;
 import retrofit2.Callback;

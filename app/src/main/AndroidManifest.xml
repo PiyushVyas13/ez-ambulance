@@ -56,7 +56,7 @@
         </activity>
 
         <activity
-            android:name=".TripActivity"
+            android:name=".component.trip.ui.TripActivity"
             android:exported="false"
             android:theme="@style/Theme.EmergencyLLP"
             />

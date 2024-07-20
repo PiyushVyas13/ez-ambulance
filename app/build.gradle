@@ -92,6 +92,18 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    implementation fileTree(dir: "libs", include: ["*.aar"])
+
+    implementation "com.moengage:moe-android-sdk:12.6.01"
+    implementation "org.maplibre.gl:android-sdk:10.2.0"
+    implementation "org.maplibre.gl:android-sdk-directions-models:5.9.0"
+    implementation "org.maplibre.gl:android-sdk-services:5.9.0"
+    implementation "org.maplibre.gl:android-sdk-turf:5.9.0"
+    implementation "org.maplibre.gl:android-plugin-markerview-v9:1.0.0"
+    implementation "org.maplibre.gl:android-plugin-annotation-v9:1.0.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+    implementation "androidx.lifecycle:lifecycle-compiler:2.0.0"
 }
 secrets {
     propertiesFileName = "secrets.properties"
