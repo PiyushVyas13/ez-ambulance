@@ -19,11 +19,12 @@
         android:theme="@style/Theme.EmergencyLLP.Starting"
         android:usesCleartextTraffic="true"
         tools:targetApi="30">
+
         <service
             android:name=".util.service.LocationService"
             android:enabled="true"
-            android:foregroundServiceType="location"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="location" />
         <service
             android:name=".util.service.CloudMessagingService"
             android:enabled="true"
@@ -32,6 +33,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
 
         <activity
             android:name=".RegistrationActivity"
@@ -52,6 +54,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".TripActivity"
+            android:exported="false"
+            android:theme="@style/Theme.EmergencyLLP"
+            />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

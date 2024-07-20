@@ -49,6 +49,7 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.TripViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.FetchEmployeeWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
@@ -76,16 +77,19 @@ import retrofit2.Response;
  * **/
 public class DriverDashboardFragment extends Fragment {
 
-    FragmentDriverDashboardBinding viewBinding;
-    DashboardViewModel dashboardViewModel;
+    private FragmentDriverDashboardBinding viewBinding;
+
+    private DashboardViewModel dashboardViewModel;
+    private EmployeeViewModel employeeViewModel;
+    private TripViewModel tripViewModel;
+
     private FirebaseDatabase database;
     private DatabaseReference reference;
 
-    private UserRole userRole;
-    NavController navController;
-    private EmployeeViewModel employeeViewModel;
+    private NavController navController;
     private BroadcastReceiver requestReceiver;
 
+    private UserRole userRole;
     private String receivedTripId;
 
 
@@ -134,6 +138,8 @@ public class DriverDashboardFragment extends Fragment {
                             if(trip == null) {
                                 return;
                             }
+
+                            tripViewModel.setActiveTrip(trip);
 
                             switch (trip.getStatus()) {
                                 case INITIATED:
@@ -276,6 +282,7 @@ public class DriverDashboardFragment extends Fragment {
             switch (userRole) {
                 case EMPLOYEE_DRIVER:
                     employeeViewModel = new ViewModelProvider(requireActivity()).get(EmployeeViewModel.class);
+                    tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
 
                     OneTimeWorkRequest fetchEmployeeRequest = new OneTimeWorkRequest.Builder(FetchEmployeeWorker.class)
                             .setInputData(new Data.Builder()

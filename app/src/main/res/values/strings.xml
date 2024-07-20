@@ -84,8 +84,8 @@
     <string name="about_ambulance_text">About Ambulance</string>
     <string name="ambulance_on_ride_text">This Ambulance is on a ride!</string>
     <string name="book_ride_text">Book a Ride</string>
-    <string name="customer_name_text">Customer Name</string>
-    <string name="customer_age_text">Customer Age</string>
+    <string name="customer_name_text"><b>Customer Name:</b> %1$s</string>
+    <string name="customer_age_text"><b>Customer Age:</b> %1$s</string>
     <string name="estimated_price_text">Estimated Price</string>
     <string name="is_this_an_emergency_ride_text">Is this an emergency ride?</string>
     <string name="street_address">Street Address</string>
@@ -104,7 +104,8 @@
     <string name="decline_text">Decline</string>
     <string name="accept_text">Accept</string>
     <string name="customer_mobile">Customer Mobile</string>
-    <string name="pickup_location">Pickup Location</string>
-    <string name="drop_location_text">Drop Location</string>
-    <string name="mobileno_text">Mobile Number</string>
+    <string name="pickup_location"><b>Pickup</b> Location: %1$s</string>
+    <string name="drop_location_text"><b>Drop Location:</b> %1$s</string>
+    <string name="mobileno_text"><b>Mobile Number:</b> %1$s</string>
+    <string name="this_is_emergency_ride_text">This is an Emergency Ride!</string>
 </resources>

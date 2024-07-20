@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    android:layout_height="match_parent">
 
 
     <FrameLayout
@@ -31,17 +30,17 @@
 
         <include
             android:id="@+id/header"
-            layout="@layout/driver_dashboard_header"
-            />
+            layout="@layout/driver_dashboard_header" />
 
     </FrameLayout>
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/materialTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Trip Details"
         android:layout_marginTop="@dimen/_20sdp"
+        android:text="Trip Details"
         android:textColor="@color/black"
         android:textSize="@dimen/_20ssp"
         android:textStyle="bold"
@@ -62,7 +61,8 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout3"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout"
-        app:layout_constraintVertical_bias="0.44">
+        app:layout_constraintVertical_bias="0.55"
+        tools:layout_editor_absoluteX="0dp">
 
 
         <LinearLayout
@@ -81,6 +81,7 @@
                 android:background="@drawable/background_round_primary" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/customer_name"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:background="@color/white"
@@ -118,6 +119,7 @@
                 android:background="@drawable/background_round_primary" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/pickup_location"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:background="@color/white"
@@ -155,6 +157,7 @@
                 android:background="@drawable/background_round_primary" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/drop_location"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:background="@color/white"
@@ -191,6 +194,7 @@
                 android:background="@drawable/background_round_primary" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/customer_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_30sdp"
                 android:background="@color/white"
@@ -214,6 +218,22 @@
 
     </LinearLayout>
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/emergency_ride_alert_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#B80000"
+        android:gravity="center"
+        android:padding="@dimen/_5sdp"
+        android:text="@string/this_is_emergency_ride_text"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_15ssp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
+        app:layout_constraintTop_toBottomOf="@+id/materialTextView2"
+        tools:layout_editor_absoluteX="0dp" />
+
     <FrameLayout
         android:id="@+id/frameLayout3"
         android:layout_width="match_parent"
@@ -226,15 +246,15 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/start_trip_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:background="@drawable/background_round_primary"
             android:text="Start"
-            android:layout_marginBottom="@dimen/_20sdp"
             android:textAllCaps="false" />
-
 
 
     </FrameLayout>
