@@ -46,6 +46,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.swasthavyas.emergencyllp.AuthActivity;
 import com.swasthavyas.emergencyllp.R;
+import com.swasthavyas.emergencyllp.TripActivity;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
@@ -148,6 +149,16 @@ public class DriverDashboardFragment extends Fragment {
                                     //sendUserConfirmationSms(trip.getCustomerMobile());
 
                                     dashboardViewModel.setDriverStatus(DriverStatus.ON_TRIP);
+                                    break;
+
+                                case IN_PROGRESS:
+                                    Toast.makeText(requireActivity(), "Trip In Progress", Toast.LENGTH_SHORT).show();
+
+                                    Intent intent = new Intent(requireActivity(), TripActivity.class);
+                                    intent.putExtra("owner_id", trip.getOwnerId());
+                                    intent.putExtra("trip_id", trip.getId());
+
+                                    startActivity(intent);
                                     break;
                             }
 

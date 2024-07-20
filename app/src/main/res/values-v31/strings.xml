@@ -108,4 +108,7 @@
     <string name="drop_location_text"><b>Drop Location:</b> %1$s</string>
     <string name="mobileno_text"><b>Mobile Number:</b> %1$s</string>
     <string name="this_is_emergency_ride_text">This is an Emergency Ride!</string>
+    <string name="navigate_text">Navigate</string>
+    <string name="end_ride_text">End Ride</string>
+    <string name="eta_text">ETA: %1$s</string>
 </resources>
