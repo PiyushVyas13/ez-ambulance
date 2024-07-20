@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.database.DatabaseReference;
@@ -50,7 +51,7 @@ public class HomeFragment extends Fragment {
         employeeViewModel = new ViewModelProvider(requireActivity()).get(EmployeeViewModel.class);
         database = FirebaseService.getInstance().getDatabaseInstance();
 
-        viewBinding.goTo.setEnabled(false);
+        viewBinding.header.goTo.setEnabled(false);
 
         dashboardViewModel.getUserRole().observe(getViewLifecycleOwner(), userRole -> {
             switch (userRole) {
@@ -65,34 +66,37 @@ public class HomeFragment extends Fragment {
                             dashboardViewModel.getDriverStatus().observe(getViewLifecycleOwner(), driverStatus -> {
                                 switch (driverStatus) {
                                     case OFF_DUTY:
-                                        viewBinding.offDuty.setImageResource(R.drawable.right);
-                                        viewBinding.onDuty.setImageResource(R.drawable.number2_stepper_top);
-                                        viewBinding.goTo.setImageResource(R.drawable.number3_stepper_top);
-                                        viewBinding.offDuty.setEnabled(false);
-                                        viewBinding.onDuty.setEnabled(true);
+                                        viewBinding.header.offDuty.setImageResource(R.drawable.right);
+                                        viewBinding.header.onDuty.setImageResource(R.drawable.number2_stepper_top);
+                                        viewBinding.header.goTo.setImageResource(R.drawable.number3_stepper_top);
+                                        viewBinding.header.offDuty.setEnabled(false);
+                                        viewBinding.header.onDuty.setEnabled(true);
                                         break;
                                     case ON_DUTY:
-                                        viewBinding.offDuty.setImageResource(R.drawable.number1_stepper_top);
-                                        viewBinding.onDuty.setImageResource(R.drawable.right);
-                                        viewBinding.goTo.setImageResource(R.drawable.number3_stepper_top);
-                                        viewBinding.offDuty.setEnabled(true);
-                                        viewBinding.onDuty.setEnabled(false);
+                                        viewBinding.header.offDuty.setImageResource(R.drawable.number1_stepper_top);
+                                        viewBinding.header.onDuty.setImageResource(R.drawable.right);
+                                        viewBinding.header.goTo.setImageResource(R.drawable.number3_stepper_top);
+                                        viewBinding.header.offDuty.setEnabled(true);
+                                        viewBinding.header.onDuty.setEnabled(false);
                                         break;
                                     case ON_TRIP:
-                                        viewBinding.offDuty.setImageResource(R.drawable.number1_stepper_top);
-                                        viewBinding.onDuty.setImageResource(R.drawable.number2_stepper_top);
-                                        viewBinding.goTo.setImageResource(R.drawable.right);
-                                        viewBinding.offDuty.setEnabled(false);
-                                        viewBinding.onDuty.setEnabled(false);
+                                        viewBinding.header.offDuty.setImageResource(R.drawable.number1_stepper_top);
+                                        viewBinding.header.onDuty.setImageResource(R.drawable.number2_stepper_top);
+                                        viewBinding.header.goTo.setImageResource(R.drawable.right);
+                                        viewBinding.header.offDuty.setEnabled(false);
+                                        viewBinding.header.onDuty.setEnabled(false);
+
+                                        // Navigate to preview fragment
+                                        Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.tripPreviewFragment);
                                         break;
                                 }
                             });
 
-                            viewBinding.onDuty.setOnClickListener(v -> {
+                            viewBinding.header.onDuty.setOnClickListener(v -> {
                                 showConfirmationDialog();
                             });
 
-                            viewBinding.offDuty.setOnClickListener(v -> {
+                            viewBinding.header.offDuty.setOnClickListener(v -> {
                                 new MaterialAlertDialogBuilder(requireContext())
                                         .setTitle("Confirm status change")
                                         .setMessage("You will not receive any rides while you are off duty")

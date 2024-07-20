@@ -20,4 +20,9 @@
         android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.ProfileFragment"
         android:label="5"
         tools:layout="@layout/fragment_profile_driver" />
+    <fragment
+        android:id="@+id/tripPreviewFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.TripPreviewFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_trip_preview" />
 </navigation>

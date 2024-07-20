@@ -71,4 +71,7 @@
     <string name="decline_text">Decline</string>
     <string name="accept_text">Accept</string>
     <string name="customer_mobile">Customer Mobile</string>
+    <string name="pickup_location">Pickup Location</string>
+    <string name="drop_location_text">Drop Location</string>
+    <string name="mobileno_text">Mobile Number</string>
 </resources>

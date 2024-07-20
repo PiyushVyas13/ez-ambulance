@@ -140,6 +140,8 @@ public class DriverDashboardFragment extends Fragment {
                                     Toast.makeText(requireContext(), "Trip Initiated", Toast.LENGTH_SHORT).show();
                                     // TODO: Send SMS to user
                                     //sendUserConfirmationSms(trip.getCustomerMobile());
+
+                                    dashboardViewModel.setDriverStatus(DriverStatus.ON_TRIP);
                                     break;
                             }
 
@@ -402,16 +404,7 @@ public class DriverDashboardFragment extends Fragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             Log.d(TAG, "showRequestDialog: " + reference);
-            reference.setValue(TripStatus.INITIATED)
-                    .addOnCompleteListener(task -> {
-                        if(task.isSuccessful()) {
-                            Log.d(TAG, "showRequestDialog: status updated to 'initiated'");
-                            dashboardViewModel.setDriverStatus(DriverStatus.ON_TRIP);
-                        }
-                        else {
-                            Log.d(TAG, "showRequestDialog: " + task.getException());
-                        }
-                    });
+            reference.setValue(TripStatus.INITIATED);
         }
     };
 
