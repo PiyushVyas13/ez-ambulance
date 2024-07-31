@@ -10,15 +10,19 @@ public class RetrofitClient {
 
     public static synchronized Retrofit getClient(String baseUrl) {
         if(retrofit == null) {
-            OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                    .build();
+            synchronized (Retrofit.class) {
+                if(retrofit == null) {
+                    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                            .build();
 
-            retrofit = new Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl(baseUrl)
-                    .client(okHttpClient)
-                    .build();
+                    retrofit = new Retrofit.Builder()
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .baseUrl(baseUrl)
+                            .client(okHttpClient)
+                            .build();
+                }
+            }
         }
 
         return retrofit;

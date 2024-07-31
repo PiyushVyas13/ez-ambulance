@@ -73,7 +73,7 @@ public class LocationService extends Service {
     }
 
     private void start() {
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "location")
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "location-track")
                 .setContentTitle("Tracking Location")
                 .setContentText("Location: null")
                 .setSmallIcon(R.drawable.ambulance)

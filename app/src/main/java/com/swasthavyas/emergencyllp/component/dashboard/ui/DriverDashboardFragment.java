@@ -54,8 +54,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.FetchEmplo
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.databinding.FragmentDriverDashboardBinding;
-import com.swasthavyas.emergencyllp.network.retrofit.model.SendSmsRequest;
-import com.swasthavyas.emergencyllp.component.trip.domain.TextLocalRepository;
+import com.swasthavyas.emergencyllp.network.retrofit.service.TextLocalService;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.types.DriverStatus;
@@ -204,9 +203,10 @@ public class DriverDashboardFragment extends Fragment {
         String message = "Your EZ ride has been confirmed! Driver details are as follows: \n" +
                 String.format("Driver Name: %s", driver.getName());
 
-        SendSmsRequest smsRequest = new SendSmsRequest(AppConstants.TEXTLOCAL_API_KEY, customerMobile, SMS_SENDER, message);
-        TextLocalRepository repository = new TextLocalRepository();
-        repository.sendSMS(smsRequest, new Callback<String>() {
+        TextLocalService textLocalService = TextLocalService.getInstance();
+
+        TextLocalService.SendSmsRequest smsRequest = new TextLocalService.SendSmsRequest(AppConstants.TEXTLOCAL_API_KEY, customerMobile, SMS_SENDER, message);
+        textLocalService.sendConfirmationMessage(smsRequest, new Callback<String>() {
             @Override
             public void onResponse(@NonNull Call<String> call, Response<String> response) {
                 Log.d(TAG, "onResponse: " + response.message());
