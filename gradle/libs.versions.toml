@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.0"
+androidMapsUtils = "3.8.0"
 circleimageview = "3.1.0"
 compiler = "4.14.2"
 converterGson = "2.11.0"
@@ -35,6 +36,7 @@ sspAndroid = "1.1.1"
 workRuntime = "2.9.0"
 
 [libraries]
+android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }

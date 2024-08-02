@@ -59,6 +59,7 @@ import com.swasthavyas.emergencyllp.network.SendSmsRequest;
 import com.swasthavyas.emergencyllp.network.TextLocalRepository;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
+import com.swasthavyas.emergencyllp.util.service.LocationService;
 import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
@@ -233,6 +234,9 @@ public class DriverDashboardFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()) {
                             dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
+                            if(!LocationService.isServiceRunning()) {
+                                LocationService.startService(requireContext(), driverId);
+                            }
                         }
                         else {
                             dashboardViewModel.setDriverStatus(DriverStatus.OFF_DUTY);

@@ -92,6 +92,9 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    // Google Maps
+    implementation libs.android.maps.utils
 }
 secrets {
     propertiesFileName = "secrets.properties"

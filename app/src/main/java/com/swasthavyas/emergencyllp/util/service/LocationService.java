@@ -42,6 +42,8 @@ public class LocationService extends Service {
     private String driverId, driverMail;
     private final FirebaseDatabase database = FirebaseService.getInstance().getDatabaseInstance();
 
+    private static boolean isRunning = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -73,6 +75,7 @@ public class LocationService extends Service {
     }
 
     private void start() {
+        isRunning = true;
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "location")
                 .setContentTitle("Tracking Location")
                 .setContentText("Location: null")
@@ -136,7 +139,11 @@ public class LocationService extends Service {
         if(this.driverMail != null && currentLocation != null) {
             saveLastLocation(driverMail);
         }
+        isRunning = false;
+    }
 
+    public static boolean isServiceRunning() {
+        return isRunning;
     }
 
     private void saveLastLocation(String driverMail) {
