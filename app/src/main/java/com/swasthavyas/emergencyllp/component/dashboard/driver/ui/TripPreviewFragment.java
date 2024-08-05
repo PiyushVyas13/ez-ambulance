@@ -71,8 +71,6 @@ public class TripPreviewFragment extends Fragment {
             }
 
             viewBinding.startTripButton.setOnClickListener(v -> {
-                tripViewModel.updateTripStatus(TripStatus.IN_PROGRESS);
-
                 Intent intent = new Intent(requireActivity(), TripActivity.class);
                 intent.putExtra("owner_id", trip.getOwnerId());
                 intent.putExtra("trip_id", trip.getId());

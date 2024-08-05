@@ -1,9 +1,14 @@
 package com.swasthavyas.emergencyllp;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationRequest;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +27,6 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -47,6 +51,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.dom
 import com.swasthavyas.emergencyllp.component.trip.worker.FetchRoutePreviewWorker;
 import com.swasthavyas.emergencyllp.databinding.ActivityTripBinding;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
+import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
 import java.util.List;
 
@@ -55,6 +60,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ActivityTripBinding viewBinding;
     private GoogleMap gMap;
     private Trip trip;
+    private Location currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,17 +89,54 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         loadTrip(ownerId, tripId);
 
+        viewBinding.navigateButton.setOnClickListener(v -> {
+            updateDriverStatus(TripStatus.CLIENT_PICKUP);
+            if(trip == null || currentLocation == null) {
+                Toast.makeText(this, "Current location or trip is null", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+//            @SuppressLint("DefaultLocale") String currentLocationCoordinates = String.format("%f,%f", currentLocation.getLatitude(), currentLocation.getLongitude());
+            @SuppressLint("DefaultLocale") String pickupLocationCoordinates = String.format("%f,%f", trip.getPickupLocation().get(0), trip.getPickupLocation().get(1));
+
+            String uriString = "google.navigation:q="+pickupLocationCoordinates;
+
+            Uri pickupLocationNavigationUri = Uri.parse(uriString);
+            Intent directionsIntent = new Intent(Intent.ACTION_VIEW, pickupLocationNavigationUri);
+            directionsIntent.setPackage("com.google.android.apps.maps");
+            startActivity(directionsIntent);
+        });
+
+    }
+
+    private void updateDriverStatus(TripStatus status) {
+        if(trip == null) {
+            return;
+        }
+
+        FirebaseDatabase database = FirebaseService.getInstance().getDatabaseInstance();
+
+        database
+                .getReference()
+                .getRoot()
+                .child(trip.getOwnerId())
+                .child(trip.getId())
+                .child("status")
+                .setValue(status)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        Log.d(TAG, "updateDriverStatus: driver status updated");
+                    }
+                    else {
+                        Log.d(TAG, "updateDriverStatus: " + task.getException());
+                    }
+                });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
-        LatLng latLng = new LatLng(20.5558, 78.6304);
-
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
-        googleMap.addMarker(new MarkerOptions().position(latLng));
-
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -121,6 +164,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
            if(task.isSuccessful()) {
 
                Location location = task.getResult();
+               currentLocation = location;
                if(location != null) {
                     Log.d("MYAPP", "Location:" + String.format("(%f, %f)", location.getLatitude(), location.getLongitude()));
                } else {
@@ -132,7 +176,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                if(trip != null) {
                    origin = new double[]{location == null ? 21.1458 : location.getLatitude(), location == null ? 79.0882 : location.getLongitude()};
-                   destination = new double[]{trip.getDropLocation().get(0), trip.getDropLocation().get(1)};
+                   destination = new double[]{trip.getPickupLocation().get(0), trip.getPickupLocation().get(1)};
                }
 
                OneTimeWorkRequest getRoutePreviewRequest = new OneTimeWorkRequest.Builder(FetchRoutePreviewWorker.class)
@@ -152,11 +196,13 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                                Toast.makeText(this, "Route received", Toast.LENGTH_SHORT).show();
 
                                String encodedPolyline = workInfo.getOutputData().getString("polyline");
-                               String duration = workInfo.getOutputData().getString("duration");
+                               String rawDuration = workInfo.getOutputData().getString("duration");
 
-                               if(encodedPolyline == null || duration == null) {
+                               if(encodedPolyline == null || rawDuration == null) {
+                                   Log.d(TAG, "onMapReady: " + workInfo.getOutputData());
                                    return;
                                }
+                               String duration = formatETA(rawDuration);
                                List<LatLng> coordinates =  PolyUtil.decode(encodedPolyline);
 
                                PolylineOptions options = new PolylineOptions()
@@ -165,6 +211,15 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                Polyline routePreview = googleMap.addPolyline(options);
 
+                               routePreview.setColor(Color.BLUE);
+
+                               LatLng midpoint = getRouteMidpoint(routePreview.getPoints());
+
+                               googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
+                               googleMap.addMarker(new MarkerOptions().position(new LatLng(trip.getPickupLocation().get(0), trip.getPickupLocation().get(1))));
+
+                               googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(midpoint, 15f));
+                               viewBinding.navigateButton.setEnabled(true);
                                viewBinding.eta.setText(getString(R.string.eta_text, duration));
                                viewBinding.tripProgressbar.setVisibility(View.GONE);
                            }
@@ -173,12 +228,17 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                                viewBinding.tripProgressbar.setVisibility(View.GONE);
                            }
                            else if(workInfo.getState().equals(WorkInfo.State.RUNNING)) {
+                               viewBinding.navigateButton.setEnabled(false);
                                viewBinding.tripProgressbar.setVisibility(View.VISIBLE);
                            }
                        });
            }
         });
 
+    }
+
+    private LatLng getRouteMidpoint(List<LatLng> points) {
+        return points.get(Math.floorDiv(points.size(), 2));
     }
 
     private void loadTrip(@NonNull String ownerId, @NonNull String tripId) {
@@ -203,5 +263,47 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     }
                 });
+    }
+
+    private String formatETA(String rawString) {
+        int totalSeconds;
+
+        try {
+            totalSeconds = Integer.parseInt(rawString.replace("s", ""));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid eta string");
+        }
+
+        int days = totalSeconds / 86400;
+        int hours = (totalSeconds % 86400) / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if(days > 0) {
+            stringBuilder.append(days).append(" day").append(days > 1 ? "s" : "");
+        }
+        if(hours > 0) {
+            if(stringBuilder.length() > 0) {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append(hours).append(" hour").append(hours > 1 ? "s" : "");
+        }
+        if(minutes > 0) {
+            if(stringBuilder.length() > 0) {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append(minutes).append(" minute").append(minutes > 1 ? "s" : "");
+        }
+        if(seconds > 0) {
+            if(stringBuilder.length() > 0) {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append(seconds).append(" second").append(seconds > 1 ? "s" : "");
+        }
+
+        return stringBuilder.toString();
+
     }
 }

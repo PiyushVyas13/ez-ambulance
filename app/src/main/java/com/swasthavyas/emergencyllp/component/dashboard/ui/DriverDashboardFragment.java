@@ -42,7 +42,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.swasthavyas.emergencyllp.AuthActivity;
 import com.swasthavyas.emergencyllp.R;
@@ -64,8 +63,6 @@ import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 import com.swasthavyas.emergencyllp.util.types.UserRole;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -150,17 +147,18 @@ public class DriverDashboardFragment extends Fragment {
                                     //sendUserConfirmationSms(trip.getCustomerMobile());
 
                                     dashboardViewModel.setDriverStatus(DriverStatus.ON_TRIP);
+                                    Toast.makeText(requireActivity(), "Trip In Progress", Toast.LENGTH_SHORT).show();
                                     break;
 
-                                case IN_PROGRESS:
-                                    Toast.makeText(requireActivity(), "Trip In Progress", Toast.LENGTH_SHORT).show();
+                                case CLIENT_DROP:
+                                case CLIENT_PICKUP:
+                                    Toast.makeText(requireContext(), "Trip in progress", Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = new Intent(requireActivity(), TripActivity.class);
+                                    Intent intent = new Intent(requireContext(), TripActivity.class);
                                     intent.putExtra("owner_id", trip.getOwnerId());
                                     intent.putExtra("trip_id", trip.getId());
 
                                     startActivity(intent);
-                                    break;
                             }
 
 

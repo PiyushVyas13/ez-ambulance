@@ -83,8 +83,11 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             if(snapshot.exists()) {
-                String status = (String) snapshot.getValue();
-                TripStatus tripStatus = TripStatus.valueOf(status);
+                TripStatus tripStatus = snapshot.getValue(TripStatus.class);
+
+                if(tripStatus == null) {
+                    return;
+                }
 
                 switch (tripStatus) {
                     case PENDING_RESPONSE:
@@ -101,6 +104,10 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                         viewBinding.assignRideButton.setEnabled(true);
                         viewBinding.assignRideButton.setText("Assign Ride");
                         break;
+                    case CLIENT_PICKUP:
+                        viewBinding.assignRideButton.setEnabled(false);
+                        viewBinding.assignRideButton.setText("Driver yet to pickup client");
+                        viewBinding.ambulanceRideIndicator.setVisibility(View.VISIBLE);
                 }
 
             }

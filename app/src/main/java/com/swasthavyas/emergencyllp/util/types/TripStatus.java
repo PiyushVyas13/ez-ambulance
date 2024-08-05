@@ -7,5 +7,6 @@ public enum TripStatus {
     REJECTED,
     CANCELLED,
     COMPLETED,
-    IN_PROGRESS
+    CLIENT_PICKUP,
+    CLIENT_DROP
 }
