@@ -47,6 +47,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.PolyUtil;
+import com.google.maps.android.SphericalUtil;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.component.trip.worker.FetchRoutePreviewWorker;
 import com.swasthavyas.emergencyllp.databinding.ActivityTripBinding;
@@ -56,7 +57,8 @@ import com.swasthavyas.emergencyllp.util.types.TripStatus;
 import java.util.List;
 
 
-public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class
+TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     private ActivityTripBinding viewBinding;
     private GoogleMap gMap;
     private Trip trip;
@@ -106,6 +108,9 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
             directionsIntent.setPackage("com.google.android.apps.maps");
             startActivity(directionsIntent);
         });
+        viewBinding.pickupComplete.setOnClickListener(v -> {
+            checkDriverLocation();
+        });
 
     }
 
@@ -137,6 +142,17 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
+        switch (trip.getStatus()){
+            case CLIENT_PICKUP:
+                requestRoutePreview(googleMap,trip.getPickupLocation());
+                break;
+            case CLIENT_DROP:
+                requestRoutePreview(googleMap,trip.getDropLocation());
+        }
+
+    }
+
+    private void requestRoutePreview(@NonNull GoogleMap googleMap,List<Double> dest) {
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -176,7 +192,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                if(trip != null) {
                    origin = new double[]{location == null ? 21.1458 : location.getLatitude(), location == null ? 79.0882 : location.getLongitude()};
-                   destination = new double[]{trip.getPickupLocation().get(0), trip.getPickupLocation().get(1)};
+                   destination = new double[]{dest.get(0), dest.get(1)};
                }
 
                OneTimeWorkRequest getRoutePreviewRequest = new OneTimeWorkRequest.Builder(FetchRoutePreviewWorker.class)
@@ -234,7 +250,71 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                        });
            }
         });
+    }
 
+    private boolean isUnderRadius(Location location){
+        
+        if(trip == null) {
+            return false;
+        }
+        LatLng currentLat = new LatLng(location.getLatitude(),location.getLongitude());
+        LatLng pickupLat = new LatLng(trip.getPickupLocation().get(0),trip.getPickupLocation().get(1));
+
+        double distance = SphericalUtil.computeDistanceBetween(currentLat,pickupLat);
+        
+        if(distance > 100.0){
+            return false;
+        }
+        
+        return true;
+        
+    }
+    
+    private void checkDriverLocation(){
+        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        client.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, new CancellationToken() {
+            @NonNull
+            @Override
+            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                return null;
+            }
+
+            @Override
+            public boolean isCancellationRequested() {
+                return false;
+            }
+        }).addOnCompleteListener(task -> {
+            Location currentLocation = task.getResult();
+            if(currentLocation == null){
+                Toast.makeText(this, "Please enable GPS and try again", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(trip.getStatus() != TripStatus.CLIENT_PICKUP){
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(isUnderRadius(currentLocation)){
+                updateDriverStatus(TripStatus.CLIENT_DROP);
+                requestRoutePreview(gMap,trip.getDropLocation());
+            }
+            else{
+                Toast.makeText(this, "You have not reached client location yet", Toast.LENGTH_SHORT).show();
+            }
+            
+        });         
     }
 
     private LatLng getRouteMidpoint(List<LatLng> points) {
