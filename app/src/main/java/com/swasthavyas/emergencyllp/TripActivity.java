@@ -92,26 +92,41 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
         loadTrip(ownerId, tripId);
 
         viewBinding.navigateButton.setOnClickListener(v -> {
-            updateDriverStatus(TripStatus.CLIENT_PICKUP);
             if(trip == null || currentLocation == null) {
                 Toast.makeText(this, "Current location or trip is null", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-//            @SuppressLint("DefaultLocale") String currentLocationCoordinates = String.format("%f,%f", currentLocation.getLatitude(), currentLocation.getLongitude());
-            @SuppressLint("DefaultLocale") String pickupLocationCoordinates = String.format("%f,%f", trip.getPickupLocation().get(0), trip.getPickupLocation().get(1));
+            switch (trip.getStatus()) {
+                case INITIATED:
+                    updateDriverStatus(TripStatus.CLIENT_PICKUP);
+                    startGoogleMapsIntent(trip.getPickupLocation());
 
-            String uriString = "google.navigation:q="+pickupLocationCoordinates;
+                    viewBinding.navigateButton.setVisibility(View.GONE);
+                    viewBinding.pickupComplete.setVisibility(View.VISIBLE);
+                    break;
+                case CLIENT_PICKUP:
+                    updateDriverStatus(TripStatus.CLIENT_DROP);
+                    startGoogleMapsIntent(trip.getDropLocation());
+                    break;
+            }
 
-            Uri pickupLocationNavigationUri = Uri.parse(uriString);
-            Intent directionsIntent = new Intent(Intent.ACTION_VIEW, pickupLocationNavigationUri);
-            directionsIntent.setPackage("com.google.android.apps.maps");
-            startActivity(directionsIntent);
         });
         viewBinding.pickupComplete.setOnClickListener(v -> {
             checkDriverLocation();
         });
 
+    }
+
+    private void startGoogleMapsIntent(List<Double> destination) {
+        @SuppressLint("DefaultLocale") String coordinates = String.format("%f,%f", destination.get(0), destination.get(1));
+
+        String uriString = "google.navigation:q="+coordinates;
+
+        Uri navigationUri = Uri.parse(uriString);
+        Intent directionsIntent = new Intent(Intent.ACTION_VIEW, navigationUri);
+        directionsIntent.setPackage("com.google.android.apps.maps");
+        startActivity(directionsIntent);
     }
 
     private void updateDriverStatus(TripStatus status) {
@@ -307,8 +322,10 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
             }
 
             if(isUnderRadius(currentLocation)){
-                updateDriverStatus(TripStatus.CLIENT_DROP);
                 requestRoutePreview(gMap,trip.getDropLocation());
+
+                viewBinding.pickupComplete.setVisibility(View.GONE);
+                viewBinding.navigateButton.setVisibility(View.VISIBLE);
             }
             else{
                 Toast.makeText(this, "You have not reached client location yet", Toast.LENGTH_SHORT).show();

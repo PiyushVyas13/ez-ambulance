@@ -121,7 +121,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/navigate_button"
-                    android:layout_width="118dp"
+                    android:layout_width="@dimen/_130sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:background="@drawable/background_round_primary"
@@ -129,10 +129,20 @@
                     android:text="@string/navigate_text"
                     android:textAllCaps="false" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/pickup_complete"
+                    android:layout_width="@dimen/_130sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:background="@drawable/background_round_primary"
+                    android:enabled="false"
+                    android:text="@string/pickup_complete"
+                    android:visibility="gone"
+                    android:textAllCaps="false" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/end_ride_button"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/end_ride"
+                    android:layout_width="@dimen/_130sdp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginEnd="@dimen/_10sdp"
@@ -144,12 +154,6 @@
 
 
             </FrameLayout>
-
-            <Button
-                android:id="@+id/pickup_complete"
-                android:layout_width="197dp"
-                android:layout_height="wrap_content"
-                android:text="Pickup_complete" />
 
 
         </LinearLayout>

@@ -108,6 +108,12 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                         viewBinding.assignRideButton.setEnabled(false);
                         viewBinding.assignRideButton.setText("Driver yet to pickup client");
                         viewBinding.ambulanceRideIndicator.setVisibility(View.VISIBLE);
+                        break;
+                    case CLIENT_DROP:
+                        viewBinding.assignRideButton.setEnabled(false);
+                        viewBinding.assignRideButton.setText("Driver has picked up the client");
+                        viewBinding.ambulanceRideIndicator.setVisibility(View.VISIBLE);
+                        break;
                 }
 
             }

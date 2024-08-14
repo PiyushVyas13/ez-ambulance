@@ -111,4 +111,5 @@
     <string name="navigate_text">Navigate</string>
     <string name="end_ride_text">End Ride</string>
     <string name="eta_text">ETA: %1$s</string>
+    <string name="pickup_complete">Pickup Complete</string>
 </resources>

@@ -5,12 +5,15 @@ import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -36,6 +40,15 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.Priority;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
@@ -407,6 +420,41 @@ public class DriverDashboardFragment extends Fragment {
                     .requestPermissions(requireActivity(), permissionArray, 111);
         }
 
+        if(!hasGpsPermissions()) {
+            LocationRequest dummyRequest = new LocationRequest.Builder(3000L)
+                    .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                    .build();
+
+            LocationSettingsRequest.Builder settingsRequestBuilder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(dummyRequest)
+                    .setAlwaysShow(true);
+
+            LocationServices.getSettingsClient(requireContext())
+                    .checkLocationSettings(settingsRequestBuilder.build())
+                    .addOnCompleteListener(task -> {
+                        try {
+                            LocationSettingsResponse response = task.getResult(ApiException.class);
+                        } catch (ApiException exception) {
+                            switch (exception.getStatusCode()) {
+                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                                    try {
+                                        ResolvableApiException resolvable = (ResolvableApiException) exception;
+
+                                        resolvable.startResolutionForResult(requireActivity(), 113);
+
+                                    } catch (IntentSender.SendIntentException sie) {
+
+                                    } catch (ClassCastException cce) {
+
+                                    }
+                                    break;
+                                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                                    break;
+                            }
+                        }
+                    });
+        }
+
         registerForegroundRequestReceiver();
         registerBackgroundRequestReceiver();
     }
@@ -427,6 +475,24 @@ public class DriverDashboardFragment extends Fragment {
             reference.setValue(TripStatus.INITIATED);
         }
     };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        assert data != null;
+        final LocationSettingsStates settingsStates = LocationSettingsStates.fromIntent(data);
+
+        if(requestCode == 113) {
+            switch (resultCode) {
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(requireActivity(), "GPS is required to be enabled. Please enable GPS from the settings.", Toast.LENGTH_SHORT).show();
+                    break;
+
+            }
+        }
+
+    }
 
     private void showRequestDialog(String tripId) {
 
@@ -454,5 +520,12 @@ public class DriverDashboardFragment extends Fragment {
         return
                 ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                         ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean hasGpsPermissions() {
+        LocationManager locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 }
