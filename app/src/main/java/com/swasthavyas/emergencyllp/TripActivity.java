@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.StrokeStyle;
 import com.google.android.gms.maps.model.StyleSpan;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -49,7 +50,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
+import com.swasthavyas.emergencyllp.component.trip.worker.AddTripHistoryWorker;
 import com.swasthavyas.emergencyllp.component.trip.worker.FetchRoutePreviewWorker;
+import com.swasthavyas.emergencyllp.component.trip.worker.RemoveTripWorker;
 import com.swasthavyas.emergencyllp.databinding.ActivityTripBinding;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
@@ -62,7 +65,8 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     private ActivityTripBinding viewBinding;
     private GoogleMap gMap;
     private Trip trip;
-    private Location currentLocation;
+
+    private FusedLocationProviderClient locationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +85,20 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
         String ownerId = getIntent().getStringExtra("owner_id");
         String tripId = getIntent().getStringExtra("trip_id");
 
-        if(ownerId == null || tripId == null) {
+        if (ownerId == null || tripId == null) {
             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+
+        locationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
         SupportMapFragment mapFragment = viewBinding.navigationMap.getFragment();
         mapFragment.getMapAsync(this);
         loadTrip(ownerId, tripId);
 
         viewBinding.navigateButton.setOnClickListener(v -> {
-            if(trip == null || currentLocation == null) {
+            if (trip == null) {
                 Toast.makeText(this, "Current location or trip is null", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -113,7 +119,28 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
 
         });
         viewBinding.pickupComplete.setOnClickListener(v -> {
-            checkDriverLocation();
+            checkDriverPickupStatus();
+        });
+        viewBinding.endRide.setOnClickListener(v -> {
+            if (trip == null) {
+                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (trip.getStatus() == TripStatus.CLIENT_DROP) {
+                checkDriverDropStatus();
+            } else {
+                new MaterialAlertDialogBuilder(getApplicationContext())
+                        .setTitle("Confirm")
+                        .setMessage("You have not reached the destination yet. Are you sure you want to end?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            updateDriverStatus(TripStatus.CANCELLED);
+                            deleteTrip();
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {})
+                        .show();
+            }
+
         });
 
     }
@@ -121,7 +148,7 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     private void startGoogleMapsIntent(List<Double> destination) {
         @SuppressLint("DefaultLocale") String coordinates = String.format("%f,%f", destination.get(0), destination.get(1));
 
-        String uriString = "google.navigation:q="+coordinates;
+        String uriString = "google.navigation:q=" + coordinates;
 
         Uri navigationUri = Uri.parse(uriString);
         Intent directionsIntent = new Intent(Intent.ACTION_VIEW, navigationUri);
@@ -130,7 +157,7 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void updateDriverStatus(TripStatus status) {
-        if(trip == null) {
+        if (trip == null) {
             return;
         }
 
@@ -144,10 +171,9 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
                 .child("status")
                 .setValue(status)
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         Log.d(TAG, "updateDriverStatus: driver status updated");
-                    }
-                    else {
+                    } else {
                         Log.d(TAG, "updateDriverStatus: " + task.getException());
                     }
                 });
@@ -157,30 +183,22 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
-        switch (trip.getStatus()){
+        switch (trip.getStatus()) {
             case CLIENT_PICKUP:
-                requestRoutePreview(googleMap,trip.getPickupLocation());
+                requestRoutePreview(googleMap, trip.getPickupLocation());
                 break;
             case CLIENT_DROP:
-                requestRoutePreview(googleMap,trip.getDropLocation());
+                requestRoutePreview(googleMap, trip.getDropLocation());
         }
 
     }
 
-    private void requestRoutePreview(@NonNull GoogleMap googleMap,List<Double> dest) {
-        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+    private void requestRoutePreview(@NonNull GoogleMap googleMap, List<Double> dest) {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        client.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, new CancellationToken() {
+        locationProviderClient.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, new CancellationToken() {
             @NonNull
             @Override
             public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
@@ -192,101 +210,147 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
                 return false;
             }
         }).addOnCompleteListener(task -> {
-           if(task.isSuccessful()) {
+            if (task.isSuccessful()) {
 
-               Location location = task.getResult();
-               currentLocation = location;
-               if(location != null) {
+                Location location = task.getResult();
+                if (location != null) {
                     Log.d("MYAPP", "Location:" + String.format("(%f, %f)", location.getLatitude(), location.getLongitude()));
-               } else {
-                   Log.d("MYAPP", "Location: null");
-               }
+                } else {
+                    Log.d("MYAPP", "Location: null");
+                }
 
-               double[] origin = new double[2];
-               double[] destination = new double[2];
+                double[] origin = new double[2];
+                double[] destination = new double[2];
 
-               if(trip != null) {
-                   origin = new double[]{location == null ? 21.1458 : location.getLatitude(), location == null ? 79.0882 : location.getLongitude()};
-                   destination = new double[]{dest.get(0), dest.get(1)};
-               }
+                if (trip != null) {
+                    origin = new double[]{location == null ? 21.1458 : location.getLatitude(), location == null ? 79.0882 : location.getLongitude()};
+                    destination = new double[]{dest.get(0), dest.get(1)};
+                }
 
-               OneTimeWorkRequest getRoutePreviewRequest = new OneTimeWorkRequest.Builder(FetchRoutePreviewWorker.class)
-                       .setInputData(new Data.Builder()
-                               .putDoubleArray("origin", origin)
-                               .putDoubleArray("destination", destination)
-                               .build())
-                       .build();
+                OneTimeWorkRequest getRoutePreviewRequest = new OneTimeWorkRequest.Builder(FetchRoutePreviewWorker.class)
+                        .setInputData(new Data.Builder()
+                                .putDoubleArray("origin", origin)
+                                .putDoubleArray("destination", destination)
+                                .build())
+                        .build();
 
-               WorkManager.getInstance(getApplicationContext())
-                       .enqueue(getRoutePreviewRequest);
+                WorkManager.getInstance(getApplicationContext())
+                        .enqueue(getRoutePreviewRequest);
 
-               WorkManager.getInstance(getApplicationContext())
-                       .getWorkInfoByIdLiveData(getRoutePreviewRequest.getId())
-                       .observe(this, workInfo -> {
-                           if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
-                               Toast.makeText(this, "Route received", Toast.LENGTH_SHORT).show();
+                WorkManager.getInstance(getApplicationContext())
+                        .getWorkInfoByIdLiveData(getRoutePreviewRequest.getId())
+                        .observe(this, workInfo -> {
+                            if (workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
+                                Toast.makeText(this, "Route received", Toast.LENGTH_SHORT).show();
 
-                               String encodedPolyline = workInfo.getOutputData().getString("polyline");
-                               String rawDuration = workInfo.getOutputData().getString("duration");
+                                String encodedPolyline = workInfo.getOutputData().getString("polyline");
+                                String rawDuration = workInfo.getOutputData().getString("duration");
 
-                               if(encodedPolyline == null || rawDuration == null) {
-                                   Log.d(TAG, "onMapReady: " + workInfo.getOutputData());
-                                   return;
-                               }
-                               String duration = formatETA(rawDuration);
-                               List<LatLng> coordinates =  PolyUtil.decode(encodedPolyline);
+                                if (encodedPolyline == null || rawDuration == null) {
+                                    Log.d(TAG, "onMapReady: " + workInfo.getOutputData());
+                                    return;
+                                }
+                                String duration = formatETA(rawDuration);
+                                List<LatLng> coordinates = PolyUtil.decode(encodedPolyline);
 
-                               PolylineOptions options = new PolylineOptions()
-                                       .addAll(coordinates)
-                                       .addSpan(new StyleSpan(StrokeStyle.gradientBuilder(Color.RED, Color.YELLOW).build()));
+                                PolylineOptions options = new PolylineOptions()
+                                        .addAll(coordinates)
+                                        .addSpan(new StyleSpan(StrokeStyle.gradientBuilder(Color.RED, Color.YELLOW).build()));
 
-                               Polyline routePreview = googleMap.addPolyline(options);
+                                Polyline routePreview = googleMap.addPolyline(options);
 
-                               routePreview.setColor(Color.BLUE);
+                                routePreview.setColor(Color.BLUE);
 
-                               LatLng midpoint = getRouteMidpoint(routePreview.getPoints());
+                                LatLng midpoint = getRouteMidpoint(routePreview.getPoints());
 
-                               googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
-                               googleMap.addMarker(new MarkerOptions().position(new LatLng(trip.getPickupLocation().get(0), trip.getPickupLocation().get(1))));
+                                googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
+                                googleMap.addMarker(new MarkerOptions().position(new LatLng(trip.getPickupLocation().get(0), trip.getPickupLocation().get(1))));
 
-                               googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(midpoint, 15f));
-                               viewBinding.navigateButton.setEnabled(true);
-                               viewBinding.eta.setText(getString(R.string.eta_text, duration));
-                               viewBinding.tripProgressbar.setVisibility(View.GONE);
-                           }
-                           else if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
-                               Toast.makeText(this, workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
-                               viewBinding.tripProgressbar.setVisibility(View.GONE);
-                           }
-                           else if(workInfo.getState().equals(WorkInfo.State.RUNNING)) {
-                               viewBinding.navigateButton.setEnabled(false);
-                               viewBinding.tripProgressbar.setVisibility(View.VISIBLE);
-                           }
-                       });
-           }
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(midpoint, 15f));
+                                viewBinding.navigateButton.setEnabled(true);
+                                viewBinding.eta.setText(getString(R.string.eta_text, duration));
+                                viewBinding.tripProgressbar.setVisibility(View.GONE);
+                            } else if (workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
+                                Toast.makeText(this, workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
+                                viewBinding.tripProgressbar.setVisibility(View.GONE);
+                            } else if (workInfo.getState().equals(WorkInfo.State.RUNNING)) {
+                                viewBinding.navigateButton.setEnabled(false);
+                                viewBinding.tripProgressbar.setVisibility(View.VISIBLE);
+                            }
+                        });
+            }
         });
     }
 
-    private boolean isUnderRadius(Location location){
-        
-        if(trip == null) {
-            return false;
-        }
-        LatLng currentLat = new LatLng(location.getLatitude(),location.getLongitude());
-        LatLng pickupLat = new LatLng(trip.getPickupLocation().get(0),trip.getPickupLocation().get(1));
+    private boolean isUnderRadius(Location location, List<Double> target, double radius) {
 
-        double distance = SphericalUtil.computeDistanceBetween(currentLat,pickupLat);
-        
-        if(distance > 100.0){
+        if (trip == null) {
             return false;
         }
-        
-        return true;
-        
+        LatLng currentLat = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng targetLat = new LatLng(target.get(0), target.get(1));
+
+        double distance = SphericalUtil.computeDistanceBetween(currentLat, targetLat);
+
+        return !(distance > radius);
+
+    }
+
+
+    private void checkDriverDropStatus() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationProviderClient.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, new CancellationToken() {
+                    @NonNull
+                    @Override
+                    public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isCancellationRequested() {
+                        return false;
+                    }
+                })
+                .addOnCompleteListener(task -> {
+                    Location currentLocation = task.getResult();
+                    if(currentLocation == null){
+                        Toast.makeText(this, "Please enable GPS and try again", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if(trip.getStatus() != TripStatus.CLIENT_DROP) {
+                        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if(isUnderRadius(currentLocation, trip.getDropLocation(), 100.0)) {
+                        new MaterialAlertDialogBuilder(getApplicationContext())
+                                .setTitle("Confirm")
+                                .setMessage("Are you sure you want to end this ride?")
+                                .setPositiveButton("Yes", (dialog, which) -> {
+                                    updateDriverStatus(TripStatus.COMPLETED);
+                                    deleteTrip();
+                                })
+                                .setNegativeButton("Cancel", (dialog, which) -> {})
+                                .show();
+                    } else {
+                        new MaterialAlertDialogBuilder(getApplicationContext())
+                                .setTitle("Confirm")
+                                .setMessage("You have not reached the drop location yet. Are you sure you want to end?")
+                                .setPositiveButton("Yes", (dialog, which) -> {
+                                    updateDriverStatus(TripStatus.CANCELLED);
+                                    deleteTrip();
+                                })
+                                .setNegativeButton("Cancel", (dialog, which) -> {})
+                                .show();
+                    }
+
+                });
     }
     
-    private void checkDriverLocation(){
-        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+    private void checkDriverPickupStatus(){
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -298,7 +362,7 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        client.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, new CancellationToken() {
+        locationProviderClient.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, new CancellationToken() {
             @NonNull
             @Override
             public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
@@ -321,7 +385,7 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
                 return;
             }
 
-            if(isUnderRadius(currentLocation)){
+            if(isUnderRadius(currentLocation, trip.getPickupLocation(), 100.0)){
                 requestRoutePreview(gMap,trip.getDropLocation());
 
                 viewBinding.pickupComplete.setVisibility(View.GONE);
@@ -358,6 +422,40 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
+                    }
+                });
+    }
+
+    private void deleteTrip() {
+        if(trip == null) {
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        OneTimeWorkRequest tripDeleteRequest = new OneTimeWorkRequest.Builder(RemoveTripWorker.class)
+                .setInputData(new Data.Builder()
+                        .putString("owner_id", trip.getOwnerId())
+                        .putString("trip_id", trip.getId())
+                        .build())
+                .build();
+
+        OneTimeWorkRequest addHistoryRequest = new OneTimeWorkRequest.Builder(AddTripHistoryWorker.class)
+                .setInputData(new Data.Builder()
+                        .putAll(trip.toMap())
+                        .build())
+                .build();
+
+        WorkManager.getInstance(getApplicationContext())
+                .beginWith(tripDeleteRequest)
+                .then(addHistoryRequest)
+                .enqueue();
+
+        WorkManager.getInstance(getApplicationContext())
+                .getWorkInfoByIdLiveData(addHistoryRequest.getId())
+                .observe(this, workInfo -> {
+                    if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                        Toast.makeText(this, "Trip Completed!", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
     }

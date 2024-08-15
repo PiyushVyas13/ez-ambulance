@@ -3,6 +3,7 @@ package com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.do
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @IgnoreExtraProperties
@@ -63,6 +64,27 @@ public class Trip {
 
 
         return new Trip(tripId, customerName, customerAge, estimatedPrice, pickupLocationCoordinates, dropLocationCoordinates, pickupLocationAddress, dropLocationAddress, driverId, ambulanceId ,ownerId, tripStatus, customerMobile, isEmergencyRide);
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> tripMap = new HashMap<>();
+
+        tripMap.put("id", this.id);
+        tripMap.put("customerName", this.customerName);
+        tripMap.put("customerAge", this.customerAge);
+        tripMap.put("price", this.price);
+        tripMap.put("pickupLocation", this.pickupLocation);
+        tripMap.put("dropLocation", this.dropLocation);
+        tripMap.put("pickupLocationAddress", this.pickupLocationAddress);
+        tripMap.put("dropLocationAddress", this.dropLocationAddress);
+        tripMap.put("assignedAmbulanceId", this.assignedAmbulanceId);
+        tripMap.put("assignedDriverId", this.assignedDriverId);
+        tripMap.put("status", this.status);
+        tripMap.put("ownerId", this.ownerId);
+        tripMap.put("customerMobile", this.customerMobile);
+        tripMap.put("isEmergencyRide", this.isEmergencyRide);
+
+        return tripMap;
     }
 
     public String getId() {
