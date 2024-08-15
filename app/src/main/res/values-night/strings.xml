@@ -112,4 +112,6 @@
     <string name="end_ride_text">End Ride</string>
     <string name="eta_text">ETA: %1$s</string>
     <string name="pickup_complete">Pickup Complete</string>
+    <string name="current_date">Today, %1$s</string>
+    <string name="ride_count">%1$d Rides</string>
 </resources>

@@ -64,6 +64,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.Dashboa
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.TripViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.FetchEmployeeWorker;
+import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.FetchRideCountWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.databinding.FragmentDriverDashboardBinding;
@@ -104,6 +105,8 @@ public class DriverDashboardFragment extends Fragment {
     private UserRole userRole;
     private String receivedTripId;
 
+    private WorkManager workManager;
+
 
     public DriverDashboardFragment() {
         // Required empty public constructor
@@ -122,6 +125,7 @@ public class DriverDashboardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         database = FirebaseService.getInstance().getDatabaseInstance();
+        workManager = WorkManager.getInstance(requireContext());
 //        database.useEmulator("10.0.2.2", 8000);
          dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
@@ -317,10 +321,16 @@ public class DriverDashboardFragment extends Fragment {
                             .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                             .build();
 
-                    WorkManager.getInstance(requireContext())
-                            .enqueue(fetchEmployeeRequest);
+                    OneTimeWorkRequest fetchRidesRequest = new OneTimeWorkRequest.Builder(FetchRideCountWorker.class)
+                            .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                                    .build();
 
-                    WorkManager.getInstance(requireContext())
+                    workManager
+                            .beginWith(fetchEmployeeRequest)
+                            .then(fetchRidesRequest)
+                            .enqueue();
+
+                    workManager
                             .getWorkInfoByIdLiveData(fetchEmployeeRequest.getId())
                             .observe(getViewLifecycleOwner(), workInfo -> {
                                 if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
@@ -348,6 +358,15 @@ public class DriverDashboardFragment extends Fragment {
                                 }
                                 else if(workInfo.getState().equals(WorkInfo.State.RUNNING)) {
                                     viewBinding.driverDashboardProgressbar.setVisibility(View.VISIBLE);
+                                }
+                            });
+
+                    workManager
+                            .getWorkInfoByIdLiveData(fetchRidesRequest.getId())
+                            .observe(getViewLifecycleOwner(), workInfo -> {
+                                if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                                    long count = workInfo.getOutputData().getLong("ride_count", 0L);
+                                    employeeViewModel.updateRideCount(count);
                                 }
                             });
 

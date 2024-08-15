@@ -26,9 +26,12 @@ import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.service.LocationService;
 import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 
 public class HomeFragment extends Fragment {
@@ -52,6 +55,8 @@ public class HomeFragment extends Fragment {
         database = FirebaseService.getInstance().getDatabaseInstance();
 
         viewBinding.header.goTo.setEnabled(false);
+
+        viewBinding.dateLabel.setText(getCurrentDate());
 
         dashboardViewModel.getUserRole().observe(getViewLifecycleOwner(), userRole -> {
             switch (userRole) {
@@ -125,10 +130,21 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        employeeViewModel.getRideCount().observe(getViewLifecycleOwner(), rideCount -> {
+            viewBinding.rideCount.setText(getString(R.string.ride_count, rideCount));
+        });
+
 
 
         // Inflate the layout for this fragment
         return viewBinding.getRoot();
+    }
+
+    private String getCurrentDate() {
+        LocalDate localDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.ENGLISH);
+
+        return localDate.format(formatter);
     }
 
     private void updateDriverActiveStatus(EmployeeDriver employeeDriver, DriverStatus status) {
