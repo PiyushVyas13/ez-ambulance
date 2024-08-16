@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,9 +58,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.AggregateSource;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.swasthavyas.emergencyllp.AuthActivity;
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.TripActivity;
+import com.swasthavyas.emergencyllp.component.trip.ui.TripActivity;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
@@ -107,6 +111,79 @@ public class DriverDashboardFragment extends Fragment {
 
     private WorkManager workManager;
 
+    private boolean isObserverAttached = false;
+
+    ValueEventListener tripValueListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if(snapshot.exists()) {
+                Trip trip = snapshot.getValue(Trip.class);
+                if(trip == null) {
+                    return;
+                }
+
+                tripViewModel.setActiveTrip(trip);
+
+                switch (trip.getStatus()) {
+                    case INITIATED:
+                        Toast.makeText(requireContext(), "Trip Initiated", Toast.LENGTH_SHORT).show();
+                        // TODO: Send SMS to user
+                        //sendUserConfirmationSms(trip.getCustomerMobile());
+
+                        dashboardViewModel.setDriverStatus(DriverStatus.ON_TRIP);
+                        Toast.makeText(requireActivity(), "Trip In Progress", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case CLIENT_DROP:
+                    case CLIENT_PICKUP:
+                        Toast.makeText(requireContext(), "Trip in progress", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(requireContext(), TripActivity.class);
+                        intent.putExtra("owner_id", trip.getOwnerId());
+                        intent.putExtra("trip_id", trip.getId());
+
+                        tripActivityLauncher.launch(intent);
+                }
+
+
+            } else {
+                Log.d(TAG, "onDataChange: trip to observe does not exist.");
+                dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
+                tripViewModel.setActiveTrip(null);
+                updateRideCount();
+            }
+        }
+
+        private void updateRideCount() {
+            FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
+
+            dbInstance
+                    .collection("trip_history")
+                    .whereEqualTo("assignedDriverId", employeeViewModel.getCurrentEmployee().getValue().getDriverId())
+                    .count()
+                    .get(AggregateSource.SERVER)
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            long count = task.getResult().getCount();
+                            employeeViewModel.updateRideCount(count);
+                        }
+                    });
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+
+    ActivityResultLauncher<Intent> tripActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        Log.d(TAG, "TripActivityLauncher: " + result.getResultCode());
+        if(result.getResultCode() == Activity.RESULT_OK) {
+            Toast.makeText(requireActivity(), "Welcome Back", Toast.LENGTH_SHORT).show();
+            dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
+            tripViewModel.setActiveTrip(null);
+        }
+    });
 
     public DriverDashboardFragment() {
         // Required empty public constructor
@@ -126,6 +203,7 @@ public class DriverDashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         database = FirebaseService.getInstance().getDatabaseInstance();
         workManager = WorkManager.getInstance(requireContext());
+
 //        database.useEmulator("10.0.2.2", 8000);
          dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 
@@ -140,55 +218,14 @@ public class DriverDashboardFragment extends Fragment {
     }
 
     private void observeTripStatus(String tripId) {
+        isObserverAttached = true;
         database
                 .getReference()
                 .getRoot()
                 .child("trips")
                 .child(employeeViewModel.getCurrentEmployee().getValue().getOwnerId())
                 .child(tripId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()) {
-                            Trip trip = snapshot.getValue(Trip.class);
-                            if(trip == null) {
-                                return;
-                            }
-
-                            tripViewModel.setActiveTrip(trip);
-
-                            switch (trip.getStatus()) {
-                                case INITIATED:
-                                    Toast.makeText(requireContext(), "Trip Initiated", Toast.LENGTH_SHORT).show();
-                                    // TODO: Send SMS to user
-                                    //sendUserConfirmationSms(trip.getCustomerMobile());
-
-                                    dashboardViewModel.setDriverStatus(DriverStatus.ON_TRIP);
-                                    Toast.makeText(requireActivity(), "Trip In Progress", Toast.LENGTH_SHORT).show();
-                                    break;
-
-                                case CLIENT_DROP:
-                                case CLIENT_PICKUP:
-                                    Toast.makeText(requireContext(), "Trip in progress", Toast.LENGTH_SHORT).show();
-
-                                    Intent intent = new Intent(requireContext(), TripActivity.class);
-                                    intent.putExtra("owner_id", trip.getOwnerId());
-                                    intent.putExtra("trip_id", trip.getId());
-
-                                    startActivity(intent);
-                            }
-
-
-                        } else {
-                            Log.d(TAG, "onDataChange: trip to observe does not exist.");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                .addValueEventListener(tripValueListener);
     }
 
     private void retrievePotentialTrip() {
@@ -278,13 +315,13 @@ public class DriverDashboardFragment extends Fragment {
         requestReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                      if(intent.getExtras() != null && intent.hasExtra("trip_id")) {
-                          String tripId = intent.getStringExtra("trip_id");
-                          Toast.makeText(context, tripId, Toast.LENGTH_SHORT).show();
-                          receivedTripId = tripId;
-                          observeTripStatus(tripId);
-                          showRequestDialog(tripId);
-                      }
+                if (intent.getExtras() != null && intent.hasExtra("trip_id")) {
+                    String tripId = intent.getStringExtra("trip_id");
+                    Toast.makeText(context, tripId, Toast.LENGTH_SHORT).show();
+                    receivedTripId = tripId;
+                    observeTripStatus(tripId);
+                    showRequestDialog(tripId);
+                }
             }
         };
 
@@ -292,6 +329,15 @@ public class DriverDashboardFragment extends Fragment {
         IntentFilter filter = new IntentFilter(AppConstants.SHOW_TRIP_REQUEST);
 
         broadcastManager.registerReceiver(requestReceiver, filter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(!isObserverAttached && tripViewModel.getActiveTrip().getValue() != null) {
+            observeTripStatus(tripViewModel.getActiveTrip().getValue().getId());
+        }
     }
 
     @Override
@@ -484,6 +530,16 @@ public class DriverDashboardFragment extends Fragment {
         if(requestReceiver != null) {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(requireContext());
             broadcastManager.unregisterReceiver(requestReceiver);
+        }
+        if(tripViewModel != null && tripViewModel.getActiveTrip().getValue() != null) {
+            isObserverAttached = false;
+            database
+                    .getReference()
+                    .getRoot()
+                    .child("trips")
+                    .child(employeeViewModel.getCurrentEmployee().getValue().getOwnerId())
+                    .child(tripViewModel.getActiveTrip().getValue().getId())
+                    .removeEventListener(tripValueListener);
         }
     }
 

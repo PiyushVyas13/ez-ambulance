@@ -1,8 +1,9 @@
-package com.swasthavyas.emergencyllp;
+package com.swasthavyas.emergencyllp.component.trip.ui;
 
 import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -49,6 +50,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
+import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.component.trip.worker.AddTripHistoryWorker;
 import com.swasthavyas.emergencyllp.component.trip.worker.FetchRoutePreviewWorker;
@@ -60,8 +62,7 @@ import com.swasthavyas.emergencyllp.util.types.TripStatus;
 import java.util.List;
 
 
-public class
-TripActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     private ActivityTripBinding viewBinding;
     private GoogleMap gMap;
     private Trip trip;
@@ -115,6 +116,9 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
                     updateDriverStatus(TripStatus.CLIENT_DROP);
                     startGoogleMapsIntent(trip.getDropLocation());
                     break;
+                case CLIENT_DROP:
+                    startGoogleMapsIntent(trip.getDropLocation());
+                    break;
             }
 
         });
@@ -130,7 +134,7 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
             if (trip.getStatus() == TripStatus.CLIENT_DROP) {
                 checkDriverDropStatus();
             } else {
-                new MaterialAlertDialogBuilder(getApplicationContext())
+                new MaterialAlertDialogBuilder(TripActivity.this)
                         .setTitle("Confirm")
                         .setMessage("You have not reached the destination yet. Are you sure you want to end?")
                         .setPositiveButton("Yes", (dialog, which) -> {
@@ -166,13 +170,14 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
         database
                 .getReference()
                 .getRoot()
+                .child("trips")
                 .child(trip.getOwnerId())
                 .child(trip.getId())
                 .child("status")
                 .setValue(status)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "updateDriverStatus: driver status updated");
+                        Log.d(TAG, "updateDriverStatus: driver status updated to " + status);
                     } else {
                         Log.d(TAG, "updateDriverStatus: " + task.getException());
                     }
@@ -184,11 +189,13 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
         switch (trip.getStatus()) {
+            case INITIATED:
             case CLIENT_PICKUP:
                 requestRoutePreview(googleMap, trip.getPickupLocation());
                 break;
             case CLIENT_DROP:
                 requestRoutePreview(googleMap, trip.getDropLocation());
+                break;
         }
 
     }
@@ -336,7 +343,7 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
                                 .setNegativeButton("Cancel", (dialog, which) -> {})
                                 .show();
                     } else {
-                        new MaterialAlertDialogBuilder(getApplicationContext())
+                        new MaterialAlertDialogBuilder(TripActivity.this)
                                 .setTitle("Confirm")
                                 .setMessage("You have not reached the drop location yet. Are you sure you want to end?")
                                 .setPositiveButton("Yes", (dialog, which) -> {
@@ -353,13 +360,6 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     private void checkDriverPickupStatus(){
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         locationProviderClient.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, new CancellationToken() {
@@ -416,6 +416,8 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()) {
                             trip = snapshot.getValue(Trip.class);
+                            assert trip != null;
+                            viewBinding.pickupComplete.setEnabled(trip.getStatus() == TripStatus.CLIENT_PICKUP);
                         }
                     }
 
@@ -455,6 +457,7 @@ TripActivity extends AppCompatActivity implements OnMapReadyCallback {
                 .observe(this, workInfo -> {
                     if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
                         Toast.makeText(this, "Trip Completed!", Toast.LENGTH_SHORT).show();
+                        setResult(Activity.RESULT_OK);
                         finish();
                     }
                 });

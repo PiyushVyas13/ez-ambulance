@@ -14,10 +14,9 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.TripActivity;
+import com.swasthavyas.emergencyllp.component.trip.ui.TripActivity;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.TripViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentTripPreviewBinding;
-import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
 public class TripPreviewFragment extends Fragment {
     private FragmentTripPreviewBinding viewBinding;

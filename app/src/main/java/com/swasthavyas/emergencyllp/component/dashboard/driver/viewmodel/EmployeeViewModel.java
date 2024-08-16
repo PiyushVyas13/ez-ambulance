@@ -13,7 +13,7 @@ public class EmployeeViewModel extends ViewModel {
     private final MutableLiveData<EmployeeDriver> employee;
     private final MutableLiveData<Long> rideCount;
 
-    public EmployeeViewModel(Context appContext) {
+    public EmployeeViewModel() {
         employee = new MutableLiveData<>(null);
         rideCount = new MutableLiveData<>(0L);
     }

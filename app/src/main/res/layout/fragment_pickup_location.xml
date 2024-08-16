@@ -55,7 +55,6 @@
             android:id="@+id/landmark"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_43sdp"
-            android:inputType="number"
             android:textColor="@color/black"
             android:textStyle="bold|italic" />
 

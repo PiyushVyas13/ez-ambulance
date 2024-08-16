@@ -114,4 +114,6 @@
     <string name="pickup_complete">Pickup Complete</string>
     <string name="current_date">Today, %1$s</string>
     <string name="ride_count">%1$d Rides</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="customer_age">Customer Age</string>
 </resources>

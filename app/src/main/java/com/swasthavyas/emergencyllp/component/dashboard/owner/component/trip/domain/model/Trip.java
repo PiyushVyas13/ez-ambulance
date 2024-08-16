@@ -73,13 +73,17 @@ public class Trip {
         tripMap.put("customerName", this.customerName);
         tripMap.put("customerAge", this.customerAge);
         tripMap.put("price", this.price);
-        tripMap.put("pickupLocation", this.pickupLocation);
-        tripMap.put("dropLocation", this.dropLocation);
+
+        double[] pickupLocation = new double[] {this.pickupLocation.get(0), this.pickupLocation.get(1)};
+        double[] dropLocation = new double[] {this.dropLocation.get(0), this.pickupLocation.get(1)};
+
+        tripMap.put("pickupLocation", pickupLocation);
+        tripMap.put("dropLocation", dropLocation);
         tripMap.put("pickupLocationAddress", this.pickupLocationAddress);
         tripMap.put("dropLocationAddress", this.dropLocationAddress);
         tripMap.put("assignedAmbulanceId", this.assignedAmbulanceId);
         tripMap.put("assignedDriverId", this.assignedDriverId);
-        tripMap.put("status", this.status);
+        tripMap.put("status", this.status.name());
         tripMap.put("ownerId", this.ownerId);
         tripMap.put("customerMobile", this.customerMobile);
         tripMap.put("isEmergencyRide", this.isEmergencyRide);
