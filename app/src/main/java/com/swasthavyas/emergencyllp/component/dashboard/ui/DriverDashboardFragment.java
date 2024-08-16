@@ -62,6 +62,7 @@ import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.swasthavyas.emergencyllp.AuthActivity;
 import com.swasthavyas.emergencyllp.R;
+import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.FetchDriverEarningWorker;
 import com.swasthavyas.emergencyllp.component.trip.ui.TripActivity;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
@@ -371,9 +372,14 @@ public class DriverDashboardFragment extends Fragment {
                             .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                                     .build();
 
+                    OneTimeWorkRequest fetchEarningRequest = new OneTimeWorkRequest.Builder(FetchDriverEarningWorker.class)
+                            .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                                    .build();
+
                     workManager
                             .beginWith(fetchEmployeeRequest)
                             .then(fetchRidesRequest)
+                            .then(fetchEarningRequest)
                             .enqueue();
 
                     workManager
@@ -413,6 +419,15 @@ public class DriverDashboardFragment extends Fragment {
                                 if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
                                     long count = workInfo.getOutputData().getLong("ride_count", 0L);
                                     employeeViewModel.updateRideCount(count);
+                                }
+                            });
+
+                    workManager
+                            .getWorkInfoByIdLiveData(fetchEarningRequest.getId())
+                            .observe(getViewLifecycleOwner(), workInfo -> {
+                                if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                                    long sum = workInfo.getOutputData().getLong("total_earning", 0L);
+                                    employeeViewModel.updateDriverEarning(sum);
                                 }
                             });
 

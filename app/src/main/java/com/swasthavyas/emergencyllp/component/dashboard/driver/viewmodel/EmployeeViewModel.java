@@ -12,10 +12,12 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee
 public class EmployeeViewModel extends ViewModel {
     private final MutableLiveData<EmployeeDriver> employee;
     private final MutableLiveData<Long> rideCount;
+    private final MutableLiveData<Long> totalEarning;
 
     public EmployeeViewModel() {
         employee = new MutableLiveData<>(null);
         rideCount = new MutableLiveData<>(0L);
+        totalEarning = new MutableLiveData<>(0L);
     }
 
     public MutableLiveData<EmployeeDriver> getCurrentEmployee() {
@@ -27,11 +29,19 @@ public class EmployeeViewModel extends ViewModel {
     }
 
     public MutableLiveData<Long> getRideCount() {return this.rideCount;}
+    public MutableLiveData<Long> getTotalEarning() {return this.totalEarning;}
 
     public void updateRideCount(long count) {
         if(getCurrentEmployee().getValue() == null) {
             throw new NullPointerException("Employee does not exist yet.");
         }
         this.rideCount.setValue(count);
+    }
+
+    public void updateDriverEarning(long earning) {
+        if(getCurrentEmployee().getValue() == null) {
+            throw new NullPointerException("Employee does not exist yet");
+        }
+        this.totalEarning.setValue(earning);
     }
 }

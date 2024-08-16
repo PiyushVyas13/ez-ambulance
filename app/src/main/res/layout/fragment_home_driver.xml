@@ -54,9 +54,10 @@
                     android:layout_marginTop="@dimen/_15sdp"/>
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/total_earning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rs. 00.00"
+                    android:text="@string/driver_earning"
                     android:textSize="@dimen/_18ssp"
                     android:textColor="@color/black"
                     android:textStyle="bold"

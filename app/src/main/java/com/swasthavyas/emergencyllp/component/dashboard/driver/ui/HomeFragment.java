@@ -130,11 +130,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        employeeViewModel.getRideCount().observe(getViewLifecycleOwner(), rideCount -> {
-            viewBinding.rideCount.setText(getString(R.string.ride_count, rideCount));
-        });
+        employeeViewModel.getRideCount().observe(getViewLifecycleOwner(), rideCount -> viewBinding.rideCount.setText(getString(R.string.ride_count, rideCount)));
 
-
+        employeeViewModel.getTotalEarning().observe(getViewLifecycleOwner(), earning -> viewBinding.totalEarning.setText(getString(R.string.driver_earning, earning)));
 
         // Inflate the layout for this fragment
         return viewBinding.getRoot();
