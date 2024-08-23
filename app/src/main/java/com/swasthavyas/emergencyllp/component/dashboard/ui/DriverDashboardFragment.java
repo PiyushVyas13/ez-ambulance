@@ -180,7 +180,7 @@ public class DriverDashboardFragment extends Fragment {
                     .get(AggregateSource.SERVER)
                     .addOnCompleteListener(task -> {
                        if(task.isSuccessful()) {
-                           double earning = (double) task.getResult().get(AggregateField.sum("sum"));
+                           double earning = (double) task.getResult().get(AggregateField.sum("price"));
                            employeeViewModel.updateDriverEarning(earning);
                        }
                     });
