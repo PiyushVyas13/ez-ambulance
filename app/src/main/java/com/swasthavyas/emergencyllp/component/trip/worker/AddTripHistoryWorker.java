@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
+import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,12 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
     @Override
     public void doAsyncBackgroundTask(NetworkResultCallback callback) {
         Map<String, Object> lockedTripMap = getInputData().getKeyValueMap();
+        String terminalState = getInputData().getString("terminal_state");
+
+        if(terminalState == null) {
+            callback.onFailure(new IllegalArgumentException("terminal state not provided."));
+            return;
+        }
 
         Double[] pickupLocationArray = (Double[]) lockedTripMap.get("pickupLocation");
         Double[] dropLocationArray = (Double[]) lockedTripMap.get("dropLocation");
@@ -33,7 +40,12 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
         assert pickupLocationArray != null;
         assert dropLocationArray != null;
 
-        Map<String, Object> tripMap = getTripMap(pickupLocationArray, dropLocationArray, lockedTripMap);
+        Map<String, Object> tripMap = getTripMap(pickupLocationArray, dropLocationArray, lockedTripMap, terminalState);
+
+        if(tripMap == null) {
+            callback.onFailure(new IllegalArgumentException("trip status is invalid."));
+            return;
+        }
 
         FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
 
@@ -50,7 +62,7 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
                 });
     }
 
-    private @NonNull Map<String, Object> getTripMap(Double[] pickupLocationArray, Double[] dropLocationArray, Map<String, Object> lockedTripMap) {
+    private Map<String, Object> getTripMap(Double[] pickupLocationArray, Double[] dropLocationArray, Map<String, Object> lockedTripMap, String terminalState) {
         List<Double> pickupLocationList = new ArrayList<>();
         List<Double> dropLocationList = new ArrayList<>();
 
@@ -64,6 +76,13 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
 
         tripMap.put("pickupLocation", pickupLocationList);
         tripMap.put("dropLocation", dropLocationList);
+
+        try {
+            tripMap.put("status", TripStatus.valueOf(terminalState));
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
         return tripMap;
     }
 }

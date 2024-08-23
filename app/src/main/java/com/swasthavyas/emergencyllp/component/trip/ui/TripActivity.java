@@ -138,8 +138,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .setTitle("Confirm")
                         .setMessage("You have not reached the destination yet. Are you sure you want to end?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            updateDriverStatus(TripStatus.CANCELLED);
-                            deleteTrip();
+                            deleteTrip(TripStatus.CANCELLED);
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> {})
                         .show();
@@ -260,6 +259,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 String duration = formatETA(rawDuration);
                                 List<LatLng> coordinates = PolyUtil.decode(encodedPolyline);
 
+                                googleMap.clear();
                                 PolylineOptions options = new PolylineOptions()
                                         .addAll(coordinates)
                                         .addSpan(new StyleSpan(StrokeStyle.gradientBuilder(Color.RED, Color.YELLOW).build()));
@@ -271,7 +271,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 LatLng midpoint = getRouteMidpoint(routePreview.getPoints());
 
                                 googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
-                                googleMap.addMarker(new MarkerOptions().position(new LatLng(trip.getPickupLocation().get(0), trip.getPickupLocation().get(1))));
+                                googleMap.addMarker(new MarkerOptions().position(new LatLng(dest.get(0), dest.get(1))));
 
                                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(midpoint, 15f));
                                 viewBinding.navigateButton.setEnabled(true);
@@ -333,12 +333,11 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                     if(isUnderRadius(currentLocation, trip.getDropLocation(), 100.0)) {
-                        new MaterialAlertDialogBuilder(getApplicationContext())
+                        new MaterialAlertDialogBuilder(TripActivity.this)
                                 .setTitle("Confirm")
                                 .setMessage("Are you sure you want to end this ride?")
                                 .setPositiveButton("Yes", (dialog, which) -> {
-                                    updateDriverStatus(TripStatus.COMPLETED);
-                                    deleteTrip();
+                                    deleteTrip(TripStatus.COMPLETED);
                                 })
                                 .setNegativeButton("Cancel", (dialog, which) -> {})
                                 .show();
@@ -347,8 +346,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .setTitle("Confirm")
                                 .setMessage("You have not reached the drop location yet. Are you sure you want to end?")
                                 .setPositiveButton("Yes", (dialog, which) -> {
-                                    updateDriverStatus(TripStatus.CANCELLED);
-                                    deleteTrip();
+                                    deleteTrip(TripStatus.CANCELLED);
                                 })
                                 .setNegativeButton("Cancel", (dialog, which) -> {})
                                 .show();
@@ -428,7 +426,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
-    private void deleteTrip() {
+    private void deleteTrip(TripStatus terminalState) {
         if(trip == null) {
             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             return;
@@ -444,6 +442,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
         OneTimeWorkRequest addHistoryRequest = new OneTimeWorkRequest.Builder(AddTripHistoryWorker.class)
                 .setInputData(new Data.Builder()
                         .putAll(trip.toMap())
+                        .putString("terminal_state", terminalState.name())
                         .build())
                 .build();
 

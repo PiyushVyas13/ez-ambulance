@@ -58,6 +58,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.AggregateField;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.swasthavyas.emergencyllp.AuthActivity;
@@ -151,11 +152,12 @@ public class DriverDashboardFragment extends Fragment {
                 Log.d(TAG, "onDataChange: trip to observe does not exist.");
                 dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
                 tripViewModel.setActiveTrip(null);
-                updateRideCount();
+                updateDashboard();
+
             }
         }
 
-        private void updateRideCount() {
+        private void updateDashboard() {
             FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
 
             dbInstance
@@ -168,6 +170,19 @@ public class DriverDashboardFragment extends Fragment {
                             long count = task.getResult().getCount();
                             employeeViewModel.updateRideCount(count);
                         }
+                    });
+
+            dbInstance
+                    .collection("trip_history")
+                    .whereEqualTo("assignedDriverId", employeeViewModel.getCurrentEmployee().getValue().getDriverId())
+                    .whereEqualTo("status", TripStatus.COMPLETED)
+                    .aggregate(AggregateField.sum("price"))
+                    .get(AggregateSource.SERVER)
+                    .addOnCompleteListener(task -> {
+                       if(task.isSuccessful()) {
+                           double earning = (double) task.getResult().get(AggregateField.sum("sum"));
+                           employeeViewModel.updateDriverEarning(earning);
+                       }
                     });
         }
 

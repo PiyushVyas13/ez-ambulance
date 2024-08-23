@@ -1,6 +1,9 @@
 package com.swasthavyas.emergencyllp.component.trip.worker;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.WorkerParameters;
@@ -20,9 +23,11 @@ public class RemoveTripWorker extends ListenableWorkerAdapter {
     public void doAsyncBackgroundTask(NetworkResultCallback callback) {
         String ownerId = getInputData().getString("owner_id");
         String tripId = getInputData().getString("trip_id");
+        String terminalState = getInputData().getString("terminal_state");
 
         if(ownerId == null || tripId == null) {
-            callback.onFailure(new IllegalArgumentException("ownerId or tripId is null"));
+            Log.d(TAG, "doAsyncBackgroundTask: " + ownerId + tripId + terminalState);
+            callback.onFailure(new IllegalArgumentException("ownerId or tripId or terminal state is null"));
             return;
         }
 
