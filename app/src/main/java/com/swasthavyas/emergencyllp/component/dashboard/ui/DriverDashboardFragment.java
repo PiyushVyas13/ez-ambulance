@@ -426,7 +426,7 @@ public class DriverDashboardFragment extends Fragment {
                             .getWorkInfoByIdLiveData(fetchEarningRequest.getId())
                             .observe(getViewLifecycleOwner(), workInfo -> {
                                 if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                                    long sum = workInfo.getOutputData().getLong("total_earning", 0L);
+                                    double sum = workInfo.getOutputData().getDouble("total_earning", 0.0);
                                     employeeViewModel.updateDriverEarning(sum);
                                 }
                             });

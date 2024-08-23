@@ -43,8 +43,9 @@ public class FetchDriverEarningWorker extends ListenableWorkerAdapter {
                 .get(AggregateSource.SERVER)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
-                        long result = (long) task.getResult().get(AggregateField.sum("price"));
-                        callback.onSuccess(new Data.Builder().putLong("total_earning", result).build());
+                        double result = (double) task.getResult().get(AggregateField.sum("price"));
+                        Log.d(TAG, "doAsyncBackgroundTask: " + result);
+                        callback.onSuccess(new Data.Builder().putDouble("total_earning", result).build());
                     }
                     else {
                         Log.d(TAG, "doAsyncBackgroundTask: " + task.getException());
