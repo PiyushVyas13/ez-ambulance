@@ -80,11 +80,11 @@
 <!--            </LinearLayout>-->
 
             <com.google.android.material.chip.Chip
+                android:id="@+id/availability"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:chipBackgroundColor="#198754"
                 android:textColor="@color/white"
-                android:text="Available"
 
                 />
 
