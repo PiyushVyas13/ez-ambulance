@@ -3,6 +3,9 @@ package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulan
 import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
@@ -31,6 +35,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -246,7 +252,10 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                         LatLng coordinates = new LatLng(coords.get(0), coords.get(1));
                                         if (ambulanceLocationMap != null) {
                                             if (marker == null) {
-                                                marker = ambulanceLocationMap.addMarker(new MarkerOptions().position(coordinates).title("Driver Location"));
+                                                marker = ambulanceLocationMap.addMarker(new MarkerOptions()
+                                                        .position(coordinates)
+                                                        .icon(getBitmapFromVector())
+                                                        .title("Driver Location"));
                                             } else {
                                                 marker.setPosition(coordinates);
                                             }
@@ -382,6 +391,23 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         SupportMapFragment mapFragment = viewBinding.ambulanceLocationMap.getFragment();
         mapFragment.getMapAsync(this);
+    }
+
+    private BitmapDescriptor getBitmapFromVector() {
+        Drawable vectorDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ambulance_live_location);
+
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     private static class SettingsOptionAdapter extends BaseAdapter {

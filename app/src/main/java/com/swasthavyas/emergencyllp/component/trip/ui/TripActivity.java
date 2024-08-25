@@ -6,7 +6,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationRequest;
 import android.net.Uri;
@@ -21,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -35,6 +39,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -270,7 +276,10 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 LatLng midpoint = getRouteMidpoint(routePreview.getPoints());
 
-                                googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
+                                googleMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                                        .icon(getBitmapFromVector())
+                                );
                                 googleMap.addMarker(new MarkerOptions().position(new LatLng(dest.get(0), dest.get(1))));
 
                                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(midpoint, 15f));
@@ -287,6 +296,19 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                         });
             }
         });
+    }
+
+    private BitmapDescriptor getBitmapFromVector() {
+        Drawable vectorDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.runninglocation);
+
+        vectorDrawable.setBounds(0,0,vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     private boolean isUnderRadius(Location location, List<Double> target, double radius) {
