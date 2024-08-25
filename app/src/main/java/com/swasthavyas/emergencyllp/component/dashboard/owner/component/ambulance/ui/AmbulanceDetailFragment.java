@@ -49,6 +49,7 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.ui.dialog.DriverSearchFragment;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.AssignAmbulanceWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.AmbulanceViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
@@ -77,6 +78,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     private Ambulance ambulance;
     private EmployeeDriver assignedDriver;
     private OwnerViewModel ownerViewModel;
+    private AmbulanceViewModel ambulanceViewModel;
 
     private GoogleMap ambulanceLocationMap;
     private Marker marker;
@@ -137,21 +139,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
-
-
-        if(getArguments() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ambulance = getArguments().getParcelable("ambulance", Ambulance.class);
-            }
-            else {
-                ambulance = getArguments().getParcelable("ambulance");
-            }
-
-
-        }
-        else  {
-            Navigation.findNavController(viewBinding.getRoot()).popBackStack();
-        }
+        ambulanceViewModel = new ViewModelProvider(requireActivity()).get(AmbulanceViewModel.class);
 
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
@@ -168,7 +156,6 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
             }
         };
 
-
         requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
     }
@@ -182,9 +169,12 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
 
 
+        ambulanceViewModel.getCurrentAmbulance().observe(getViewLifecycleOwner(), ambulance -> {
+            viewBinding.ambulanceDetailTitle.setText(ambulance.getVehicleNumber());
+            this.ambulance = ambulance;
+        });
 
         viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext()));
-        viewBinding.ambulanceDetailTitle.setText(ambulance.getVehicleNumber());
 
         ownerViewModel.getOwner().observe(getViewLifecycleOwner(), owner -> {
 
@@ -192,7 +182,10 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                 drivers.stream()
                         .filter(driver -> driver.getAssignedAmbulanceNumber().equals(ambulance.getVehicleNumber()))
                         .findFirst()
-                        .ifPresent(driver -> assignedDriver = driver);
+                        .ifPresent(driver -> {
+                            ambulanceViewModel.setAssignedDriver(driver);
+                            assignedDriver = driver;
+                        });
 
 
                 if (assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
@@ -214,12 +207,8 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                 } else {
                     viewBinding.assignedDriverName.setText(String.format("Assigned to: %s", assignedDriver.getName()));
 
-
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("ambulance", ambulance);
-                    bundle.putParcelable("assigned_driver", assignedDriver);
                     viewBinding.assignRideButton.setOnClickListener(v -> {
-                        Navigation.findNavController(v).navigate(R.id.rideAssignmentFragment, bundle,
+                        Navigation.findNavController(v).navigate(R.id.rideAssignmentFragment, null,
                                 new NavOptions.Builder()
                                         .setEnterAnim(android.R.anim.slide_in_left)
                                         .setExitAnim(android.R.anim.fade_out)
@@ -447,6 +436,25 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
 
             optionTitle.setText(optionsList.get(position));
             optionDesc.setText(optionDescList.get(position));
+
+            convertView.setOnClickListener(v -> {
+                switch (position) {
+                    case 0:
+
+                        Navigation.findNavController(v)
+                                .navigate(
+                                        R.id.aboutAmbulanceFragment,
+                                        null,
+                                        new NavOptions.Builder()
+                                                .setEnterAnim(R.anim.slide_in_right)
+                                                .setExitAnim(android.R.anim.fade_out)
+                                                .build()
+                                );
+                        break;
+                    case 1:
+                        break;
+                }
+            });
 
             return convertView;
         }

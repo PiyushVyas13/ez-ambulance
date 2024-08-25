@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter.AmbulanceAdapter;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.AmbulanceViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.worker.DeleteAmbulanceWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
@@ -38,6 +39,7 @@ import java.util.List;
 public class ManageAmbulanceFragment extends Fragment {
     FragmentManageAmbulanceBinding viewBinding;
     OwnerViewModel ownerViewModel;
+    AmbulanceViewModel ambulanceViewModel;
     TripViewModel tripViewModel;
 
 
@@ -60,6 +62,7 @@ public class ManageAmbulanceFragment extends Fragment {
         viewBinding = FragmentManageAmbulanceBinding.inflate(getLayoutInflater());
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
         tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
+        ambulanceViewModel = new ViewModelProvider(requireActivity()).get(AmbulanceViewModel.class);
 
         Owner currentOwner = ownerViewModel.getOwner().getValue();
 
@@ -98,9 +101,8 @@ public class ManageAmbulanceFragment extends Fragment {
 
 
             AmbulanceAdapter ambulanceAdapter = new AmbulanceAdapter(requireContext(), currentOwner.getAmbulances().getValue(), new ArrayList<>(), deleteCallback, ((position, ambulance) -> {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("ambulance", ambulance);
-                Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.ambulanceDetailFragment, bundle, new NavOptions.Builder().setEnterAnim(R.anim.slide_in_right).setExitAnim(android.R.anim.fade_out).build());
+                ambulanceViewModel.setCurrentAmbulance(ambulance);
+                Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.ambulanceDetailFragment, null, new NavOptions.Builder().setEnterAnim(R.anim.slide_in_right).setExitAnim(android.R.anim.fade_out).build());
             }));
 
 

@@ -117,4 +117,7 @@
     <string name="customer_name">Customer Name</string>
     <string name="customer_age">Customer Age</string>
     <string name="driver_earning">Rs. %1$.2f</string>
+    <string name="vehicle_type_text">Vehicle Type</string>
+    <string name="vehicle_number_text">Vehicle Number</string>
+    <string name="delete">Delete</string>
 </resources>

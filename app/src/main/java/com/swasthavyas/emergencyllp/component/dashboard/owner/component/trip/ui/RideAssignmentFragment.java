@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.work.Constraints;
@@ -28,6 +30,7 @@ import com.google.common.primitives.Doubles;
 import com.google.firebase.database.FirebaseDatabase;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.AmbulanceViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.TripRegistrationStep;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
@@ -51,6 +54,7 @@ public class RideAssignmentFragment extends Fragment {
     FragmentRideAssignmentBinding viewBinding;
     TripAssignmentViewModel tripAssignmentViewModel;
     TripViewModel tripViewModel;
+    AmbulanceViewModel ambulanceViewModel;
     NavController dashboardNavController, registrationNavController;
 
     private Ambulance ambulance;
@@ -66,24 +70,32 @@ public class RideAssignmentFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ambulance = getArguments().getParcelable("ambulance", Ambulance.class);
-                assignedDriver = getArguments().getParcelable("assigned_driver", EmployeeDriver.class);
+        OnBackPressedCallback onBackPressedCallback =  new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                  Navigation.findNavController(viewBinding.getRoot())
+                          .navigate(
+                                  R.id.ambulanceDetailFragment,
+                                  null,
+                                  new NavOptions.Builder()
+                                          .setEnterAnim(android.R.anim.fade_in)
+                                          .setExitAnim(android.R.anim.slide_out_right)
+                                          .build()
+                          );
             }
-            else {
-                ambulance = getArguments().getParcelable("ambulance");
-                assignedDriver = getArguments().getParcelable("assigned_driver");
-            }
+        };
 
-        }
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewBinding = FragmentRideAssignmentBinding.inflate(getLayoutInflater());
+        ambulanceViewModel = new ViewModelProvider(requireActivity()).get(AmbulanceViewModel.class);
 
+        ambulanceViewModel.getCurrentAmbulance().observe(getViewLifecycleOwner(), ambulance -> this.ambulance = ambulance);
+        ambulanceViewModel.getAssignedDriver().observe(getViewLifecycleOwner(), assignedDriver -> this.assignedDriver = assignedDriver);
 
         // Inflate the layout for this fragment
         return viewBinding.getRoot();

@@ -51,12 +51,21 @@
         android:id="@+id/ambulanceDetailFragment"
         android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.AmbulanceDetailFragment"
         android:label="1"
-        tools:layout="@layout/fragment_ambulance_detail" />
+        tools:layout="@layout/fragment_ambulance_detail" >
+        <action
+            android:id="@+id/action_ambulanceDetailFragment_to_aboutAmbulanceFragment"
+            app:destination="@id/aboutAmbulanceFragment" />
+    </fragment>
     <fragment
         android:id="@+id/rideAssignmentFragment"
         android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.ui.RideAssignmentFragment"
         android:label="fragment_ride_assignment"
         tools:layout="@layout/fragment_ride_assignment" />
+    <fragment
+        android:id="@+id/aboutAmbulanceFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.settings.AboutAmbulanceFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_about_ambulance" />
 
 
 </navigation>
