@@ -115,8 +115,8 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
         holder.getAvailabilityChip().setChipBackgroundColor(
                 availableAmbulanceIds.contains(ambulance.getId()) ?
-                        ColorStateList.valueOf(Color.RED) :
-                        ColorStateList.valueOf(Color.GREEN)
+                        ColorStateList.valueOf(context.getColor(R.color.error)) :
+                        ColorStateList.valueOf(context.getColor(R.color.success))
         );
 
 
