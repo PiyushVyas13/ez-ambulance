@@ -286,6 +286,8 @@ public class RideAssignmentFragment extends Fragment {
         tripMap.replace("pickup_location_coordinates", sanitizeCoordinates(pickupLocationCoordinates));
         tripMap.replace("drop_location_coordinates", sanitizeCoordinates(dropLocationCoordinates));
 
+
+
         return Trip.createFromMap(tripMap);
     }
 

@@ -13,6 +13,7 @@ import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,7 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
 
         try {
             tripMap.put("status", TripStatus.valueOf(terminalState));
+            tripMap.put("completionDate" , new Date());
         } catch (IllegalArgumentException e) {
             return null;
         }

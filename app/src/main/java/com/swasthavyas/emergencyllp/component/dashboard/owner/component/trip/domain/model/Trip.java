@@ -3,6 +3,7 @@ package com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.do
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,10 @@ public class Trip {
     private TripStatus status;
     private String customerMobile;
 
+    private Date createdAt;
 
-    private Trip(String tripId, String customerName, int customerAge, double price, List<Double> pickupLocation, List<Double> dropLocation, String pickupLocationAddress, String dropLocationAddress, String assignedDriverId, String assignedAmbulanceId, String ownerId, TripStatus status, String customerMobile, boolean isEmergencyRide) {
+
+    private Trip(String tripId, String customerName, int customerAge, double price, List<Double> pickupLocation, List<Double> dropLocation, String pickupLocationAddress, String dropLocationAddress, String assignedDriverId, String assignedAmbulanceId, String ownerId, TripStatus status, String customerMobile, boolean isEmergencyRide, Date createdAt) {
         this.id = tripId;
         this.customerName = customerName;
         this.customerAge = customerAge;
@@ -39,10 +42,15 @@ public class Trip {
         this.ownerId = ownerId;
         this.customerMobile = customerMobile;
         this.isEmergencyRide = isEmergencyRide;
+        this.createdAt = createdAt;
     }
 
     public Trip() {
         // required public no-args constructor
+    }
+
+    public Date getCreationDate() {
+        return createdAt;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -61,9 +69,9 @@ public class Trip {
         String driverId = (String) map.get("assigned_driver_id");
         String ambulanceId = (String) map.get("ambulance_id");
         String customerMobile = (String) map.get("customer_mobile");
+        Date createdAt = new Date();
 
-
-        return new Trip(tripId, customerName, customerAge, estimatedPrice, pickupLocationCoordinates, dropLocationCoordinates, pickupLocationAddress, dropLocationAddress, driverId, ambulanceId ,ownerId, tripStatus, customerMobile, isEmergencyRide);
+        return new Trip(tripId, customerName, customerAge, estimatedPrice, pickupLocationCoordinates, dropLocationCoordinates, pickupLocationAddress, dropLocationAddress, driverId, ambulanceId ,ownerId, tripStatus, customerMobile, isEmergencyRide, createdAt);
     }
 
     public Map<String, Object> toMap() {
@@ -87,6 +95,7 @@ public class Trip {
         tripMap.put("ownerId", this.ownerId);
         tripMap.put("customerMobile", this.customerMobile);
         tripMap.put("isEmergencyRide", this.isEmergencyRide);
+        tripMap.put("createdAt",this.createdAt);
 
         return tripMap;
     }
