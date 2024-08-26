@@ -82,7 +82,7 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
                              Bundle savedInstanceState) {
         viewBinding = FragmentPickupLocationBinding.inflate(getLayoutInflater());
         viewBinding.state.setEnabled(false);
-        viewBinding.pincode.setEnabled(false);
+//        viewBinding.pincode.setEnabled(false);
 
         RectangularBounds bounds = RectangularBounds.newInstance(
                 new LatLng(20.5558, 78.6304),
