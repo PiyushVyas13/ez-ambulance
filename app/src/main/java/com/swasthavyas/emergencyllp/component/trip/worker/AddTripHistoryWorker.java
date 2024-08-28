@@ -49,18 +49,19 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
 
         Map<String, Object> tripMap = getTripMap(pickupLocationArray, dropLocationArray, lockedTripMap, terminalState);
 
-        TripHistory tripHistory = TripHistory.createFromMap(tripMap);
         if(tripMap == null) {
             callback.onFailure(new IllegalArgumentException("trip status is invalid."));
             return;
         }
 
+        TripHistory tripHistory = TripHistory.createFromMap(tripMap);
+
         FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
 
         dbInstance
                 .collection("trip_history")
-                .document((String) tripMap.get("id"))
-                .set(tripMap)
+                .document(tripHistory.getTrip().getId())
+                .set(tripHistory)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
                         callback.onSuccess(null);
@@ -84,6 +85,7 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
 
         tripMap.put("pickupLocation", pickupLocationList);
         tripMap.put("dropLocation", dropLocationList);
+        tripMap.put("status", TripStatus.valueOf((String) tripMap.get("status")));
         Log.d(TAG, "getTripMap: "+tripMap);
         Trip trip = Trip.createFromMap(tripMap);
 

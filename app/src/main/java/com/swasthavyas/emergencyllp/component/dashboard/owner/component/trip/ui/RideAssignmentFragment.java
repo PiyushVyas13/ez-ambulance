@@ -27,6 +27,7 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.google.common.primitives.Doubles;
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.FirebaseDatabase;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
@@ -43,6 +44,7 @@ import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -272,19 +274,20 @@ public class RideAssignmentFragment extends Fragment {
             throw new NullPointerException("data not provided.");
         }
 
-        double[] pickupLocationCoordinates = pickupLocationData.getDoubleArray("pickup_location_coordinates");
-        double[] dropLocationCoordinates = dropLocationData.getDoubleArray("drop_location_coordinates");
+        double[] pickupLocationCoordinates = pickupLocationData.getDoubleArray(Trip.ModelColumns.PICKUP_LOCATION);
+        double[] dropLocationCoordinates = dropLocationData.getDoubleArray(Trip.ModelColumns.DROP_LOCATION);
 
-        tripMap.put("trip_id", tripId);
-        tripMap.put("ambulance_id", ambulanceId);
-        tripMap.put("assigned_driver_id", driverId);
-        tripMap.put("owner_id", ownerId);
-        tripMap.put("trip_status", TripStatus.PENDING_RESPONSE);
+        tripMap.put(Trip.ModelColumns.ID, tripId);
+        tripMap.put(Trip.ModelColumns.ASSIGNED_AMBULANCE_ID, ambulanceId);
+        tripMap.put(Trip.ModelColumns.ASSIGNED_DRIVER_ID, driverId);
+        tripMap.put(Trip.ModelColumns.OWNER_ID, ownerId);
+        tripMap.put(Trip.ModelColumns.STATUS, TripStatus.PENDING_RESPONSE);
+        tripMap.put(Trip.ModelColumns.CREATED_AT, new Timestamp(new Date()));
         tripMap.putAll(customerInfoData.getKeyValueMap());
         tripMap.putAll(pickupLocationData.getKeyValueMap());
         tripMap.putAll(dropLocationData.getKeyValueMap());
-        tripMap.replace("pickup_location_coordinates", sanitizeCoordinates(pickupLocationCoordinates));
-        tripMap.replace("drop_location_coordinates", sanitizeCoordinates(dropLocationCoordinates));
+        tripMap.replace(Trip.ModelColumns.PICKUP_LOCATION, sanitizeCoordinates(pickupLocationCoordinates));
+        tripMap.replace(Trip.ModelColumns.DROP_LOCATION, sanitizeCoordinates(dropLocationCoordinates));
 
 
 

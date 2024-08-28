@@ -26,6 +26,7 @@ import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.databinding.FragmentDropLocationBinding;
 import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
 
@@ -129,8 +130,8 @@ public class DropLocationFragment extends NavigationStepFragment implements OnMa
     public Data collectData() {
         Data.Builder datauBuilder = new Data.Builder();
 
-        datauBuilder.putString("drop_location_address", dropLocationAddress);
-        datauBuilder.putDoubleArray("drop_location_coordinates", new double[] {locationCoordinates.latitude, locationCoordinates.longitude});
+        datauBuilder.putString(Trip.ModelColumns.DROP_LOCATION_ADDRESS, dropLocationAddress);
+        datauBuilder.putDoubleArray(Trip.ModelColumns.DROP_LOCATION, new double[] {locationCoordinates.latitude, locationCoordinates.longitude});
 
         return datauBuilder.build();
     }

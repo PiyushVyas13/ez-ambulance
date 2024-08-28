@@ -31,6 +31,7 @@ import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.databinding.FragmentPickupLocationBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
@@ -247,8 +248,8 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
                 .trimToSize();
 
 
-        dataBuilder.putString("pickup_location_address", sanitizeAddress(pickupLocationAddress.toString()));
-        dataBuilder.putDoubleArray("pickup_location_coordinates", new double[] {locationCoordinates.latitude, locationCoordinates.longitude});
+        dataBuilder.putString(Trip.ModelColumns.PICKUP_LOCATION_ADDRESS, sanitizeAddress(pickupLocationAddress.toString()));
+        dataBuilder.putDoubleArray(Trip.ModelColumns.PICKUP_LOCATION, new double[] {locationCoordinates.latitude, locationCoordinates.longitude});
 
         return dataBuilder.build();
     }

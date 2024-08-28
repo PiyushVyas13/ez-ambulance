@@ -1,6 +1,7 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model;
 
 import com.google.firebase.Timestamp;
+import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class TripHistory {
         }
 
         Trip trip = (Trip) map.get("trip");
-        String terminalState = (String) map.get("terminalState");
+        String terminalState = ((TripStatus) map.get("terminalState")).name();
         Timestamp completionTimestamp = (Timestamp) map.get("completionTimestamp");
 
         return new TripHistory(trip,terminalState,completionTimestamp,"");

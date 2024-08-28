@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.work.Data;
 
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.databinding.FragmentCustomerInfoBinding;
 import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
 
@@ -89,11 +90,11 @@ public class CustomerInfoFragment extends NavigationStepFragment {
             return null;
         }
 
-        dataBuilder.putString("customer_name", customerName.toString());
-        dataBuilder.putString("customer_mobile", "91" + customerMobile.toString());
-        dataBuilder.putInt("customer_age", customerAge);
-        dataBuilder.putDouble("estimated_price", estimatedPrice);
-        dataBuilder.putBoolean("is_emergency_ride", isEmergencyRide);
+        dataBuilder.putString(Trip.ModelColumns.CUSTOMER_NAME, customerName.toString());
+        dataBuilder.putString(Trip.ModelColumns.CUSTOMER_MOBILE, "91" + customerMobile.toString());
+        dataBuilder.putInt(Trip.ModelColumns.CUSTOMER_AGE, customerAge);
+        dataBuilder.putDouble(Trip.ModelColumns.PRICE, estimatedPrice);
+        dataBuilder.putBoolean(Trip.ModelColumns.IS_EMERGENCY_RIDE, isEmergencyRide);
 
         return dataBuilder.build();
     }

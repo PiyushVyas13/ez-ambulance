@@ -468,11 +468,10 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .build())
                 .build();
 
-//        WorkManager.getInstance(getApplicationContext())
-//                .beginWith(tripDeleteRequest)
-//                .then(addHistoryRequest)
-//                .enqueue();
-        WorkManager.getInstance(getApplicationContext()).enqueue(addHistoryRequest);
+        WorkManager.getInstance(getApplicationContext())
+                .beginWith(tripDeleteRequest)
+                .then(addHistoryRequest)
+                .enqueue();
 
         WorkManager.getInstance(getApplicationContext())
                 .getWorkInfoByIdLiveData(addHistoryRequest.getId())

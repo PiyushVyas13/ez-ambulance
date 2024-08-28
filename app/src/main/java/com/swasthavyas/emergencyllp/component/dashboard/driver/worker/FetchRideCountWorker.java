@@ -31,7 +31,7 @@ public class FetchRideCountWorker extends ListenableWorkerAdapter {
 
         dbInstance
                 .collection("trip_history")
-                .whereEqualTo("assignedDriverId", driverId)
+                .whereEqualTo("trip.assignedDriverId", driverId)
                 .count()
                 .get(AggregateSource.SERVER)
                 .addOnCompleteListener(task -> {

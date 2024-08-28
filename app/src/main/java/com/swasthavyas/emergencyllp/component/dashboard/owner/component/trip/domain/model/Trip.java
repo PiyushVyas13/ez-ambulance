@@ -56,21 +56,21 @@ public class Trip {
 
     @SuppressWarnings({"unchecked"})
     public static Trip createFromMap(Map<String, Object> map) {
-        String tripId = (String) map.get("trip_id");
-        String customerName = (String) map.get("customer_name");
-        int customerAge = (int) map.get("customer_age");
-        double estimatedPrice = (double) map.get("estimated_price");
-        String pickupLocationAddress = (String) map.get("pickup_location_address");
-        String dropLocationAddress = (String) map.get("drop_location_address");
-        List<Double> pickupLocationCoordinates = (List<Double>) map.get("pickup_location_coordinates");
-        List<Double> dropLocationCoordinates = (List<Double>) map.get("drop_location_coordinates");
-        boolean isEmergencyRide = (boolean) map.get("is_emergency_ride");
-        TripStatus tripStatus = (TripStatus) map.get("trip_status");
-        String ownerId = (String) map.get("owner_id");
-        String driverId = (String) map.get("assigned_driver_id");
-        String ambulanceId = (String) map.get("ambulance_id");
-        String customerMobile = (String) map.get("customer_mobile");
-        Timestamp createdAt = new Timestamp(new Date());
+        String tripId = (String) map.get(ModelColumns.ID);
+        String customerName = (String) map.get(ModelColumns.CUSTOMER_NAME);
+        int customerAge = (int) map.get(ModelColumns.CUSTOMER_AGE);
+        double estimatedPrice = (double) map.get(ModelColumns.PRICE);
+        String pickupLocationAddress = (String) map.get(ModelColumns.PICKUP_LOCATION_ADDRESS);
+        String dropLocationAddress = (String) map.get(ModelColumns.DROP_LOCATION_ADDRESS);
+        List<Double> pickupLocationCoordinates = (List<Double>) map.get(ModelColumns.PICKUP_LOCATION);
+        List<Double> dropLocationCoordinates = (List<Double>) map.get(ModelColumns.DROP_LOCATION);
+        boolean isEmergencyRide = (boolean) map.get(ModelColumns.IS_EMERGENCY_RIDE);
+        TripStatus tripStatus = (TripStatus) map.get(ModelColumns.STATUS);
+        String ownerId = (String) map.get(ModelColumns.OWNER_ID);
+        String driverId = (String) map.get(ModelColumns.ASSIGNED_DRIVER_ID);
+        String ambulanceId = (String) map.get(ModelColumns.ASSIGNED_AMBULANCE_ID);
+        String customerMobile = (String) map.get(ModelColumns.CUSTOMER_MOBILE);
+        Timestamp createdAt = (Timestamp) map.get(ModelColumns.CREATED_AT);
 
         return new Trip(tripId, customerName, customerAge, estimatedPrice, pickupLocationCoordinates, dropLocationCoordinates, pickupLocationAddress, dropLocationAddress, driverId, ambulanceId ,ownerId, tripStatus, customerMobile, isEmergencyRide, createdAt);
     }
@@ -211,5 +211,24 @@ public class Trip {
 
     public void setStatus(TripStatus status) {
         this.status = status;
+    }
+
+    public static class ModelColumns {
+        public static final String ID = "id";
+        public static final String CUSTOMER_NAME = "customerName";
+        public static final String CUSTOMER_AGE = "customerAge";
+        public static final String CUSTOMER_MOBILE = "customerMobile";
+        public static final String PRICE = "price";
+        public static final String PICKUP_LOCATION_ADDRESS = "pickupLocationAddress";
+        public static final String PICKUP_LOCATION = "pickupLocation";
+        public static final String DROP_LOCATION_ADDRESS = "dropLocationAddress";
+        public static final String DROP_LOCATION = "dropLocation";
+        public static final String ASSIGNED_AMBULANCE_ID = "assignedAmbulanceId";
+        public static final String ASSIGNED_DRIVER_ID = "assignedDriverId";
+        public static final String STATUS = "status";
+        public static final String OWNER_ID = "ownerId";
+        public static final String IS_EMERGENCY_RIDE = "isEmergencyRide";
+        public static final String CREATED_AT = "createdAt";
+
     }
 }
