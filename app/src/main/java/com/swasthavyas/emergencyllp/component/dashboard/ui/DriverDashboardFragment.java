@@ -292,6 +292,7 @@ public class DriverDashboardFragment extends Fragment {
     }
 
     private void observeDriverStatus(String driverId) {
+        Context context = requireContext();
         database
                 .getReference()
                 .getRoot()
@@ -301,10 +302,10 @@ public class DriverDashboardFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()) {
-                            dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
                             if(!LocationService.isServiceRunning()) {
-                                LocationService.startService(requireContext(), driverId);
+                                LocationService.startService(context, driverId);
                             }
+                            dashboardViewModel.setDriverStatus(DriverStatus.ON_DUTY);
                         }
                         else {
                             dashboardViewModel.setDriverStatus(DriverStatus.OFF_DUTY);

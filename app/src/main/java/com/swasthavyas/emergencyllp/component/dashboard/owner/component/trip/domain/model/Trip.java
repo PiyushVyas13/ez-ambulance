@@ -1,5 +1,6 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
@@ -24,10 +25,10 @@ public class Trip {
     private TripStatus status;
     private String customerMobile;
 
-    private Date createdAt;
+    private Timestamp createdAt;
 
 
-    private Trip(String tripId, String customerName, int customerAge, double price, List<Double> pickupLocation, List<Double> dropLocation, String pickupLocationAddress, String dropLocationAddress, String assignedDriverId, String assignedAmbulanceId, String ownerId, TripStatus status, String customerMobile, boolean isEmergencyRide, Date createdAt) {
+    private Trip(String tripId, String customerName, int customerAge, double price, List<Double> pickupLocation, List<Double> dropLocation, String pickupLocationAddress, String dropLocationAddress, String assignedDriverId, String assignedAmbulanceId, String ownerId, TripStatus status, String customerMobile, boolean isEmergencyRide, Timestamp createdAt) {
         this.id = tripId;
         this.customerName = customerName;
         this.customerAge = customerAge;
@@ -49,7 +50,7 @@ public class Trip {
         // required public no-args constructor
     }
 
-    public Date getCreationDate() {
+    public Timestamp getCreationDate() {
         return createdAt;
     }
 
@@ -69,7 +70,7 @@ public class Trip {
         String driverId = (String) map.get("assigned_driver_id");
         String ambulanceId = (String) map.get("ambulance_id");
         String customerMobile = (String) map.get("customer_mobile");
-        Date createdAt = new Date();
+        Timestamp createdAt = new Timestamp(new Date());
 
         return new Trip(tripId, customerName, customerAge, estimatedPrice, pickupLocationCoordinates, dropLocationCoordinates, pickupLocationAddress, dropLocationAddress, driverId, ambulanceId ,ownerId, tripStatus, customerMobile, isEmergencyRide, createdAt);
     }
