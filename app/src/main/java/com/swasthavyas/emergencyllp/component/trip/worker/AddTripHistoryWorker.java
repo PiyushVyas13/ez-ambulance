@@ -1,11 +1,17 @@
 package com.swasthavyas.emergencyllp.component.trip.worker;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.WorkerParameters;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
@@ -43,6 +49,7 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
 
         Map<String, Object> tripMap = getTripMap(pickupLocationArray, dropLocationArray, lockedTripMap, terminalState);
 
+        TripHistory tripHistory = TripHistory.createFromMap(tripMap);
         if(tripMap == null) {
             callback.onFailure(new IllegalArgumentException("trip status is invalid."));
             return;
@@ -77,14 +84,20 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
 
         tripMap.put("pickupLocation", pickupLocationList);
         tripMap.put("dropLocation", dropLocationList);
+        Log.d(TAG, "getTripMap: "+tripMap);
+        Trip trip = Trip.createFromMap(tripMap);
+
+
+        Map <String,Object> tripHistoryMap = new HashMap<>();
 
         try {
-            tripMap.put("status", TripStatus.valueOf(terminalState));
-            tripMap.put("completionDate" , new Date());
+            tripHistoryMap.put("trip",trip);
+            tripHistoryMap.put("terminalState", TripStatus.valueOf(terminalState));
+            tripHistoryMap.put("completionTimestamp" , new Timestamp(new Date()));
         } catch (IllegalArgumentException e) {
             return null;
         }
 
-        return tripMap;
+        return tripHistoryMap;
     }
 }
