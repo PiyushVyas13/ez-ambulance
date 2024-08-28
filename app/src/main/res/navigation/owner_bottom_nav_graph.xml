@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_ambulanceDetailFragment_to_aboutAmbulanceFragment"
             app:destination="@id/aboutAmbulanceFragment" />
+        <action
+            android:id="@+id/action_ambulanceDetailFragment_to_ambulanceHistoryFragment"
+            app:destination="@id/ambulanceHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/rideAssignmentFragment"
@@ -66,6 +69,11 @@
         android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.settings.AboutAmbulanceFragment"
         android:label="1"
         tools:layout="@layout/fragment_about_ambulance" />
+    <fragment
+        android:id="@+id/ambulanceHistoryFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.settings.AmbulanceHistoryFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_ambulance_history" />
 
 
 </navigation>

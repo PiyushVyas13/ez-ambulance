@@ -120,4 +120,5 @@
     <string name="vehicle_type_text">Vehicle Type</string>
     <string name="vehicle_number_text">Vehicle Number</string>
     <string name="delete">Delete</string>
+    <string name="date_text">Date</string>
 </resources>

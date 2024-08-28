@@ -24,7 +24,8 @@ import com.swasthavyas.emergencyllp.databinding.FragmentAboutAmbulanceBinding;
 import java.util.Locale;
 
 
-public class AboutAmbulanceFragment extends Fragment {
+public class
+AboutAmbulanceFragment extends Fragment {
     private FragmentAboutAmbulanceBinding viewBinding;
     private AmbulanceViewModel ambulanceViewModel;
 

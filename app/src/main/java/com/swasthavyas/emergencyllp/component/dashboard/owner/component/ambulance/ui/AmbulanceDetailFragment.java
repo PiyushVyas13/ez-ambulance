@@ -452,6 +452,15 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                 );
                         break;
                     case 1:
+                        Navigation.findNavController(v)
+                                .navigate(
+                                        R.id.ambulanceHistoryFragment,
+                                        null,
+                                        new NavOptions.Builder()
+                                                .setEnterAnim(R.anim.slide_in_right)
+                                                .setExitAnim(android.R.anim.fade_out)
+                                                .build()
+                                );
                         break;
                 }
             });
