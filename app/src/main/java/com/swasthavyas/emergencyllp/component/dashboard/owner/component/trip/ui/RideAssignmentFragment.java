@@ -202,7 +202,7 @@ public class RideAssignmentFragment extends Fragment {
                         String driverUid = assignedDriver.getUserId();
                         String customerName = trip.getCustomerName();
                         String customerMobile = trip.getCustomerMobile();
-                        int customerAge = trip.getCustomerAge();
+                        long customerAge = trip.getCustomerAge();
                         double estimatedPrice = trip.getPrice();
                         String pickupLocationAddress = trip.getPickupLocationAddress();
                         String dropLocationAddress = trip.getDropLocationAddress();
@@ -215,7 +215,7 @@ public class RideAssignmentFragment extends Fragment {
                                 .putBoolean("is_emergency_ride", trip.isEmergencyRide())
                                 .putString("driver_uid", driverUid)
                                 .putString("customer_name",customerName)
-                                .putInt("customer_age", customerAge)
+                                .putLong("customer_age", customerAge)
                                 .putString("customer_mobile", customerMobile)
                                 .putDouble("estimated_price", estimatedPrice)
                                 .putString("pickup_location_address", pickupLocationAddress)

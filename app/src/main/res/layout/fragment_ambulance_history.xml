@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
 
     <FrameLayout
@@ -45,12 +45,12 @@
 
 
     <LinearLayout
-        android:layout_marginStart="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_16sdp"
         android:id="@+id/linearLayout7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,33 +63,33 @@
             android:orientation="horizontal">
 
             <View
-                android:layout_marginEnd="@dimen/_15sdp"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
                 android:background="@drawable/background_round_primary" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="@dimen/_120sdp"
-                android:textSize="@dimen/_15ssp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_10sdp"
-                android:text="Lifetime Rides: " />
+                android:text="Lifetime Rides: "
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_15ssp"
+                android:text="55"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="55" />
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
-            android:background="@color/grey"/>
+            android:background="@color/grey" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -106,19 +106,19 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="@dimen/_120sdp"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_15ssp"
-                android:textColor="@color/black"
                 android:layout_marginEnd="@dimen/_10sdp"
-                android:textStyle="bold"
-                android:text="Last Week Rides: " />
+                android:text="Last Week Rides: "
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_15ssp"
+                android:text="6"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="6" />
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
         </LinearLayout>
 
 
@@ -127,12 +127,12 @@
 
     <com.google.android.material.textfield.TextInputLayout
 
-        android:layout_marginTop="@dimen/_10sdp"
         android:id="@+id/textInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_16sdp"
         android:hint="@string/date_text"
         android:textColorHint="@color/black"
@@ -161,49 +161,16 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_marginTop="@dimen/_10sdp"
-        android:id="@+id/materialTextView2"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/history_list"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:text="month"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_15ssp"
-        android:textStyle="bold"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_1sdp"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:background="@color/grey"
-        android:layout_marginTop="@dimen/_5sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialTextView2" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintVertical_bias="0.0">
-
-
-    </androidx.recyclerview.widget.RecyclerView>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
@@ -217,7 +184,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.23" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

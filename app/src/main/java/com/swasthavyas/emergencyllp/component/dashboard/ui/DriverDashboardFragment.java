@@ -158,31 +158,42 @@ public class DriverDashboardFragment extends Fragment {
         }
 
         private void updateDashboard() {
-            FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
+            OneTimeWorkRequest getRidesCountRequest = new OneTimeWorkRequest.Builder(FetchRideCountWorker.class)
+                    .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    .setInputData(new Data.Builder()
+                            .putString("driver_id", employeeViewModel.getCurrentEmployee().getValue().getDriverId())
+                            .build())
+                    .build();
 
-            dbInstance
-                    .collection("trip_history")
-                    .whereEqualTo("assignedDriverId", employeeViewModel.getCurrentEmployee().getValue().getDriverId())
-                    .count()
-                    .get(AggregateSource.SERVER)
-                    .addOnCompleteListener(task -> {
-                        if(task.isSuccessful()) {
-                            long count = task.getResult().getCount();
-                            employeeViewModel.updateRideCount(count);
+            OneTimeWorkRequest getEarningRequest = new OneTimeWorkRequest.Builder(FetchDriverEarningWorker.class)
+                    .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    .setInputData(new Data.Builder()
+                            .putString("driver_id", employeeViewModel.getCurrentEmployee().getValue().getDriverId())
+                            .build())
+                    .build();
+
+            WorkManager.getInstance(requireContext())
+                            .getWorkInfoByIdLiveData(getRidesCountRequest.getId())
+                            .observe(getViewLifecycleOwner(), workInfo -> {
+                                if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                                    long count = workInfo.getOutputData().getLong("ride_count", 0L);
+                                    employeeViewModel.updateRideCount(count);
+                                } else if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.FAILED) {
+                                    Log.d(TAG, "updateDashboard: " + workInfo.getOutputData().getString("message"));
+                                    Toast.makeText(requireContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+            WorkManager.getInstance(requireContext())
+                    .getWorkInfoByIdLiveData(getEarningRequest.getId())
+                    .observe(getViewLifecycleOwner(), workInfo -> {
+                        if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                            double earning = workInfo.getOutputData().getDouble("total_earning", 0.0);
+                            employeeViewModel.updateDriverEarning(earning);
+                        } else if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.FAILED) {
+                            Log.d(TAG, "updateDashboard: " + workInfo.getOutputData().getString("message"));
+                            Toast.makeText(requireContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
                         }
-                    });
-
-            dbInstance
-                    .collection("trip_history")
-                    .whereEqualTo("assignedDriverId", employeeViewModel.getCurrentEmployee().getValue().getDriverId())
-                    .whereEqualTo("status", TripStatus.COMPLETED)
-                    .aggregate(AggregateField.sum("price"))
-                    .get(AggregateSource.SERVER)
-                    .addOnCompleteListener(task -> {
-                       if(task.isSuccessful()) {
-                           double earning = (double) task.getResult().get(AggregateField.sum("price"));
-                           employeeViewModel.updateDriverEarning(earning);
-                       }
                     });
         }
 

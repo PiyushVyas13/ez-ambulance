@@ -121,4 +121,5 @@
     <string name="vehicle_number_text">Vehicle Number</string>
     <string name="delete">Delete</string>
     <string name="date_text">Date</string>
+    <string name="trip_earning">+%1$s</string>
 </resources>

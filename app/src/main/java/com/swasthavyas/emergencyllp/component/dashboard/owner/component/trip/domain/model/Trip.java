@@ -1,5 +1,8 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model;
 
+import androidx.annotation.NonNull;
+
+import com.google.common.base.MoreObjects;
 import com.google.firebase.Timestamp;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
@@ -12,7 +15,7 @@ import java.util.Map;
 public class Trip {
     private String id;
     private String customerName;
-    private int customerAge;
+    private long customerAge;
     private double price;
     private List<Double> pickupLocation;
     private List<Double> dropLocation;
@@ -28,7 +31,7 @@ public class Trip {
     private Timestamp createdAt;
 
 
-    private Trip(String tripId, String customerName, int customerAge, double price, List<Double> pickupLocation, List<Double> dropLocation, String pickupLocationAddress, String dropLocationAddress, String assignedDriverId, String assignedAmbulanceId, String ownerId, TripStatus status, String customerMobile, boolean isEmergencyRide, Timestamp createdAt) {
+    private Trip(String tripId, String customerName, long customerAge, double price, List<Double> pickupLocation, List<Double> dropLocation, String pickupLocationAddress, String dropLocationAddress, String assignedDriverId, String assignedAmbulanceId, String ownerId, TripStatus status, String customerMobile, boolean isEmergencyRide, Timestamp createdAt) {
         this.id = tripId;
         this.customerName = customerName;
         this.customerAge = customerAge;
@@ -58,14 +61,43 @@ public class Trip {
     public static Trip createFromMap(Map<String, Object> map) {
         String tripId = (String) map.get(ModelColumns.ID);
         String customerName = (String) map.get(ModelColumns.CUSTOMER_NAME);
-        int customerAge = (int) map.get(ModelColumns.CUSTOMER_AGE);
+        Object customerAgeRec = map.get(ModelColumns.CUSTOMER_AGE);
+
+        long customerAge = 0;
+
+        if(customerAgeRec instanceof Long) {
+            customerAge = (long) customerAgeRec;
+        } else if (customerAgeRec instanceof Integer) {
+            customerAge = (int) customerAgeRec;
+        }
+
+
         double estimatedPrice = (double) map.get(ModelColumns.PRICE);
         String pickupLocationAddress = (String) map.get(ModelColumns.PICKUP_LOCATION_ADDRESS);
         String dropLocationAddress = (String) map.get(ModelColumns.DROP_LOCATION_ADDRESS);
         List<Double> pickupLocationCoordinates = (List<Double>) map.get(ModelColumns.PICKUP_LOCATION);
         List<Double> dropLocationCoordinates = (List<Double>) map.get(ModelColumns.DROP_LOCATION);
-        boolean isEmergencyRide = (boolean) map.get(ModelColumns.IS_EMERGENCY_RIDE);
-        TripStatus tripStatus = (TripStatus) map.get(ModelColumns.STATUS);
+
+
+        boolean isEmergencyRide;
+
+        if(map.containsKey(ModelColumns.IS_EMERGENCY_RIDE)) {
+            isEmergencyRide= (boolean) map.get(ModelColumns.IS_EMERGENCY_RIDE);
+        } else {
+            isEmergencyRide = (boolean) map.get("isEmergencyRide");
+        }
+
+
+        Object tripStatusRec = map.get(ModelColumns.STATUS);
+        TripStatus tripStatus = null;
+
+        if(tripStatusRec instanceof String) {
+            tripStatus = TripStatus.valueOf(((String) tripStatusRec));
+        } else if(tripStatusRec instanceof TripStatus) {
+            tripStatus = (TripStatus) tripStatusRec;
+        }
+
+
         String ownerId = (String) map.get(ModelColumns.OWNER_ID);
         String driverId = (String) map.get(ModelColumns.ASSIGNED_DRIVER_ID);
         String ambulanceId = (String) map.get(ModelColumns.ASSIGNED_AMBULANCE_ID);
@@ -117,7 +149,7 @@ public class Trip {
         this.customerName = customerName;
     }
 
-    public int getCustomerAge() {
+    public long getCustomerAge() {
         return customerAge;
     }
 
@@ -213,6 +245,28 @@ public class Trip {
         this.status = status;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("customerName", customerName)
+                .add("customerAge", customerAge)
+                .add("price", price)
+                .add("pickupLocation", pickupLocation)
+                .add("dropLocation", dropLocation)
+                .add("pickupLocationAddress", pickupLocationAddress)
+                .add("dropLocationAddress", dropLocationAddress)
+                .add("assignedDriverId", assignedDriverId)
+                .add("assignedAmbulanceId", assignedAmbulanceId)
+                .add("ownerId", ownerId)
+                .add("isEmergencyRide", isEmergencyRide)
+                .add("status", status)
+                .add("customerMobile", customerMobile)
+                .add("createdAt", createdAt)
+                .toString();
+    }
+
     public static class ModelColumns {
         public static final String ID = "id";
         public static final String CUSTOMER_NAME = "customerName";
@@ -227,8 +281,8 @@ public class Trip {
         public static final String ASSIGNED_DRIVER_ID = "assignedDriverId";
         public static final String STATUS = "status";
         public static final String OWNER_ID = "ownerId";
-        public static final String IS_EMERGENCY_RIDE = "isEmergencyRide";
-        public static final String CREATED_AT = "createdAt";
+        public static final String IS_EMERGENCY_RIDE = "emergencyRide";
+        public static final String CREATED_AT = "creationDate";
 
     }
 }

@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -38,13 +38,14 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:textSize="@dimen/_20ssp"
                 android:textColor="@color/black"
-                android:text="Sujal Agrawal"/>
+                android:text="William8765"/>
 
 
             <LinearLayout
@@ -53,6 +54,7 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/trip_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
@@ -71,6 +73,7 @@
                     android:text="at"/>
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/trip_time"
                     android:layout_width="wrap_content"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -86,14 +89,15 @@
         </LinearLayout>
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/trip_earning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_15ssp"
             android:layout_gravity="center|end"
             android:layout_marginEnd="@dimen/_20sdp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:text="+2,000"/>
+            android:textColor="@color/success"
+            android:text="@string/trip_earning"/>
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
