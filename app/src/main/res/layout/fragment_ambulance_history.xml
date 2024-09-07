@@ -78,6 +78,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/lifetime_rides"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="55"
@@ -113,6 +114,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/last_week_rides"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="6"
