@@ -20,9 +20,6 @@
         <action
             android:id="@+id/action_ownerHomeFragment_to_addDriverFragment"
             app:destination="@id/addDriverFragment" />
-        <action
-            android:id="@+id/action_ownerHomeFragment_to_rideAssignmentFragment"
-            app:destination="@id/rideAssignmentFragment" />
     </fragment>
 
     <fragment
@@ -58,6 +55,9 @@
         <action
             android:id="@+id/action_ambulanceDetailFragment_to_ambulanceHistoryFragment"
             app:destination="@id/ambulanceHistoryFragment" />
+        <action
+            android:id="@+id/action_ambulanceDetailFragment_to_rideAssignmentFragment"
+            app:destination="@id/rideAssignmentFragment" />
     </fragment>
     <fragment
         android:id="@+id/rideAssignmentFragment"
@@ -73,7 +73,16 @@
         android:id="@+id/ambulanceHistoryFragment"
         android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.settings.AmbulanceHistoryFragment"
         android:label="1"
-        tools:layout="@layout/fragment_ambulance_history" />
+        tools:layout="@layout/fragment_ambulance_history" >
+        <action
+            android:id="@+id/action_ambulanceHistoryFragment_to_historyItemFragment"
+            app:destination="@id/historyItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyItemFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.settings.HistoryItemFragment"
+        android:label="fragment_history_item"
+        tools:layout="@layout/fragment_history_item" />
 
 
 </navigation>

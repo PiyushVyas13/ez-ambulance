@@ -7,7 +7,6 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

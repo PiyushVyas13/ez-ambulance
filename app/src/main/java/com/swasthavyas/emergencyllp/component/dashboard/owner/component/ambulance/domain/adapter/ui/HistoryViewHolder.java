@@ -21,7 +21,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
     private final TextView tripDate;
     private final TextView tripTime;
     private final TextView tripEarning;
-
+    private final View itemView;
 
     public HistoryViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -33,6 +33,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         tripDate = viewBinding.tripDate;
         tripTime = viewBinding.tripTime;
         tripEarning = viewBinding.tripEarning;
+        this.itemView = itemView;
     }
 
     public void setName(String name) {
@@ -57,5 +58,9 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
                 .placeholder(R.drawable.sample_profile)
                 .dontAnimate()
                 .into(this.profileImage);
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.itemView.setOnClickListener(onClickListener);
     }
 }

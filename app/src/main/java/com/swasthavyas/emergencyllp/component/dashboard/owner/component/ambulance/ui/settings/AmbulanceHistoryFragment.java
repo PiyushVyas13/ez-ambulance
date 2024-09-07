@@ -75,33 +75,36 @@ AmbulanceHistoryFragment extends Fragment {
         };
 
         requireActivity().getOnBackPressedDispatcher().addCallback(this,backPressedCallback);
-        fetchAmbulanceHistory();
     }
 
     private void fetchAmbulanceHistory() {
         FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
 
-        dbInstance
-                .collection("trip_history")
-                .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
-                .orderBy("completionTimestamp", Query.Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener(task -> {
-                   if(task.isSuccessful()) {
-                       for(DocumentSnapshot snapshot : task.getResult()) {
-                           Map<String, Object> documentMap = snapshot.getData();
+        if (ambulanceHistoryList.isEmpty()) {
+            dbInstance
+                    .collection("trip_history")
+                    .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
+                    .orderBy("completionTimestamp", Query.Direction.DESCENDING)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                       if(task.isSuccessful()) {
+                           for(DocumentSnapshot snapshot : task.getResult()) {
+                               Map<String, Object> documentMap = snapshot.getData();
 
-                           if(documentMap == null) {
-                               continue;
+                               if(documentMap == null) {
+                                   continue;
+                               }
+                               TripHistory history = TripHistory.createFromMap(snapshot.getData());
+                               ambulanceHistoryList.add(history);
                            }
-                           TripHistory history = TripHistory.createFromMap(snapshot.getData());
-                           ambulanceHistoryList.add(history);
-                       }
 
-                       Log.d(TAG, "fetchAmbulanceHistory: " + ambulanceHistoryList);
-                       prepareRecyclerView();
-                   }
-                });
+                           Log.d(TAG, "fetchAmbulanceHistory: " + ambulanceHistoryList);
+                           prepareRecyclerView();
+                       }
+                    });
+        } else {
+            prepareRecyclerView();
+        }
     }
 
     private void prepareRecyclerView() {
@@ -137,6 +140,7 @@ AmbulanceHistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         viewBinding = FragmentAmbulanceHistoryBinding.inflate(getLayoutInflater());
+        fetchAmbulanceHistory();
         return viewBinding.getRoot();
     }
 }

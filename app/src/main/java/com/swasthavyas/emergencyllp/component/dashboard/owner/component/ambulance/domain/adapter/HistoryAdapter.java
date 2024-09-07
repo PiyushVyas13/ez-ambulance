@@ -5,9 +5,16 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter.ui.HistoryViewHolder;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.HistoryViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
 import com.swasthavyas.emergencyllp.databinding.HistoryBinding;
@@ -55,6 +62,25 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         holder.setTripTime(timeString);
         holder.setTripEarning(context, String.valueOf(trip.getPrice()));
         holder.setProfileImage(context, null);
+        holder.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+
+            NavBackStackEntry backStackEntry = navController.getBackStackEntry(R.id.ambulanceHistoryFragment);
+
+            HistoryViewModel historyViewModel = new ViewModelProvider(backStackEntry).get(HistoryViewModel.class);
+
+            historyViewModel.setSelectedTripHistory(tripHistory);
+            navController.navigate(
+                    R.id.historyItemFragment,
+                    null,
+                    new NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(android.R.anim.fade_out)
+                            .setPopEnterAnim(android.R.anim.fade_in)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+            );
+        });
 
     }
 
