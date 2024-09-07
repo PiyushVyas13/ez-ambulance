@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -29,7 +31,9 @@ import com.swasthavyas.emergencyllp.databinding.FragmentAmbulanceHistoryBinding;
 import com.swasthavyas.emergencyllp.util.TimestampUtility;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +45,8 @@ AmbulanceHistoryFragment extends Fragment {
     AmbulanceViewModel ambulanceViewModel;
     List<TripHistory> ambulanceHistoryList;
     Ambulance ambulance;
+    long lifetimeRides = -1;
+    long lastWeekRides = -1;
 
     public AmbulanceHistoryFragment() {
         ambulanceHistoryList = new ArrayList<>();
@@ -113,6 +119,56 @@ AmbulanceHistoryFragment extends Fragment {
         HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap);
         viewBinding.historyList.setLayoutManager(new LinearLayoutManager(requireContext()));
         viewBinding.historyList.setAdapter(historyHeadlineAdapter);
+
+    }
+
+    private void setLifetimeRides() {
+        FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
+
+        if(lifetimeRides < 0) {
+            dbInstance
+                    .collection("trip_history")
+                    .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
+                    .count()
+                    .get(AggregateSource.SERVER)
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            lifetimeRides = task.getResult().getCount();
+                            viewBinding.lifetimeRides.setText(String.valueOf(task.getResult().getCount()));
+                        }
+                    });
+        } else {
+            viewBinding.lifetimeRides.setText(String.valueOf(lifetimeRides));
+        }
+    }
+
+    private void setLastWeekRides() {
+        FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
+
+        Timestamp now = Timestamp.now();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
+
+        Timestamp sevenDaysAgo = new Timestamp(calendar.getTime());
+
+        if(lastWeekRides < 0) {
+            dbInstance
+                    .collection("trip_history")
+                    .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
+                    .whereGreaterThanOrEqualTo("completionTimestamp", now)
+                    .whereLessThanOrEqualTo("completionTimestamp", sevenDaysAgo)
+                    .count()
+                    .get(AggregateSource.SERVER)
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            lastWeekRides = task.getResult().getCount();
+                            viewBinding.lastWeekRides.setText(String.valueOf(lastWeekRides));
+                        }
+                    });
+        } else {
+            viewBinding.lastWeekRides.setText(String.valueOf(lastWeekRides));
+        }
     }
 
     private Map<String, List<TripHistory>> segregateTripHistory(List<TripHistory> tripHistoryList){
@@ -140,7 +196,10 @@ AmbulanceHistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         viewBinding = FragmentAmbulanceHistoryBinding.inflate(getLayoutInflater());
+        setLifetimeRides();
+        setLastWeekRides();
         fetchAmbulanceHistory();
         return viewBinding.getRoot();
     }
+
 }
