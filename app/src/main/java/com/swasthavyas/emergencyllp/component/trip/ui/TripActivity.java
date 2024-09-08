@@ -65,7 +65,9 @@ import com.swasthavyas.emergencyllp.databinding.ActivityTripBinding;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -75,10 +77,16 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FusedLocationProviderClient locationProviderClient;
 
+    private Map<String, Object> tripPolylines;
+
+    private static final String REQUEST_PICKUP = "pickup_polyline";
+    private static final String REQUEST_DROP = "drop_polyline";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewBinding = ActivityTripBinding.inflate(getLayoutInflater());
+        tripPolylines = new HashMap<>();
 
         EdgeToEdge.enable(this);
         setContentView(viewBinding.getRoot());
@@ -196,16 +204,16 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (trip.getStatus()) {
             case INITIATED:
             case CLIENT_PICKUP:
-                requestRoutePreview(googleMap, trip.getPickupLocation());
+                requestRoutePreview(googleMap, trip.getPickupLocation(), REQUEST_PICKUP);
                 break;
             case CLIENT_DROP:
-                requestRoutePreview(googleMap, trip.getDropLocation());
+                requestRoutePreview(googleMap, trip.getDropLocation(), REQUEST_DROP);
                 break;
         }
 
     }
 
-    private void requestRoutePreview(@NonNull GoogleMap googleMap, List<Double> dest) {
+    private void requestRoutePreview(@NonNull GoogleMap googleMap, List<Double> dest, String requestType) {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -262,30 +270,9 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     Log.d(TAG, "onMapReady: " + workInfo.getOutputData());
                                     return;
                                 }
-                                String duration = formatETA(rawDuration);
-                                List<LatLng> coordinates = PolyUtil.decode(encodedPolyline);
+                                tripPolylines.putIfAbsent(requestType, encodedPolyline);
+                                renderRoutePolyline(googleMap, dest, rawDuration, encodedPolyline, location);
 
-                                googleMap.clear();
-                                PolylineOptions options = new PolylineOptions()
-                                        .addAll(coordinates)
-                                        .addSpan(new StyleSpan(StrokeStyle.gradientBuilder(Color.RED, Color.YELLOW).build()));
-
-                                Polyline routePreview = googleMap.addPolyline(options);
-
-                                routePreview.setColor(Color.BLUE);
-
-                                LatLng midpoint = getRouteMidpoint(routePreview.getPoints());
-
-                                googleMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(location.getLatitude(), location.getLongitude()))
-                                        .icon(getBitmapFromVector())
-                                );
-                                googleMap.addMarker(new MarkerOptions().position(new LatLng(dest.get(0), dest.get(1))));
-
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(midpoint, 15f));
-                                viewBinding.navigateButton.setEnabled(true);
-                                viewBinding.eta.setText(getString(R.string.eta_text, duration));
-                                viewBinding.tripProgressbar.setVisibility(View.GONE);
                             } else if (workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
                                 Toast.makeText(this, workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
                                 viewBinding.tripProgressbar.setVisibility(View.GONE);
@@ -296,6 +283,33 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                         });
             }
         });
+    }
+
+    private void renderRoutePolyline(@NonNull GoogleMap googleMap, List<Double> dest, String rawDuration, String encodedPolyline, Location location) {
+        String duration = formatETA(rawDuration);
+        List<LatLng> coordinates = PolyUtil.decode(encodedPolyline);
+
+        googleMap.clear();
+        PolylineOptions options = new PolylineOptions()
+                .addAll(coordinates)
+                .addSpan(new StyleSpan(StrokeStyle.gradientBuilder(Color.RED, Color.YELLOW).build()));
+
+        Polyline routePreview = googleMap.addPolyline(options);
+
+        routePreview.setColor(Color.BLUE);
+
+        LatLng midpoint = getRouteMidpoint(routePreview.getPoints());
+
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                .icon(getBitmapFromVector())
+        );
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(dest.get(0), dest.get(1))));
+
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(midpoint, 15f));
+        viewBinding.navigateButton.setEnabled(true);
+        viewBinding.eta.setText(getString(R.string.eta_text, duration));
+        viewBinding.tripProgressbar.setVisibility(View.GONE);
     }
 
     private BitmapDescriptor getBitmapFromVector() {
@@ -406,7 +420,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             if(isUnderRadius(currentLocation, trip.getPickupLocation(), 100.0)){
-                requestRoutePreview(gMap,trip.getDropLocation());
+                requestRoutePreview(gMap,trip.getDropLocation(), REQUEST_DROP);
 
                 viewBinding.pickupComplete.setVisibility(View.GONE);
                 viewBinding.navigateButton.setVisibility(View.VISIBLE);
@@ -465,6 +479,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setInputData(new Data.Builder()
                         .putAll(trip.toMap())
                         .putString("terminal_state", terminalState.name())
+                        .putAll(tripPolylines)
                         .build())
                 .build();
 

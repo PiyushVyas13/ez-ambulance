@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".HistoryDriverFragment">
+    >
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -280,7 +280,7 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="@dimen/_120sdp"
                     android:layout_height="wrap_content"
-                    android:text="Timestamp"
+                    android:text="Trip Date"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="@dimen/_13ssp"/>
@@ -298,19 +298,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_15ssp"
-                android:text="View Route"
+                android:text="Trip Route"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginStart="@dimen/_15sdp"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>
 
-            <com.google.android.gms.maps.MapView
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/route_preview_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_height="@dimen/_200sdp"
                 android:layout_marginStart="@dimen/_15sdp"
                 android:layout_marginBottom="@dimen/_140sdp"
-                android:layout_marginEnd="@dimen/_15sdp" />
+                android:layout_marginEnd="@dimen/_15sdp"
+
+                />
         </LinearLayout>
 
     </ScrollView>

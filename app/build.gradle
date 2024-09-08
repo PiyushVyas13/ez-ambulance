@@ -84,6 +84,7 @@ dependencies {
 
     // Work Manager
     implementation libs.work.runtime
+    testImplementation libs.junit.jupiter
 
     // Annotation Processor
     annotationProcessor libs.compiler

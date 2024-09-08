@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
+import java.util.List;
 import java.util.Map;
 
 public class TripHistory {
@@ -12,24 +13,24 @@ public class TripHistory {
     private Trip trip ;
     private String terminalState;
     private Timestamp completedAt;
-    private String routePolyLine;
+    private List<String> routePolyLines;
 
 
     public TripHistory(){
-
+        // required public empty constructor
     }
 
     /**
      * @param trip copy of trip object that was recorded as history
      * @param terminalState last state after the trip got removed from RTDB
      * @param completedAt completion time of the trip
-     * @param routePolyLine encoded polyline from pickup to drop location
+     * @param routePolyLines encoded polyline from pickup to drop location
      */
-    public TripHistory(Trip trip,String terminalState,Timestamp completedAt,String routePolyLine){
+    public TripHistory(Trip trip,String terminalState,Timestamp completedAt,List<String> routePolyLines){
         this.trip = trip;
         this.terminalState = terminalState;
         this.completedAt = completedAt;
-        this.routePolyLine = routePolyLine;
+        this.routePolyLines = routePolyLines;
     }
 
     public Trip getTrip() {
@@ -44,8 +45,8 @@ public class TripHistory {
         return terminalState;
     }
 
-    public String getRoutePolyLine() {
-        return routePolyLine;
+    public List<String> getRoutePolyLines() {
+        return routePolyLines;
     }
 
 
@@ -76,7 +77,9 @@ public class TripHistory {
          }
         Timestamp completionTimestamp = (Timestamp) map.get("completionTimestamp");
 
-        return new TripHistory(trip,terminalState,completionTimestamp,"");
+         List<String> routePolylines = (List<String>) map.get("routePolyLines");
+
+        return new TripHistory(trip,terminalState,completionTimestamp,routePolylines);
 
      }
 
@@ -86,7 +89,7 @@ public class TripHistory {
         return "TripHistory{" + "trip=" + trip +
                 ", terminalState='" + terminalState + '\'' +
                 ", completedAt=" + completedAt +
-                ", routePolyLine='" + routePolyLine + '\'' +
+                ", routePolyLines='" + routePolyLines + '\'' +
                 '}';
     }
 }
