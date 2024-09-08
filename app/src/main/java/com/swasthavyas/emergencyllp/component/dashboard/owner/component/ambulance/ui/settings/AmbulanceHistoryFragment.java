@@ -190,14 +190,18 @@ AmbulanceHistoryFragment extends Fragment {
             dbInstance
                     .collection("trip_history")
                     .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
-                    .whereGreaterThanOrEqualTo("completionTimestamp", now)
-                    .whereLessThanOrEqualTo("completionTimestamp", sevenDaysAgo)
+                    .whereLessThanOrEqualTo("completionTimestamp", now)
+                    .whereGreaterThanOrEqualTo("completionTimestamp", sevenDaysAgo)
+                    .orderBy("completionTimestamp", Query.Direction.DESCENDING)
                     .count()
                     .get(AggregateSource.SERVER)
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful()) {
+                            Log.d(TAG, "setLastWeekRides: " + task.getResult().getCount());
                             lastWeekRides = task.getResult().getCount();
                             viewBinding.lastWeekRides.setText(String.valueOf(lastWeekRides));
+                        } else {
+                            Log.d(TAG, "setLastWeekRides: " + task.getException());
                         }
                     });
         } else {
