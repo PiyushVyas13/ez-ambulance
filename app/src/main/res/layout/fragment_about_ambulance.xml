@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".component.dashboard.owner.component.ambulance.ui.settings.AboutAmbulanceFragment">
 
     <FrameLayout
@@ -33,11 +33,11 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="About Ambulance"
-            android:textSize="@dimen/_20ssp"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_gravity="center"/>
+            android:textSize="@dimen/_20ssp"
+            android:textStyle="bold" />
 
     </FrameLayout>
 
@@ -45,22 +45,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ambulance_image"
             android:layout_width="match_parent"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher_round"
+            android:layout_height="@dimen/_110sdp"
             android:layout_marginBottom="@dimen/_20sdp"
-            android:layout_height="@dimen/_110sdp" />
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_launcher_round" />
 
 
         <com.google.android.material.card.MaterialCardView
@@ -74,63 +74,62 @@
                 android:id="@+id/assigned_driver_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Assigned Driver Name"
                 android:layout_gravity="start|center"
                 android:padding="@dimen/_10sdp"
+                android:text="Assigned Driver Name"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="@dimen/_13ssp"/>
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_gravity="end"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_marginEnd="@dimen/_15sdp"
                 android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:layout_gravity="end|center"
                     android:layout_width="wrap_content"
-                    android:backgroundTint="@color/transparent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/delete"/>
+                    android:layout_gravity="end|center"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/delete" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_gravity="center"
-                    android:textColor="@color/black"
                     android:text="@string/delete"
-                    />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_gravity="end"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_marginEnd="@dimen/_65sdp"
                 android:layout_marginBottom="@dimen/_5sdp"
-                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:layout_gravity="end|center"
                     android:layout_width="wrap_content"
-                    android:backgroundTint="@color/transparent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/edit"/>
+                    android:layout_gravity="end|center"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/edit" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_gravity="center"
+                    android:text="Edit"
                     android:textColor="@color/black"
-                    android:text="Edit"/>
+                    android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
 
@@ -140,91 +139,87 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_15sdp"
-            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_marginEnd="@dimen/_30sdp"
-                android:textSize="@dimen/_14ssp"
                 android:layout_height="wrap_content"
-                android:text="Ambulance Type"/>
+                android:layout_marginEnd="@dimen/_30sdp"
+                android:text="Ambulance Type"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="bold" />
 
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/ambulance_type"
                 android:layout_width="wrap_content"
-                android:textSize="@dimen/_12ssp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_gravity="end|center"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:text="Ambulance Type"
                 android:textColor="@color/dark_grey"
-                android:text="Ambulance Type"/>
+                android:textSize="@dimen/_12ssp" />
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_15sdp"
-            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_marginEnd="@dimen/_55sdp"
-                android:textSize="@dimen/_14ssp"
                 android:layout_height="wrap_content"
-                android:text="@string/vehicle_type_text"/>
+                android:layout_marginEnd="@dimen/_55sdp"
+                android:text="@string/vehicle_type_text"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="bold" />
 
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/vehicle_type"
                 android:layout_width="wrap_content"
-                android:textSize="@dimen/_12ssp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_gravity="end|center"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:text="@string/vehicle_type_text"
                 android:textColor="@color/dark_grey"
-                android:text="@string/vehicle_type_text"/>
+                android:textSize="@dimen/_12ssp" />
         </LinearLayout>
-
-
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginStart="@dimen/_10sdp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
             android:orientation="horizontal">
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_marginEnd="@dimen/_35sdp"
-                android:textSize="@dimen/_14ssp"
                 android:layout_height="wrap_content"
-                android:text="@string/vehicle_number_text"/>
+                android:layout_marginEnd="@dimen/_35sdp"
+                android:text="@string/vehicle_number_text"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="bold" />
 
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/vehicle_number"
                 android:layout_width="wrap_content"
-                android:textSize="@dimen/_12ssp"
-                android:layout_gravity="end|center"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:text="@string/vehicle_number_text"
                 android:textColor="@color/dark_grey"
-                android:text="@string/vehicle_number_text"/>
+                android:textSize="@dimen/_12ssp" />
         </LinearLayout>
-
-
 
 
     </LinearLayout>

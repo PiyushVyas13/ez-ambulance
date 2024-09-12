@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,11 +33,13 @@ import com.swasthavyas.emergencyllp.databinding.FragmentAmbulanceHistoryBinding;
 import com.swasthavyas.emergencyllp.util.TimestampUtility;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 
-import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class
@@ -129,6 +133,7 @@ AmbulanceHistoryFragment extends Fragment {
                 .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
                 .whereGreaterThanOrEqualTo("completionTimestamp", startOfDay)
                 .whereLessThanOrEqualTo("completionTimestamp", endOfDay)
+                .orderBy("completionTimestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                    if(task.isSuccessful()) {
@@ -237,6 +242,43 @@ AmbulanceHistoryFragment extends Fragment {
         setLifetimeRides();
         setLastWeekRides();
         fetchAmbulanceHistory();
+
+        viewBinding.filterDateLayout.setEndIconOnClickListener(v -> {
+            if(!viewBinding.filterDate.getText().toString().isEmpty()) {
+                viewBinding.filterDate.setText("");
+                fetchAmbulanceHistory();
+                viewBinding.filterDateLayout.setEndIconDrawable(R.drawable.calender);
+            } else {
+                MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
+                        .setTitleText("Search trips for a date")
+                        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                        .build();
+
+                picker.addOnPositiveButtonClickListener(selection -> {
+                    Date date = new Date(selection);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+
+                    int year = calendar.get(Calendar.YEAR);
+                    Log.d(TAG, "onCreateView: " + year);
+                    int month = calendar.get(Calendar.MONTH);
+                    Log.d(TAG, "onCreateView: " + month);
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    Log.d(TAG, "onCreateView: " + day);
+
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+                    viewBinding.filterDate.setText(formatter.format(date));
+
+                    getTripForDate(day, month, year);
+                    viewBinding.filterDateLayout.setEndIconDrawable(R.drawable.baseline_cancel_24);
+                });
+
+                picker.show(getChildFragmentManager(), "FILTER_DATE_PICKER");
+
+            }
+
+
+        });
         return viewBinding.getRoot();
     }
 

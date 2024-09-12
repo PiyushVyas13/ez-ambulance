@@ -129,7 +129,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
 
-        android:id="@+id/textInputLayout"
+        android:id="@+id/filter_date_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
+            android:id="@+id/filter_date"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:inputType="date"
@@ -171,7 +171,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/filter_date_layout" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
