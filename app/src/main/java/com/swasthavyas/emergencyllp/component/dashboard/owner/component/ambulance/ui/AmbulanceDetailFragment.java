@@ -172,9 +172,10 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         ambulanceViewModel.getCurrentAmbulance().observe(getViewLifecycleOwner(), ambulance -> {
             viewBinding.ambulanceDetailTitle.setText(ambulance.getVehicleNumber());
             this.ambulance = ambulance;
+            viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId()));
         });
 
-        viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext()));
+
 
         ownerViewModel.getOwner().observe(getViewLifecycleOwner(), owner -> {
 
@@ -402,9 +403,11 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     private static class SettingsOptionAdapter extends BaseAdapter {
 
         private final Context context;
+        private final String ambulanceId;
 
-        public SettingsOptionAdapter(Context context) {
+        public SettingsOptionAdapter(Context context, String ambulanceId) {
             this.context = context;
+            this.ambulanceId = ambulanceId;
         }
 
         @Override
@@ -452,15 +455,11 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                 );
                         break;
                     case 1:
+                        AmbulanceDetailFragmentDirections.HistoryAction action = AmbulanceDetailFragmentDirections
+                                .historyAction("trip.assignedAmbulanceId", ambulanceId);
+
                         Navigation.findNavController(v)
-                                .navigate(
-                                        R.id.ambulanceHistoryFragment,
-                                        null,
-                                        new NavOptions.Builder()
-                                                .setEnterAnim(R.anim.slide_in_right)
-                                                .setExitAnim(android.R.anim.fade_out)
-                                                .build()
-                                );
+                                .navigate(action);
                         break;
                 }
             });

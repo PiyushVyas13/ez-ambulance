@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter.ui;
+package com.swasthavyas.emergencyllp.component.history.domain.adapter.ui;
 
 import android.content.Context;
 import android.view.View;
@@ -8,11 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter.HistoryAdapter;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
+import com.swasthavyas.emergencyllp.component.history.domain.adapter.HistoryAdapter;
 import com.swasthavyas.emergencyllp.databinding.HistoryHeadlineBinding;
-
-import java.util.List;
 
 public class HistoryHeadlineViewHolder extends RecyclerView.ViewHolder {
 

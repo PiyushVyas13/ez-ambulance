@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter.ui;
+package com.swasthavyas.emergencyllp.component.history.domain.adapter.ui;
 
 import android.content.Context;
 import android.view.View;

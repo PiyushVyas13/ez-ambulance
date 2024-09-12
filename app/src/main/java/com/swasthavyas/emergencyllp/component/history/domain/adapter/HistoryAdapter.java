@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter;
+package com.swasthavyas.emergencyllp.component.history.domain.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,18 +13,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter.ui.HistoryViewHolder;
+import com.swasthavyas.emergencyllp.component.history.domain.adapter.ui.HistoryViewHolder;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.HistoryViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
 import com.swasthavyas.emergencyllp.databinding.HistoryBinding;
 import com.swasthavyas.emergencyllp.util.TimestampUtility;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
