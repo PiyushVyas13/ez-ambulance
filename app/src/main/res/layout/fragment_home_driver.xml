@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/home_fragment"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -46,46 +46,45 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center|top"
+                    android:layout_marginTop="@dimen/_10sdp"
                     android:text="Lifetime Earning"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_15ssp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center|top"
-                    android:layout_marginTop="@dimen/_10sdp"/>
+                    android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/total_earning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rs. 5034"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginBottom="@dimen/_20sdp"
-                    android:textSize="@dimen/_18ssp"
+                    android:text="Rs. 5034"
                     android:textColor="#036412"
-                    android:textStyle="bold"
-                    />
+                    android:textSize="@dimen/_18ssp"
+                    android:textStyle="bold" />
 
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:text="Last Week Earning"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:textSize="@dimen/_14ssp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/_20sdp"/>
+                    android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/last_week_earning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rs. 5034"
-                    android:textSize="@dimen/_16ssp"
-                    android:textColor="#036412"
-                    android:textStyle="bold"
                     android:layout_gravity="center|bottom"
-                    android:layout_marginBottom="@dimen/_10sdp"/>
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="Rs. 5034"
+                    android:textColor="#036412"
+                    android:textSize="@dimen/_16ssp"
+                    android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -99,49 +98,48 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center|top"
                     android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
                     android:text="Lifetime Rides Completed"
                     android:textAlignment="center"
-                    android:layout_marginEnd="@dimen/_5sdp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14ssp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center|top"
-                    android:layout_marginTop="@dimen/_10sdp"/>
+                    android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ride_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rs. 5034"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginBottom="@dimen/_5sdp"
-                    android:textSize="@dimen/_18ssp"
+                    android:text="Rs. 5034"
                     android:textColor="#036412"
-                    android:textStyle="bold"
-                    />
+                    android:textSize="@dimen/_18ssp"
+                    android:textStyle="bold" />
 
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:text="Last Week Rides"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:textSize="@dimen/_14ssp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/_20sdp"/>
+                    android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/last_week_ride_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rs. 5034"
-                    android:textSize="@dimen/_16ssp"
-                    android:textColor="#036412"
-                    android:textStyle="bold"
                     android:layout_gravity="center|bottom"
-                    android:layout_marginBottom="@dimen/_10sdp"/>
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="Rs. 5034"
+                    android:textColor="#036412"
+                    android:textSize="@dimen/_16ssp"
+                    android:textStyle="bold" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -164,11 +162,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="@dimen/_8sdp"
         android:id="@+id/linearLayout8"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_16sdp"
         android:background="@drawable/background_item_list"
         android:orientation="horizontal"
@@ -194,14 +192,15 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_marginEnd="@dimen/_30sdp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_30sdp"
             android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/assigned_ambulance_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ambulance No."
@@ -248,34 +247,49 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@mipmap/ic_launcher_round"/>
+                android:background="@mipmap/ic_launcher_round" />
 
         </com.google.android.material.card.MaterialCardView>
 
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Recent Trips"
+        android:textSize="@dimen/_20ssp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8" />
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recent_trips"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout8"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/change_ambulance_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Change Ambulance"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/secondary"
+        android:text="Change Ambulance"
         android:textColor="@color/white"
         app:icon="@drawable/replace"
         app:iconTint="@color/white"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

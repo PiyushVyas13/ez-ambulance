@@ -14,25 +14,35 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
+import com.swasthavyas.emergencyllp.component.history.domain.adapter.HistoryAdapter;
 import com.swasthavyas.emergencyllp.databinding.FragmentHomeDriverBinding;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.service.LocationService;
 import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class HomeFragment extends Fragment {
@@ -66,6 +76,8 @@ public class HomeFragment extends Fragment {
                     employeeViewModel.getCurrentEmployee().observe(getViewLifecycleOwner(), employeeDriver -> {
                         if(employeeDriver != null) {
                             viewBinding.changeAmbulanceFab.setText(employeeDriver.getName());
+                            viewBinding.assignedAmbulanceNumber.setText(employeeDriver.getAssignedAmbulanceNumber());
+                            getRecentTrips(employeeDriver.getDriverId());
                             Log.d(TAG, "onCreateView: " + employeeDriver);
 
                             dashboardViewModel.getDriverStatus().observe(getViewLifecycleOwner(), driverStatus -> {
@@ -144,6 +156,43 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return viewBinding.getRoot();
+    }
+
+    private void getRecentTrips(String driverId) {
+        List<TripHistory> historyList = new ArrayList<>();
+
+        Timestamp now = Timestamp.now();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
+
+        Timestamp sevenDaysAgo = new Timestamp(calendar.getTime());
+
+        FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
+
+        dbInstance
+                .collection("trip_history")
+                .whereEqualTo("trip.assignedDriverId", driverId)
+                .whereLessThanOrEqualTo("completionTimestamp", now)
+                .whereGreaterThanOrEqualTo("completionTimestamp", sevenDaysAgo)
+                .orderBy("completionTimestamp", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task ->  {
+                    if(task.isSuccessful()) {
+                        for(DocumentSnapshot snapshot : task.getResult()) {
+                            Map<String, Object> historyMap = snapshot.getData();
+
+                            assert historyMap != null;
+                            TripHistory history = TripHistory.createFromMap(historyMap);
+
+                            historyList.add(history);
+                        }
+
+                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList);
+                        viewBinding.recentTrips.setLayoutManager(new LinearLayoutManager(requireContext()));
+                        viewBinding.recentTrips.setAdapter(adapter);
+                    }
+                });
     }
 
     private void updateDriverActiveStatus(EmployeeDriver employeeDriver, DriverStatus status) {
