@@ -2,6 +2,7 @@ package com.swasthavyas.emergencyllp.component.dashboard.driver.ui;
 
 import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,8 +57,6 @@ public class HomeFragment extends Fragment {
         database = FirebaseService.getInstance().getDatabaseInstance();
 
         viewBinding.header.goTo.setEnabled(false);
-
-        viewBinding.dateLabel.setText(getCurrentDate());
 
         dashboardViewModel.getUserRole().observe(getViewLifecycleOwner(), userRole -> {
             switch (userRole) {
@@ -131,18 +131,12 @@ public class HomeFragment extends Fragment {
         });
 
         employeeViewModel.getRideCount().observe(getViewLifecycleOwner(), rideCount -> viewBinding.rideCount.setText(getString(R.string.ride_count, rideCount)));
-
+        employeeViewModel.getLastWeekRideCount().observe(getViewLifecycleOwner(), lastWeekCount -> viewBinding.lastWeekRideCount.setText(getString(R.string.ride_count, lastWeekCount)));
         employeeViewModel.getTotalEarning().observe(getViewLifecycleOwner(), earning -> viewBinding.totalEarning.setText(getString(R.string.driver_earning, earning)));
+        employeeViewModel.getLastWeekRideEarning().observe(getViewLifecycleOwner(), lastWeekEarning -> viewBinding.lastWeekEarning.setText(getString(R.string.driver_earning, lastWeekEarning)));
 
         // Inflate the layout for this fragment
         return viewBinding.getRoot();
-    }
-
-    private String getCurrentDate() {
-        LocalDate localDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.ENGLISH);
-
-        return localDate.format(formatter);
     }
 
     private void updateDriverActiveStatus(EmployeeDriver employeeDriver, DriverStatus status) {

@@ -176,8 +176,11 @@ public class DriverDashboardFragment extends Fragment {
                             .getWorkInfoByIdLiveData(getRidesCountRequest.getId())
                             .observe(getViewLifecycleOwner(), workInfo -> {
                                 if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                                    long count = workInfo.getOutputData().getLong("ride_count", 0L);
+                                    long count = workInfo.getOutputData().getLong("total_ride_count", 0L);
+                                    long lastWeekCount = workInfo.getOutputData().getLong("last_week_ride_count", 0L);
+                                    Log.d(TAG, "updateDashboard: " + count + " " + lastWeekCount);
                                     employeeViewModel.updateRideCount(count);
+                                    employeeViewModel.setLastWeekRideCount(lastWeekCount);
                                 } else if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.FAILED) {
                                     Log.d(TAG, "updateDashboard: " + workInfo.getOutputData().getString("message"));
                                     Toast.makeText(requireContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
@@ -189,7 +192,9 @@ public class DriverDashboardFragment extends Fragment {
                     .observe(getViewLifecycleOwner(), workInfo -> {
                         if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
                             double earning = workInfo.getOutputData().getDouble("total_earning", 0.0);
+                            double lastWeekEarning = workInfo.getOutputData().getDouble("last_week_earning", 0.0);
                             employeeViewModel.updateDriverEarning(earning);
+                            employeeViewModel.setLastWeekRideEarning(lastWeekEarning);
                         } else if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.FAILED) {
                             Log.d(TAG, "updateDashboard: " + workInfo.getOutputData().getString("message"));
                             Toast.makeText(requireContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
@@ -444,8 +449,10 @@ public class DriverDashboardFragment extends Fragment {
                             .getWorkInfoByIdLiveData(fetchRidesRequest.getId())
                             .observe(getViewLifecycleOwner(), workInfo -> {
                                 if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                                    long count = workInfo.getOutputData().getLong("ride_count", 0L);
+                                    long count = workInfo.getOutputData().getLong("total_ride_count", 0L);
+                                    long lastWeekCount = workInfo.getOutputData().getLong("last_week_ride_count", 0L);
                                     employeeViewModel.updateRideCount(count);
+                                    employeeViewModel.setLastWeekRideCount(lastWeekCount);
                                 }
                             });
 
@@ -454,7 +461,10 @@ public class DriverDashboardFragment extends Fragment {
                             .observe(getViewLifecycleOwner(), workInfo -> {
                                 if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
                                     double sum = workInfo.getOutputData().getDouble("total_earning", 0.0);
+                                    double lastWeekEarning = workInfo.getOutputData().getDouble("last_week_earning", 0.0);
+
                                     employeeViewModel.updateDriverEarning(sum);
+                                    employeeViewModel.setLastWeekRideEarning(lastWeekEarning);
                                 }
                             });
 

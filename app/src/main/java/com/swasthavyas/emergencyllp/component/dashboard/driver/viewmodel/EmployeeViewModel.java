@@ -12,12 +12,16 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee
 public class EmployeeViewModel extends ViewModel {
     private final MutableLiveData<EmployeeDriver> employee;
     private final MutableLiveData<Long> rideCount;
+    private final MutableLiveData<Long> lastWeekRideCount;
     private final MutableLiveData<Double> totalEarning;
+    private final MutableLiveData<Double> lastWeekRideEarning;
 
     public EmployeeViewModel() {
         employee = new MutableLiveData<>(null);
         rideCount = new MutableLiveData<>(0L);
+        lastWeekRideCount = new MutableLiveData<>(0L);
         totalEarning = new MutableLiveData<>(0.0);
+        lastWeekRideEarning = new MutableLiveData<>(0.0);
     }
 
     public MutableLiveData<EmployeeDriver> getCurrentEmployee() {
@@ -43,5 +47,27 @@ public class EmployeeViewModel extends ViewModel {
             throw new NullPointerException("Employee does not exist yet");
         }
         this.totalEarning.setValue(earning);
+    }
+
+    public MutableLiveData<Long> getLastWeekRideCount() {
+        return lastWeekRideCount;
+    }
+
+    public MutableLiveData<Double> getLastWeekRideEarning() {
+        return lastWeekRideEarning;
+    }
+
+    public void setLastWeekRideCount(long count) {
+        if(getCurrentEmployee().getValue() == null) {
+            throw new NullPointerException("Employee does not exist yet");
+        }
+        this.lastWeekRideCount.setValue(count);
+    }
+
+    public void setLastWeekRideEarning(double earning) {
+        if(getCurrentEmployee().getValue() == null) {
+            throw new NullPointerException("Employee does not exist yet");
+        }
+        this.lastWeekRideEarning.setValue(earning);
     }
 }
