@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     id 'com.google.gms.google-services'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -96,6 +97,8 @@ dependencies {
 
     // Google Maps
     implementation libs.android.maps.utils
+
+
 }
 secrets {
     propertiesFileName = "secrets.properties"
