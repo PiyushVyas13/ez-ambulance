@@ -1,10 +1,11 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.settings;
+package com.swasthavyas.emergencyllp.component.history.ui;
 
 import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
 
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
@@ -18,18 +19,17 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.swasthavyas.emergencyllp.R;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter.HistoryHeadlineAdapter;
+import com.swasthavyas.emergencyllp.component.history.domain.adapter.HistoryHeadlineAdapter;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.AmbulanceViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
-import com.swasthavyas.emergencyllp.databinding.FragmentAmbulanceHistoryBinding;
+import com.swasthavyas.emergencyllp.databinding.FragmentHistoryBinding;
 import com.swasthavyas.emergencyllp.util.TimestampUtility;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 
@@ -43,30 +43,29 @@ import java.util.Locale;
 import java.util.Map;
 
 public class
-AmbulanceHistoryFragment extends Fragment {
+HistoryFragment extends Fragment {
 
-    FragmentAmbulanceHistoryBinding viewBinding;
-    AmbulanceViewModel ambulanceViewModel;
+    FragmentHistoryBinding viewBinding;
     List<TripHistory> ambulanceHistoryList;
-    Ambulance ambulance;
     long lifetimeRides = -1;
     long lastWeekRides = -1;
 
-    public AmbulanceHistoryFragment() {
+    private String recordableId;
+    private String recordableFieldName;
+
+    public HistoryFragment() {
         ambulanceHistoryList = new ArrayList<>();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ambulanceViewModel = new ViewModelProvider(requireActivity()).get(AmbulanceViewModel.class);
 
-        this.ambulance = ambulanceViewModel.getCurrentAmbulance().getValue();
+        HistoryFragmentArgs fragmentArgs = HistoryFragmentArgs.fromBundle(getArguments());
 
-        if(ambulance == null) {
-            Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        recordableId = fragmentArgs.getRecordableId();
+        recordableFieldName = fragmentArgs.getRecordableFieldName();
+
 
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
             @Override
@@ -86,30 +85,30 @@ AmbulanceHistoryFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(this,backPressedCallback);
     }
 
-    private void fetchAmbulanceHistory() {
+    private void fetchHistory() {
         FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
 
         if (ambulanceHistoryList.isEmpty()) {
             dbInstance
                     .collection("trip_history")
-                    .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
+                    .whereEqualTo(recordableFieldName, recordableId)
                     .orderBy("completionTimestamp", Query.Direction.DESCENDING)
                     .get()
                     .addOnCompleteListener(task -> {
-                       if(task.isSuccessful()) {
-                           for(DocumentSnapshot snapshot : task.getResult()) {
-                               Map<String, Object> documentMap = snapshot.getData();
+                        if(task.isSuccessful()) {
+                            for(DocumentSnapshot snapshot : task.getResult()) {
+                                Map<String, Object> documentMap = snapshot.getData();
 
-                               if(documentMap == null) {
-                                   continue;
-                               }
-                               TripHistory history = TripHistory.createFromMap(snapshot.getData());
-                               ambulanceHistoryList.add(history);
-                           }
+                                if(documentMap == null) {
+                                    continue;
+                                }
+                                TripHistory history = TripHistory.createFromMap(snapshot.getData());
+                                ambulanceHistoryList.add(history);
+                            }
 
-                           Log.d(TAG, "fetchAmbulanceHistory: " + ambulanceHistoryList);
-                           prepareRecyclerView(ambulanceHistoryList);
-                       }
+                            Log.d(TAG, "fetchAmbulanceHistory: " + ambulanceHistoryList);
+                            prepareRecyclerView(ambulanceHistoryList);
+                        }
                     });
         } else {
             prepareRecyclerView(ambulanceHistoryList);
@@ -130,25 +129,25 @@ AmbulanceHistoryFragment extends Fragment {
 
         dbInstance
                 .collection("trip_history")
-                .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
+                .whereEqualTo(recordableFieldName, recordableId)
                 .whereGreaterThanOrEqualTo("completionTimestamp", startOfDay)
                 .whereLessThanOrEqualTo("completionTimestamp", endOfDay)
                 .orderBy("completionTimestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
-                   if(task.isSuccessful()) {
-                       List<TripHistory> historyList = new ArrayList<>();
+                    if(task.isSuccessful()) {
+                        List<TripHistory> historyList = new ArrayList<>();
 
-                       for(DocumentSnapshot snapshot : task.getResult().getDocuments()) {
-                           Map<String, Object> data = snapshot.getData();
+                        for(DocumentSnapshot snapshot : task.getResult().getDocuments()) {
+                            Map<String, Object> data = snapshot.getData();
 
-                           assert data != null;
-                           TripHistory tripHistory = TripHistory.createFromMap(data);
-                           historyList.add(tripHistory);
-                       }
+                            assert data != null;
+                            TripHistory tripHistory = TripHistory.createFromMap(data);
+                            historyList.add(tripHistory);
+                        }
 
-                       prepareRecyclerView(historyList);
-                   }
+                        prepareRecyclerView(historyList);
+                    }
                 });
     }
 
@@ -167,7 +166,7 @@ AmbulanceHistoryFragment extends Fragment {
         if(lifetimeRides < 0) {
             dbInstance
                     .collection("trip_history")
-                    .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
+                    .whereEqualTo(recordableFieldName, recordableId)
                     .count()
                     .get(AggregateSource.SERVER)
                     .addOnCompleteListener(task -> {
@@ -194,7 +193,7 @@ AmbulanceHistoryFragment extends Fragment {
         if(lastWeekRides < 0) {
             dbInstance
                     .collection("trip_history")
-                    .whereEqualTo("trip.assignedAmbulanceId", ambulance.getId())
+                    .whereEqualTo(recordableFieldName, recordableId)
                     .whereLessThanOrEqualTo("completionTimestamp", now)
                     .whereGreaterThanOrEqualTo("completionTimestamp", sevenDaysAgo)
                     .orderBy("completionTimestamp", Query.Direction.DESCENDING)
@@ -235,18 +234,22 @@ AmbulanceHistoryFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        viewBinding = FragmentAmbulanceHistoryBinding.inflate(getLayoutInflater());
-        setLifetimeRides();
-        setLastWeekRides();
-        fetchAmbulanceHistory();
+        viewBinding = FragmentHistoryBinding.inflate(getLayoutInflater());
+        if(recordableFieldName.equals("trip.assignedAmbulanceId"))  {
+            viewBinding.ridesCountLayout.setVisibility(View.VISIBLE);
+            setLifetimeRides();
+            setLastWeekRides();
+        }
+
+        fetchHistory();
 
         viewBinding.filterDateLayout.setEndIconOnClickListener(v -> {
             if(!viewBinding.filterDate.getText().toString().isEmpty()) {
                 viewBinding.filterDate.setText("");
-                fetchAmbulanceHistory();
+                fetchHistory();
                 viewBinding.filterDateLayout.setEndIconDrawable(R.drawable.calender);
             } else {
                 MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()

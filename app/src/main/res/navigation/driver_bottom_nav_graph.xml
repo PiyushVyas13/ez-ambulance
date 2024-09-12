@@ -9,7 +9,11 @@
         android:id="@+id/homeFragment"
         android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.HomeFragment"
         android:label="1"
-        tools:layout="@layout/fragment_home_driver" />
+        tools:layout="@layout/fragment_home_driver" >
+        <action
+            android:id="@+id/action_homeFragment_to_ambulanceHistoryFragment2"
+            app:destination="@id/driverHistoryFragment" />
+    </fragment>
     <fragment
         android:id="@+id/notificationFragment"
         android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.NotificationFragment"
@@ -25,4 +29,16 @@
         android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.TripPreviewFragment"
         android:label="1"
         tools:layout="@layout/fragment_trip_preview" />
+    <fragment
+        android:id="@+id/driverHistoryFragment"
+        android:name="com.swasthavyas.emergencyllp.component.history.ui.HistoryFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_history" >
+        <argument
+            android:name="recordableId"
+            app:argType="string" />
+        <argument
+            android:name="recordableFieldName"
+            app:argType="string" />
+    </fragment>
 </navigation>

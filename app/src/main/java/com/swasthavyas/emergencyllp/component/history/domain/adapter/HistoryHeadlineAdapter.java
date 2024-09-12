@@ -1,4 +1,4 @@
-package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter;
+package com.swasthavyas.emergencyllp.component.history.domain.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter.ui.HistoryHeadlineViewHolder;
+import com.swasthavyas.emergencyllp.component.history.domain.adapter.ui.HistoryHeadlineViewHolder;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
 import com.swasthavyas.emergencyllp.databinding.HistoryHeadlineBinding;
 
