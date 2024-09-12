@@ -11,8 +11,12 @@
         android:label="1"
         tools:layout="@layout/fragment_home_driver" >
         <action
-            android:id="@+id/action_homeFragment_to_ambulanceHistoryFragment2"
-            app:destination="@id/driverHistoryFragment" />
+            android:id="@+id/historyAction"
+            app:destination="@id/driverHistoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/notificationFragment"

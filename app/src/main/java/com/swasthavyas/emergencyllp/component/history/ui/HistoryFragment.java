@@ -71,14 +71,7 @@ HistoryFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 Navigation.findNavController(viewBinding.getRoot())
-                        .navigate(
-                                R.id.ambulanceDetailFragment,
-                                null,
-                                new NavOptions.Builder().
-                                        setEnterAnim(android.R.anim.fade_in).
-                                        setExitAnim(android.R.anim.slide_out_right)
-                                        .build()
-                        );
+                        .navigateUp();
             }
         };
 

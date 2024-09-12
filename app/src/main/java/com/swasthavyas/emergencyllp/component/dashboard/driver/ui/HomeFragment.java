@@ -112,6 +112,13 @@ public class HomeFragment extends Fragment {
                                         .show();
                             });
 
+                            viewBinding.historyBtn.setOnClickListener(v -> {
+                                HomeFragmentDirections.HistoryAction action = HomeFragmentDirections
+                                        .historyAction(employeeDriver.getDriverId(), "trip.assignedDriverId");
+
+                                Navigation.findNavController(v).navigate(action);
+                            });
+
                         }
                     });
 
