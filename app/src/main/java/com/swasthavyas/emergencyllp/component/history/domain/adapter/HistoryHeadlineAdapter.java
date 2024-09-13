@@ -2,6 +2,7 @@ package com.swasthavyas.emergencyllp.component.history.domain.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -20,11 +21,15 @@ public class HistoryHeadlineAdapter extends RecyclerView.Adapter<HistoryHeadline
     private final Context context;
     private final Map<String, List<TripHistory>> segregatedHistory;
     private final List<String> sectionHeaders;
+    private final String displayName;
+    private final HistoryAdapter.OnHistoryItemClickListener onClickListener;
 
-    public HistoryHeadlineAdapter(Context context, Map<String, List<TripHistory>> segregatedHistory) {
+    public HistoryHeadlineAdapter(Context context, Map<String, List<TripHistory>> segregatedHistory, String displayName, HistoryAdapter.OnHistoryItemClickListener onClickListener) {
         this.context = context;
         this.segregatedHistory = segregatedHistory;
         sectionHeaders = new ArrayList<>(segregatedHistory.keySet());
+        this.displayName = displayName;
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
@@ -42,7 +47,7 @@ public class HistoryHeadlineAdapter extends RecyclerView.Adapter<HistoryHeadline
 
         if(historyList != null && !historyList.isEmpty()) {
             holder.setMonthName(monthName);
-            HistoryAdapter adapter = new HistoryAdapter(context, historyList);
+            HistoryAdapter adapter = new HistoryAdapter(context, historyList, displayName, onClickListener);
             holder.setHistoryList(context, adapter);
         }
 

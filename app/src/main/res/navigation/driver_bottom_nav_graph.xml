@@ -17,6 +17,13 @@
             app:exitAnim="@android:anim/fade_in"
             app:popEnterAnim="@android:anim/fade_out"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/recentHistoryDetailAction"
+            app:destination="@id/driverHistoryItemFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/notificationFragment"
@@ -43,6 +50,31 @@
             app:argType="string" />
         <argument
             android:name="recordableFieldName"
+            app:argType="string" />
+        <action
+            android:id="@+id/historyDetailAction"
+            app:destination="@id/driverHistoryItemFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <argument
+            android:name="displayName"
+            app:argType="string" />
+        <argument
+            android:name="historyMode"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/driverHistoryItemFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.settings.HistoryItemFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_history_item" >
+        <argument
+            android:name="displayName"
+            app:argType="string" />
+        <argument
+            android:name="displayLabel"
             app:argType="string" />
     </fragment>
 </navigation>

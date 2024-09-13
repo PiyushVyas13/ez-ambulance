@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -172,7 +171,6 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         ambulanceViewModel.getCurrentAmbulance().observe(getViewLifecycleOwner(), ambulance -> {
             viewBinding.ambulanceDetailTitle.setText(ambulance.getVehicleNumber());
             this.ambulance = ambulance;
-            viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId()));
         });
 
 
@@ -187,6 +185,8 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                             ambulanceViewModel.setAssignedDriver(driver);
                             assignedDriver = driver;
                         });
+
+                viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), assignedDriver.getName()));
 
 
                 if (assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
@@ -404,10 +404,12 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
 
         private final Context context;
         private final String ambulanceId;
+        private final String driverName;
 
-        public SettingsOptionAdapter(Context context, String ambulanceId) {
+        public SettingsOptionAdapter(Context context, String ambulanceId, String driverName) {
             this.context = context;
             this.ambulanceId = ambulanceId;
+            this.driverName = driverName;
         }
 
         @Override
@@ -456,7 +458,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                         break;
                     case 1:
                         AmbulanceDetailFragmentDirections.HistoryAction action = AmbulanceDetailFragmentDirections
-                                .historyAction(ambulanceId, "trip.assignedAmbulanceId");
+                                .historyAction(ambulanceId, "trip.assignedAmbulanceId", driverName, "ambulance");
 
                         Navigation.findNavController(v)
                                 .navigate(action);

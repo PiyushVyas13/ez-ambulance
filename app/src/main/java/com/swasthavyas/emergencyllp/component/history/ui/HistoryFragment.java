@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.swasthavyas.emergencyllp.R;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.HistoryViewModel;
 import com.swasthavyas.emergencyllp.component.history.domain.adapter.HistoryHeadlineAdapter;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.AmbulanceViewModel;
@@ -52,6 +54,10 @@ HistoryFragment extends Fragment {
 
     private String recordableId;
     private String recordableFieldName;
+    private String displayName;
+    private String historyMode;
+
+    private HistoryViewModel historyViewModel;
 
     public HistoryFragment() {
         ambulanceHistoryList = new ArrayList<>();
@@ -61,10 +67,14 @@ HistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        historyViewModel = new ViewModelProvider(requireActivity()).get(HistoryViewModel.class);
+
         HistoryFragmentArgs fragmentArgs = HistoryFragmentArgs.fromBundle(getArguments());
 
         recordableId = fragmentArgs.getRecordableId();
         recordableFieldName = fragmentArgs.getRecordableFieldName();
+        displayName = fragmentArgs.getDisplayName();
+        historyMode = fragmentArgs.getHistoryMode();
 
 
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
@@ -147,7 +157,11 @@ HistoryFragment extends Fragment {
     private void prepareRecyclerView(List<TripHistory> historyList) {
         Map<String, List<TripHistory>> segregatedHistoryMap = segregateTripHistory(historyList);
 
-        HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap);
+        HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap, displayName,  (v, history) -> {
+            historyViewModel.setSelectedTripHistory(history);
+            HistoryFragmentDirections.HistoryDetailAction action = HistoryFragmentDirections.historyDetailAction(displayName, historyMode.equals("driver") ? "Ambulance" : "Driver");
+            Navigation.findNavController(v).navigate(action);
+        });
         viewBinding.historyList.setLayoutManager(new LinearLayoutManager(requireContext()));
         viewBinding.historyList.setAdapter(historyHeadlineAdapter);
 

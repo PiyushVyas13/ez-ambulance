@@ -2,13 +2,13 @@ package com.swasthavyas.emergencyllp.component.history.domain.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +17,7 @@ import com.swasthavyas.emergencyllp.component.history.domain.adapter.ui.HistoryV
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.HistoryViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
+import com.swasthavyas.emergencyllp.component.history.ui.HistoryFragmentDirections;
 import com.swasthavyas.emergencyllp.databinding.HistoryBinding;
 import com.swasthavyas.emergencyllp.util.TimestampUtility;
 
@@ -27,9 +28,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private final Context context;
     private final List<TripHistory> historyList;
 
-    public HistoryAdapter(Context context, List<TripHistory> historyList) {
+    private final String displayName;
+
+    private final OnHistoryItemClickListener onClickListener;
+
+    public interface OnHistoryItemClickListener {
+        void onItemClick(View v, TripHistory history);
+    }
+
+    public HistoryAdapter(Context context, List<TripHistory> historyList, String displayName, OnHistoryItemClickListener onClickListener) {
         this.context = context;
         this.historyList = historyList;
+        this.displayName = displayName;
+        this.onClickListener = onClickListener;
     }
 
 
@@ -53,30 +64,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         String dateString = timestampUtility.getFormattedDate("MMM d, YYYY");
         String timeString = timestampUtility.getFormattedDate("hh:mm a");
 
-        holder.setName(trip.getAssignedDriverId());
+        holder.setName(displayName);
         holder.setTripDate(dateString);
         holder.setTripTime(timeString);
         holder.setTripEarning(context, String.valueOf(trip.getPrice()));
         holder.setProfileImage(context, null);
-        holder.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-
-            NavBackStackEntry backStackEntry = navController.getBackStackEntry(R.id.ambulanceHistoryFragment);
-
-            HistoryViewModel historyViewModel = new ViewModelProvider(backStackEntry).get(HistoryViewModel.class);
-
-            historyViewModel.setSelectedTripHistory(tripHistory);
-            navController.navigate(
-                    R.id.historyItemFragment,
-                    null,
-                    new NavOptions.Builder()
-                            .setEnterAnim(R.anim.slide_in_right)
-                            .setExitAnim(android.R.anim.fade_out)
-                            .setPopEnterAnim(android.R.anim.fade_in)
-                            .setPopExitAnim(android.R.anim.slide_out_right)
-                            .build()
-            );
-        });
+        holder.setOnClickListener(v -> onClickListener.onItemClick(v, tripHistory));
 
     }
 

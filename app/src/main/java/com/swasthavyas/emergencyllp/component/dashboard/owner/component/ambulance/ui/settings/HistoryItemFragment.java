@@ -14,9 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
-import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -42,7 +39,6 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.HistoryViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
-import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentHistoryItemBinding;
@@ -57,14 +53,19 @@ public class HistoryItemFragment extends Fragment implements OnMapReadyCallback 
     private OwnerViewModel ownerViewModel;
     private List<String> routePolyLines;
 
+    private String displayName;
+    private String displayLabel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NavController navController = NavHostFragment.findNavController(this);
-        NavBackStackEntry backStackEntry = navController.getBackStackEntry(R.id.ambulanceHistoryFragment);
 
-        historyViewModel = new ViewModelProvider(backStackEntry).get(HistoryViewModel.class);
+        HistoryItemFragmentArgs fragmentArgs = HistoryItemFragmentArgs.fromBundle(getArguments());
+        displayName = fragmentArgs.getDisplayName();
+        displayLabel = fragmentArgs.getDisplayLabel();
+
+
+        historyViewModel = new ViewModelProvider(requireActivity()).get(HistoryViewModel.class);
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
 
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
@@ -76,30 +77,6 @@ public class HistoryItemFragment extends Fragment implements OnMapReadyCallback 
 
         requireActivity().getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
-    }
-
-    private String getDriverName(String driverId) {
-        Owner currentOwner = ownerViewModel.getOwner().getValue();
-
-        assert currentOwner != null;
-
-        List<EmployeeDriver> employees = currentOwner.getEmployees().getValue();
-
-        assert employees != null && !employees.isEmpty();
-
-        EmployeeDriver driver = employees
-                .stream()
-                .filter(employeeDriver -> employeeDriver.getDriverId().equals(driverId))
-                .findFirst()
-                .orElse(null);
-
-        if(driver == null) {
-            Toast.makeText(requireContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "getDriverName: driver with given driverId not found");
-            return null;
-        }
-
-        return driver.getName();
     }
 
     @Override
@@ -117,7 +94,8 @@ public class HistoryItemFragment extends Fragment implements OnMapReadyCallback 
 
             Trip trip = history.getTrip();
 
-            viewBinding.name.setText(getDriverName(trip.getAssignedDriverId()));
+            viewBinding.displayLabel.setText(String.format("%s: ", displayLabel));
+            viewBinding.name.setText(displayName);
             viewBinding.customerName.setText(trip.getCustomerName());
             viewBinding.earning.setText(String.valueOf(trip.getPrice()));
             viewBinding.customerAge.setText(String.valueOf(trip.getCustomerAge()));
@@ -136,6 +114,10 @@ public class HistoryItemFragment extends Fragment implements OnMapReadyCallback 
 
 
         return viewBinding.getRoot();
+    }
+
+    private String getAmbulanceNumber(String assignedAmbulanceId) {
+        return null;
     }
 
     @Override

@@ -26,6 +26,7 @@ import com.google.firebase.firestore.Query;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.HistoryViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
 import com.swasthavyas.emergencyllp.component.history.domain.adapter.HistoryAdapter;
@@ -34,14 +35,10 @@ import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.service.LocationService;
 import com.swasthavyas.emergencyllp.util.types.DriverStatus;
 
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 
@@ -49,6 +46,7 @@ public class HomeFragment extends Fragment {
     FragmentHomeDriverBinding viewBinding;
     DashboardViewModel dashboardViewModel;
     EmployeeViewModel employeeViewModel;
+    HistoryViewModel historyViewModel;
     FirebaseDatabase database;
     EmployeeDriver employeeDriver;
 
@@ -64,6 +62,7 @@ public class HomeFragment extends Fragment {
         viewBinding = FragmentHomeDriverBinding.inflate(getLayoutInflater());
         dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
         employeeViewModel = new ViewModelProvider(requireActivity()).get(EmployeeViewModel.class);
+        historyViewModel = new ViewModelProvider(requireActivity()).get(HistoryViewModel.class);
         database = FirebaseService.getInstance().getDatabaseInstance();
 
         viewBinding.header.goTo.setEnabled(false);
@@ -77,7 +76,7 @@ public class HomeFragment extends Fragment {
                         if(employeeDriver != null) {
                             viewBinding.changeAmbulanceFab.setText(employeeDriver.getName());
                             viewBinding.assignedAmbulanceNumber.setText(employeeDriver.getAssignedAmbulanceNumber());
-                            getRecentTrips(employeeDriver.getDriverId());
+                            getRecentTrips(employeeDriver.getDriverId(), employeeDriver.getAssignedAmbulanceNumber());
                             Log.d(TAG, "onCreateView: " + employeeDriver);
 
                             dashboardViewModel.getDriverStatus().observe(getViewLifecycleOwner(), driverStatus -> {
@@ -126,7 +125,7 @@ public class HomeFragment extends Fragment {
 
                             viewBinding.historyBtn.setOnClickListener(v -> {
                                 HomeFragmentDirections.HistoryAction action = HomeFragmentDirections
-                                        .historyAction(employeeDriver.getDriverId(), "trip.assignedDriverId");
+                                        .historyAction(employeeDriver.getDriverId(), "trip.assignedDriverId", employeeDriver.getAssignedAmbulanceNumber(), "driver");
 
                                 Navigation.findNavController(v).navigate(action);
                             });
@@ -158,7 +157,7 @@ public class HomeFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
-    private void getRecentTrips(String driverId) {
+    private void getRecentTrips(String driverId, String ambulanceNumber) {
         List<TripHistory> historyList = new ArrayList<>();
 
         Timestamp now = Timestamp.now();
@@ -188,7 +187,12 @@ public class HomeFragment extends Fragment {
                             historyList.add(history);
                         }
 
-                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList);
+                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList, ambulanceNumber, (v, history) -> {
+                            historyViewModel.setSelectedTripHistory(history);
+
+                            HomeFragmentDirections.RecentHistoryDetailAction action = HomeFragmentDirections.recentHistoryDetailAction(ambulanceNumber, "Ambulance");
+                            Navigation.findNavController(v).navigate(action);
+                        });
                         viewBinding.recentTrips.setLayoutManager(new LinearLayoutManager(requireContext()));
                         viewBinding.recentTrips.setAdapter(adapter);
                     }
