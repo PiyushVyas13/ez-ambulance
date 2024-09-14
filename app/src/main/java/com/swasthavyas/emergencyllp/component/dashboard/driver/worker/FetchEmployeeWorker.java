@@ -75,7 +75,8 @@ public class FetchEmployeeWorker extends ListenableWorkerAdapter {
                                 .putString(EmployeeDriver.ModelColumns.LICENSE_IMAGE_REF, snapshot.getString(EmployeeDriver.ModelColumns.LICENSE_IMAGE_REF))
                                 .putString(EmployeeDriver.ModelColumns.NAME, snapshot.getString(EmployeeDriver.ModelColumns.NAME))
                                 .putString(EmployeeDriver.ModelColumns.PHONE_NUMBER, snapshot.getString(EmployeeDriver.ModelColumns.PHONE_NUMBER))
-                                .putString(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, snapshot.getString(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER));
+                                .putString(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, snapshot.getString(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER))
+                                .putString(EmployeeDriver.ModelColumns.PROFILE_IMAGE_REF, snapshot.getString(EmployeeDriver.ModelColumns.PROFILE_IMAGE_REF));
 
                         List<Double> lastLocation = (List<Double>) snapshot.get(EmployeeDriver.ModelColumns.LAST_LOCATION);
                         if(lastLocation != null) {

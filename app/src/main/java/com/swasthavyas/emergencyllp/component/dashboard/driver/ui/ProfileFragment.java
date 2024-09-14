@@ -25,9 +25,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.AuthActivity;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
@@ -85,6 +88,8 @@ public class ProfileFragment extends Fragment {
                 .observe(getViewLifecycleOwner(), workInfo -> {
                     if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
                         Toast.makeText(requireContext(), "Profile Successfully updated!", Toast.LENGTH_SHORT).show();
+                        String profileRef = workInfo.getOutputData().getString("profile_image_ref");
+                        employeeViewModel.updateDriverProfile(profileRef);
                     } else if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.FAILED){
                         Toast.makeText(requireContext(), "Something Went wrong!", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "uploadProfileImage: " + workInfo.getOutputData().getString("message"));
@@ -117,6 +122,10 @@ public class ProfileFragment extends Fragment {
                         .build());
             });
 
+            if(employeeDriver.getProfileImageRef() != null) {
+                loadProfileImage(employeeDriver.getProfileImageRef());
+            }
+
             viewBinding.signOutBtn.setOnClickListener(v -> {
                 DatabaseReference activeDriverReference = database
                         .getReference()
@@ -136,5 +145,15 @@ public class ProfileFragment extends Fragment {
 
 
         return viewBinding.getRoot();
+    }
+
+    private void loadProfileImage(StorageReference profileImageRef) {
+        Log.d(TAG, "loadProfileImage: " + profileImageRef);
+
+        Glide.with(requireContext())
+                .load(profileImageRef)
+                .placeholder(R.drawable.sample_profile)
+                .dontAnimate()
+                .into(viewBinding.profileImage);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.work.Data;
 import androidx.work.WorkerParameters;
 
 import com.google.firebase.Firebase;
@@ -48,13 +49,17 @@ public class DriverProfileUpdateWorker extends ListenableWorkerAdapter {
                    if(task.isSuccessful()) {
                        FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
 
+                       String profileRefString = profileRef.toString().replace("%40", "@");
+
                        dbInstance
                                .collection("employees")
                                .document(currentUser.getEmail())
-                               .update("profileImageRef", profileRef.toString())
+                               .update("profileImageRef", profileRefString)
                                .addOnCompleteListener(updateTask -> {
                                   if(updateTask.isSuccessful()) {
-                                      callback.onSuccess(null);
+                                      callback.onSuccess(new Data.Builder()
+                                              .putString("profile_image_ref", profileRefString)
+                                              .build());
                                   } else {
                                       callback.onFailure(updateTask.getException());
                                   }

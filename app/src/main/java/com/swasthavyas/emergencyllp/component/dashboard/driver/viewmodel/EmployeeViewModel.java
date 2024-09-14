@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.work.WorkManager;
 
+import com.google.firebase.storage.FirebaseStorage;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 
 public class EmployeeViewModel extends ViewModel {
@@ -69,5 +70,14 @@ public class EmployeeViewModel extends ViewModel {
             throw new NullPointerException("Employee does not exist yet");
         }
         this.lastWeekRideEarning.setValue(earning);
+    }
+
+    public void updateDriverProfile(String profileRef) {
+        EmployeeDriver currentEmployee = employee.getValue();
+
+        if(currentEmployee != null) {
+            currentEmployee.setProfileImageRef(FirebaseStorage.getInstance().getReferenceFromUrl(profileRef));
+            setEmployee(currentEmployee);
+        }
     }
 }

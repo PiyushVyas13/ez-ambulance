@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.common.util.ArrayUtils;
 import com.google.common.primitives.Doubles;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +35,7 @@ public class EmployeeDriver implements Parcelable {
     private String ownerId;
     private String aadhaarNumber;
     private List<Double> lastLocation;
+    private StorageReference profileImageRef;
 
     protected EmployeeDriver(Parcel in) {
         email = in.readString();
@@ -56,6 +59,13 @@ public class EmployeeDriver implements Parcelable {
         }
 
         lastLocation = location;
+
+        String profileRef = in.readString();
+        if(profileRef == null) {
+            profileImageRef = null;
+        } else {
+            profileImageRef = FirebaseStorage.getInstance().getReferenceFromUrl(profileRef);
+        }
     }
 
     public static final Creator<EmployeeDriver> CREATOR = new Creator<EmployeeDriver>() {
@@ -88,7 +98,7 @@ public class EmployeeDriver implements Parcelable {
                 '}';
     }
 
-    private EmployeeDriver(String name, String email, String ownerId, String driverId, String userId, int age, String phoneNumber, String assignedAmbulanceNumber, String aadhaarNumber, String aadhaarImageRef, String licenceImageRef, List<Double> lastLocation) {
+    private EmployeeDriver(String name, String email, String ownerId, String driverId, String userId, int age, String phoneNumber, String assignedAmbulanceNumber, String aadhaarNumber, String aadhaarImageRef, String licenceImageRef, List<Double> lastLocation, String profileImageRef) {
         this.email = email;
         this.driverId = driverId;
         this.userId = userId;
@@ -101,6 +111,11 @@ public class EmployeeDriver implements Parcelable {
         this.licenceImageRef = licenceImageRef;
         this.ownerId = ownerId;
         this.lastLocation = lastLocation;
+        if(profileImageRef == null) {
+            this.profileImageRef = null;
+        } else {
+            this.profileImageRef = FirebaseStorage.getInstance().getReferenceFromUrl(profileImageRef);
+        }
 
     }
 
@@ -140,6 +155,8 @@ public class EmployeeDriver implements Parcelable {
             lastLocation = (List<Double>) receivedLocation;
         }
 
+        String profileImageRef = (String) map.get(ModelColumns.PROFILE_IMAGE_REF);
+
         return new EmployeeDriver(
                 name,
                 email,
@@ -152,7 +169,8 @@ public class EmployeeDriver implements Parcelable {
                 aadhaarNumber,
                 aadhaarImageRef,
                 licenceImageRef,
-                lastLocation
+                lastLocation,
+                profileImageRef
         );
     }
 
@@ -271,6 +289,12 @@ public class EmployeeDriver implements Parcelable {
         dest.writeString(this.licenceImageRef);
         dest.writeString(this.ownerId);
         dest.writeList(this.lastLocation);
+        if(this.profileImageRef == null) {
+            dest.writeString(null);
+        } else {
+            dest.writeString(this.profileImageRef.toString());
+        }
+
     }
 
     public Map<String, Object> getKeyValueMap() {
@@ -292,6 +316,14 @@ public class EmployeeDriver implements Parcelable {
         return map;
     }
 
+    public StorageReference getProfileImageRef() {
+        return profileImageRef;
+    }
+
+    public void setProfileImageRef(StorageReference profileImageRef) {
+        this.profileImageRef = profileImageRef;
+    }
+
     public static class ModelColumns {
         public static final String EMAIL = "email";
         public static final String DRIVER_ID = "driver_id";
@@ -303,6 +335,7 @@ public class EmployeeDriver implements Parcelable {
         public static final String AADHAAR_NUMBER = "aadhaar_number";
         public static final String AADHAAR_IMAGE_REF = "aadhaar_image_ref";
         public static final String LICENSE_IMAGE_REF = "license_image_ref";
+        public static final String PROFILE_IMAGE_REF = "profileImageRef";
         public static final String OWNER_ID = "owner_id";
         public static final String LAST_LOCATION = "last_location";
 
