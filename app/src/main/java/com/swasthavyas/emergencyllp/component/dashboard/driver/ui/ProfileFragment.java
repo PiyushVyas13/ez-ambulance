@@ -25,6 +25,8 @@ import com.swasthavyas.emergencyllp.databinding.FragmentProfileDriverBinding;
 import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 import com.swasthavyas.emergencyllp.util.service.LocationService;
 
+import java.util.Locale;
+
 
 public class ProfileFragment extends Fragment {
 
@@ -51,6 +53,15 @@ public class ProfileFragment extends Fragment {
 
         employeeViewModel.getCurrentEmployee().observe(getViewLifecycleOwner(), employeeDriver -> {
             Log.d(TAG, "onCreateView: Profile fragment observer triggered");
+
+
+            viewBinding.driverName.setText(employeeDriver.getName());
+            viewBinding.driverMobile.setText(employeeDriver.getPhoneNumber());
+            viewBinding.driverMail.setText(employeeDriver.getEmail());
+            viewBinding.driverAge.setText(String.format(Locale.ENGLISH, "%d", employeeDriver.getAge()));
+            viewBinding.driverAadhaar.setText(employeeDriver.getAadhaarNumber());
+
+
             viewBinding.signOutBtn.setOnClickListener(v -> {
                 DatabaseReference activeDriverReference = database
                         .getReference()
@@ -63,9 +74,6 @@ public class ProfileFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         LocationService.stopService(requireContext(), employeeDriver.getEmail());
                                         FirebaseAuth.getInstance().signOut();
-//                                        Intent intent = new Intent(requireActivity(), AuthActivity.class);
-//                                        startActivity(intent);
-//                                        requireActivity().finish();
                                     }
                                 });
             });
