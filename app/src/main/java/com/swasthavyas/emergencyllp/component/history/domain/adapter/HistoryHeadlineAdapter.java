@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.component.history.domain.adapter.ui.HistoryHeadlineViewHolder;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.TripHistory;
 import com.swasthavyas.emergencyllp.databinding.HistoryHeadlineBinding;
@@ -22,13 +23,19 @@ public class HistoryHeadlineAdapter extends RecyclerView.Adapter<HistoryHeadline
     private final Map<String, List<TripHistory>> segregatedHistory;
     private final List<String> sectionHeaders;
     private final String displayName;
+    private final StorageReference imageRef;
     private final HistoryAdapter.OnHistoryItemClickListener onClickListener;
 
-    public HistoryHeadlineAdapter(Context context, Map<String, List<TripHistory>> segregatedHistory, String displayName, HistoryAdapter.OnHistoryItemClickListener onClickListener) {
+    public HistoryHeadlineAdapter(Context context,
+                                  Map<String, List<TripHistory>> segregatedHistory,
+                                  String displayName,
+                                  StorageReference imageRef,
+                                  HistoryAdapter.OnHistoryItemClickListener onClickListener) {
         this.context = context;
         this.segregatedHistory = segregatedHistory;
         sectionHeaders = new ArrayList<>(segregatedHistory.keySet());
         this.displayName = displayName;
+        this.imageRef = imageRef;
         this.onClickListener = onClickListener;
     }
 
@@ -47,7 +54,7 @@ public class HistoryHeadlineAdapter extends RecyclerView.Adapter<HistoryHeadline
 
         if(historyList != null && !historyList.isEmpty()) {
             holder.setMonthName(monthName);
-            HistoryAdapter adapter = new HistoryAdapter(context, historyList, displayName, onClickListener);
+            HistoryAdapter adapter = new HistoryAdapter(context, historyList, displayName, imageRef, onClickListener);
             holder.setHistoryList(context, adapter);
         }
 

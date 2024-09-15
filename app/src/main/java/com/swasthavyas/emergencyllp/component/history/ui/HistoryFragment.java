@@ -25,6 +25,7 @@ import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.HistoryViewModel;
 import com.swasthavyas.emergencyllp.component.history.domain.adapter.HistoryHeadlineAdapter;
@@ -56,6 +57,7 @@ HistoryFragment extends Fragment {
     private String recordableFieldName;
     private String displayName;
     private String historyMode;
+    private String imageRef;
 
     private HistoryViewModel historyViewModel;
 
@@ -75,6 +77,7 @@ HistoryFragment extends Fragment {
         recordableFieldName = fragmentArgs.getRecordableFieldName();
         displayName = fragmentArgs.getDisplayName();
         historyMode = fragmentArgs.getHistoryMode();
+        imageRef = fragmentArgs.getImageRef();
 
 
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
@@ -157,9 +160,17 @@ HistoryFragment extends Fragment {
     private void prepareRecyclerView(List<TripHistory> historyList) {
         Map<String, List<TripHistory>> segregatedHistoryMap = segregateTripHistory(historyList);
 
-        HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap, displayName,  (v, history) -> {
+        StorageReference reference;
+
+        if(imageRef == null) {
+            reference = null;
+        } else {
+            reference = FirebaseService.getInstance().getStorageInstance().getReferenceFromUrl(imageRef);
+        }
+
+        HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap, displayName,  reference, (v, history) -> {
             historyViewModel.setSelectedTripHistory(history);
-            HistoryFragmentDirections.HistoryDetailAction action = HistoryFragmentDirections.historyDetailAction(displayName, historyMode.equals("driver") ? "Ambulance" : "Driver");
+            HistoryFragmentDirections.HistoryDetailAction action = HistoryFragmentDirections.historyDetailAction(displayName, historyMode.equals("driver") ? "Ambulance" : "Driver", imageRef);
             Navigation.findNavController(v).navigate(action);
         });
         viewBinding.historyList.setLayoutManager(new LinearLayoutManager(requireContext()));

@@ -12,6 +12,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.history.domain.adapter.ui.HistoryViewHolder;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.HistoryViewModel;
@@ -20,6 +21,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.dom
 import com.swasthavyas.emergencyllp.component.history.ui.HistoryFragmentDirections;
 import com.swasthavyas.emergencyllp.databinding.HistoryBinding;
 import com.swasthavyas.emergencyllp.util.TimestampUtility;
+import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private final List<TripHistory> historyList;
 
     private final String displayName;
+    private final StorageReference imageRef;
 
     private final OnHistoryItemClickListener onClickListener;
 
@@ -36,10 +39,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         void onItemClick(View v, TripHistory history);
     }
 
-    public HistoryAdapter(Context context, List<TripHistory> historyList, String displayName, OnHistoryItemClickListener onClickListener) {
+    public HistoryAdapter(Context context,
+                          List<TripHistory> historyList,
+                          String displayName,
+                          StorageReference imageRef,
+                          OnHistoryItemClickListener onClickListener) {
         this.context = context;
         this.historyList = historyList;
         this.displayName = displayName;
+        this.imageRef = imageRef;
         this.onClickListener = onClickListener;
     }
 
@@ -68,7 +76,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         holder.setTripDate(dateString);
         holder.setTripTime(timeString);
         holder.setTripEarning(context, String.valueOf(trip.getPrice()));
-        holder.setProfileImage(context, null);
+
+        if(imageRef != null) {
+            holder.setProfileImage(context, imageRef);
+        }
+
         holder.setOnClickListener(v -> onClickListener.onItemClick(v, tripHistory));
 
     }

@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.StorageReference;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.DashboardViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.viewmodel.EmployeeViewModel;
@@ -76,7 +77,7 @@ public class HomeFragment extends Fragment {
                         if(employeeDriver != null) {
                             viewBinding.changeAmbulanceFab.setText(employeeDriver.getName());
                             viewBinding.assignedAmbulanceNumber.setText(employeeDriver.getAssignedAmbulanceNumber());
-                            getRecentTrips(employeeDriver.getDriverId(), employeeDriver.getAssignedAmbulanceNumber());
+                            getRecentTrips(employeeDriver.getDriverId(), employeeDriver.getAssignedAmbulanceNumber(), employeeDriver.getProfileImageRef());
                             Log.d(TAG, "onCreateView: " + employeeDriver);
 
                             dashboardViewModel.getDriverStatus().observe(getViewLifecycleOwner(), driverStatus -> {
@@ -125,7 +126,7 @@ public class HomeFragment extends Fragment {
 
                             viewBinding.historyBtn.setOnClickListener(v -> {
                                 HomeFragmentDirections.HistoryAction action = HomeFragmentDirections
-                                        .historyAction(employeeDriver.getDriverId(), "trip.assignedDriverId", employeeDriver.getAssignedAmbulanceNumber(), "driver");
+                                        .historyAction(employeeDriver.getDriverId(), "trip.assignedDriverId", employeeDriver.getAssignedAmbulanceNumber(), "driver", employeeDriver.getProfileImageRef().toString().replace("%40", "@"));
 
                                 Navigation.findNavController(v).navigate(action);
                             });
@@ -157,7 +158,7 @@ public class HomeFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
-    private void getRecentTrips(String driverId, String ambulanceNumber) {
+    private void getRecentTrips(String driverId, String ambulanceNumber, StorageReference profileRef) {
         List<TripHistory> historyList = new ArrayList<>();
 
         Timestamp now = Timestamp.now();
@@ -187,10 +188,10 @@ public class HomeFragment extends Fragment {
                             historyList.add(history);
                         }
 
-                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList, ambulanceNumber, (v, history) -> {
+                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList, ambulanceNumber, profileRef, (v, history) -> {
                             historyViewModel.setSelectedTripHistory(history);
 
-                            HomeFragmentDirections.RecentHistoryDetailAction action = HomeFragmentDirections.recentHistoryDetailAction(ambulanceNumber, "Ambulance");
+                            HomeFragmentDirections.RecentHistoryDetailAction action = HomeFragmentDirections.recentHistoryDetailAction(ambulanceNumber, "Ambulance", profileRef.toString().replace("%40", "@"));
                             Navigation.findNavController(v).navigate(action);
                         });
                         viewBinding.recentTrips.setLayoutManager(new LinearLayoutManager(requireContext()));

@@ -97,6 +97,10 @@
         <argument
             android:name="historyMode"
             app:argType="string" />
+        <argument
+            android:name="imageRef"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/historyItemFragment"
@@ -108,6 +112,10 @@
             app:argType="string" />
         <argument android:name="displayLabel"
             app:argType="string" />
+        <argument
+            android:name="imageRef"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 

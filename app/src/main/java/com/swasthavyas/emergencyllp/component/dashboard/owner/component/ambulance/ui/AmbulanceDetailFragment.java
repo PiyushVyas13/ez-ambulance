@@ -186,7 +186,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                             assignedDriver = driver;
                         });
 
-                viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), assignedDriver.getName()));
+                viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), assignedDriver.getName(), assignedDriver.getProfileImageRef().toString().replace("%40", "@")));
 
 
                 if (assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
@@ -405,11 +405,13 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         private final Context context;
         private final String ambulanceId;
         private final String driverName;
+        private final String imageRef;
 
-        public SettingsOptionAdapter(Context context, String ambulanceId, String driverName) {
+        public SettingsOptionAdapter(Context context, String ambulanceId, String driverName, String imageRef) {
             this.context = context;
             this.ambulanceId = ambulanceId;
             this.driverName = driverName;
+            this.imageRef = imageRef;
         }
 
         @Override
@@ -458,7 +460,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                         break;
                     case 1:
                         AmbulanceDetailFragmentDirections.HistoryAction action = AmbulanceDetailFragmentDirections
-                                .historyAction(ambulanceId, "trip.assignedAmbulanceId", driverName, "ambulance");
+                                .historyAction(ambulanceId, "trip.assignedAmbulanceId", driverName, "ambulance", imageRef);
 
                         Navigation.findNavController(v)
                                 .navigate(action);

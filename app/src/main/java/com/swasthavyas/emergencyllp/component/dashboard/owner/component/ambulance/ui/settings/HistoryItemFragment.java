@@ -50,7 +50,6 @@ import java.util.List;
 public class HistoryItemFragment extends Fragment implements OnMapReadyCallback {
     private HistoryViewModel historyViewModel;
     private FragmentHistoryItemBinding viewBinding;
-    private OwnerViewModel ownerViewModel;
     private List<String> routePolyLines;
 
     private String displayName;
@@ -66,7 +65,6 @@ public class HistoryItemFragment extends Fragment implements OnMapReadyCallback 
 
 
         historyViewModel = new ViewModelProvider(requireActivity()).get(HistoryViewModel.class);
-        ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
 
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
             @Override
