@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
                         if(employeeDriver != null) {
                             viewBinding.changeAmbulanceFab.setText(employeeDriver.getName());
                             viewBinding.assignedAmbulanceNumber.setText(employeeDriver.getAssignedAmbulanceNumber());
-                            getRecentTrips(employeeDriver.getDriverId(), employeeDriver.getAssignedAmbulanceNumber(), employeeDriver.getProfileImageRef());
+                            getRecentTrips(employeeDriver.getDriverId(), employeeDriver.getAssignedAmbulanceNumber());
                             Log.d(TAG, "onCreateView: " + employeeDriver);
 
                             dashboardViewModel.getDriverStatus().observe(getViewLifecycleOwner(), driverStatus -> {
@@ -126,7 +126,7 @@ public class HomeFragment extends Fragment {
 
                             viewBinding.historyBtn.setOnClickListener(v -> {
                                 HomeFragmentDirections.HistoryAction action = HomeFragmentDirections
-                                        .historyAction(employeeDriver.getDriverId(), "trip.assignedDriverId", employeeDriver.getAssignedAmbulanceNumber(), "driver", employeeDriver.getProfileImageRef().toString().replace("%40", "@"));
+                                        .historyAction(employeeDriver.getDriverId(), "trip.assignedDriverId", employeeDriver.getAssignedAmbulanceNumber(), "driver");
 
                                 Navigation.findNavController(v).navigate(action);
                             });
@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment {
         return viewBinding.getRoot();
     }
 
-    private void getRecentTrips(String driverId, String ambulanceNumber, StorageReference profileRef) {
+    private void getRecentTrips(String driverId, String ambulanceNumber) {
         List<TripHistory> historyList = new ArrayList<>();
 
         Timestamp now = Timestamp.now();
@@ -188,10 +188,10 @@ public class HomeFragment extends Fragment {
                             historyList.add(history);
                         }
 
-                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList, ambulanceNumber, profileRef, "driver", (v, history) -> {
+                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList, ambulanceNumber, "driver", (v, history) -> {
                             historyViewModel.setSelectedTripHistory(history);
 
-                            HomeFragmentDirections.RecentHistoryDetailAction action = HomeFragmentDirections.recentHistoryDetailAction(ambulanceNumber, "Ambulance", "");
+                            HomeFragmentDirections.RecentHistoryDetailAction action = HomeFragmentDirections.recentHistoryDetailAction(ambulanceNumber, "Ambulance");
                             Navigation.findNavController(v).navigate(action);
                         });
                         viewBinding.recentTrips.setLayoutManager(new LinearLayoutManager(requireContext()));

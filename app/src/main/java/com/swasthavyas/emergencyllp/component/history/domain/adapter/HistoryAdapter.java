@@ -31,7 +31,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private final List<TripHistory> historyList;
 
     private final String displayName;
-    private final StorageReference imageRefs;
 
     private final String historyMode;
 
@@ -44,13 +43,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     public HistoryAdapter(Context context,
                           List<TripHistory> historyList,
                           String displayName,
-                          StorageReference imageRefs,
                           String historyMode,
                           OnHistoryItemClickListener onClickListener) {
         this.context = context;
         this.historyList = historyList;
         this.displayName = displayName;
-        this.imageRefs = imageRefs;
         this.historyMode = historyMode;
         this.onClickListener = onClickListener;
     }

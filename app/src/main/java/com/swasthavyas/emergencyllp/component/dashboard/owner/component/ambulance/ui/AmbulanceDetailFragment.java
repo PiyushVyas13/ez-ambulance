@@ -460,7 +460,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                         break;
                     case 1:
                         AmbulanceDetailFragmentDirections.HistoryAction action = AmbulanceDetailFragmentDirections
-                                .historyAction(ambulanceId, "trip.assignedAmbulanceId", driverName, "ambulance", imageRef);
+                                .historyAction(ambulanceId, "trip.assignedAmbulanceId", driverName, "ambulance");
 
                         Navigation.findNavController(v)
                                 .navigate(action);

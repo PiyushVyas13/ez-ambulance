@@ -57,7 +57,7 @@ HistoryFragment extends Fragment {
     private String recordableFieldName;
     private String displayName;
     private String historyMode;
-    private String imageRef;
+
 
     private HistoryViewModel historyViewModel;
 
@@ -77,7 +77,7 @@ HistoryFragment extends Fragment {
         recordableFieldName = fragmentArgs.getRecordableFieldName();
         displayName = fragmentArgs.getDisplayName();
         historyMode = fragmentArgs.getHistoryMode();
-        imageRef = fragmentArgs.getImageRef();
+
 
 
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
@@ -160,17 +160,9 @@ HistoryFragment extends Fragment {
     private void prepareRecyclerView(List<TripHistory> historyList) {
         Map<String, List<TripHistory>> segregatedHistoryMap = segregateTripHistory(historyList);
 
-        StorageReference reference;
-
-        if(imageRef == null) {
-            reference = null;
-        } else {
-            reference = FirebaseService.getInstance().getStorageInstance().getReferenceFromUrl(imageRef);
-        }
-
-        HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap, displayName,  reference, historyMode, (v, history) -> {
+        HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap, displayName, historyMode, (v, history) -> {
             historyViewModel.setSelectedTripHistory(history);
-            HistoryFragmentDirections.HistoryDetailAction action = HistoryFragmentDirections.historyDetailAction(displayName, historyMode.equals("driver") ? "Ambulance" : "Driver", imageRef);
+            HistoryFragmentDirections.HistoryDetailAction action = HistoryFragmentDirections.historyDetailAction(displayName, historyMode.equals("driver") ? "Ambulance" : "Driver");
             Navigation.findNavController(v).navigate(action);
         });
         viewBinding.historyList.setLayoutManager(new LinearLayoutManager(requireContext()));
