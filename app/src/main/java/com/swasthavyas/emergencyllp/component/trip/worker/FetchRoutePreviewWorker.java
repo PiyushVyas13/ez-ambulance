@@ -1,5 +1,7 @@
 package com.swasthavyas.emergencyllp.component.trip.worker;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -88,7 +90,7 @@ public class FetchRoutePreviewWorker extends ListenableWorkerAdapter {
             public void onResponse(@NonNull Call<GoogleMapsDirectionsResponse> call, @NonNull Response<GoogleMapsDirectionsResponse> response) {
                 GoogleMapsDirectionsResponse routeResponse = response.body();
 
-                if(routeResponse != null) {
+                if(routeResponse != null && routeResponse.routes != null && routeResponse.routes.length != 0) {
                     Log.d("MYAPP", "onResponse: " + routeResponse.routes[0].polyline.encodedPolyline);
                     callback.onSuccess(new Data.Builder()
                             .putString("duration",routeResponse.routes[0].duration)
@@ -96,6 +98,7 @@ public class FetchRoutePreviewWorker extends ListenableWorkerAdapter {
                             .build());
                 }
                 else {
+                    Log.d(TAG, "onResponse: " + routeResponse);
                     callback.onFailure(new Exception("Something went wrong!"));
                 }
 

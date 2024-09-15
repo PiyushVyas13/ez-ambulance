@@ -5,6 +5,7 @@ import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,11 +40,15 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.StrokeStyle;
+import com.google.android.gms.maps.model.StyleSpan;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.PolyUtil;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.ui.dialog.DriverSearchFragment;
 import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.AssignAmbulanceWorker;
@@ -81,11 +86,13 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
 
     private GoogleMap ambulanceLocationMap;
     private Marker marker;
+    private LatLng currentCoordinates;
 
     private final AtomicReference<Boolean> isActiveRef = new AtomicReference<>(false);
     private final AtomicReference<Boolean> isOnRideRef = new AtomicReference<>(false);
 
-    private DatabaseReference tripReference;
+    private DatabaseReference tripStatusReference;
+    private DatabaseReference tripPreviewReference;
     private final ValueEventListener tripListener  = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -130,7 +137,49 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         public void onCancelled(@NonNull DatabaseError error) {
 
         }
-    };;
+    };
+
+    private final ValueEventListener previewListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if(snapshot.exists() && ambulanceLocationMap != null) {
+                String encodedPolyline = snapshot.getValue(String.class);
+
+                ambulanceLocationMap.clear();
+                marker = ambulanceLocationMap.addMarker(new MarkerOptions()
+                        .position(currentCoordinates)
+                        .icon(getBitmapFromVector())
+                        .title("Current Location"));
+                if(encodedPolyline != null) {
+                    List<LatLng> polylinePoints = PolyUtil.decode(encodedPolyline);
+
+                    PolylineOptions options = new PolylineOptions()
+                            .addAll(polylinePoints)
+                            .addSpan(new StyleSpan(StrokeStyle.gradientBuilder(Color.RED, Color.YELLOW).build()));
+
+
+                    LatLng endpoint = polylinePoints.get(polylinePoints.size()-1);
+                    ambulanceLocationMap.addPolyline(options);
+                    ambulanceLocationMap.addMarker(new MarkerOptions().position(endpoint));
+                }
+
+            } else {
+                if (ambulanceLocationMap != null) {
+                    ambulanceLocationMap.clear();
+                    marker = ambulanceLocationMap.addMarker(new MarkerOptions()
+                            .position(currentCoordinates)
+                            .icon(getBitmapFromVector())
+                            .title("Current Location"));
+                }
+
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
 
 
 
@@ -240,6 +289,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                         viewBinding.assignRideButton.setEnabled(!isOnRideRef.get() && isActiveRef.get());
 
                                         LatLng coordinates = new LatLng(coords.get(0), coords.get(1));
+                                        currentCoordinates = coordinates;
                                         if (ambulanceLocationMap != null) {
                                             if (marker == null) {
                                                 marker = ambulanceLocationMap.addMarker(new MarkerOptions()
@@ -295,7 +345,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
 
                         if (potentialTrip != null) {
                             String tripId = potentialTrip.getId();
-                            tripReference = database
+                            tripStatusReference = database
                                     .getReference()
                                     .getRoot()
                                     .child("trips")
@@ -303,8 +353,17 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                                     .child(tripId)
                                     .child("status");
 
+                            tripPreviewReference = database
+                                    .getReference()
+                                    .getRoot()
+                                    .child("trips")
+                                    .child(potentialTrip.getOwnerId())
+                                    .child(tripId)
+                                    .child("routePolyline");
+
                             isOnRideRef.set(true);
-                            tripReference.addValueEventListener(tripListener);
+                            tripStatusReference.addValueEventListener(tripListener);
+                            tripPreviewReference.addValueEventListener(previewListener);
                         } else {
                             viewBinding.assignRideButton.setEnabled(isActiveRef.get());
                             isOnRideRef.set(false);
@@ -475,8 +534,12 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onStop() {
         super.onStop();
-        if(tripReference != null) {
-            tripReference.removeEventListener(tripListener);
+        if(tripStatusReference != null) {
+            tripStatusReference.removeEventListener(tripListener);
+        }
+
+        if(tripPreviewReference != null) {
+            tripPreviewReference.removeEventListener(previewListener);
         }
     }
 }

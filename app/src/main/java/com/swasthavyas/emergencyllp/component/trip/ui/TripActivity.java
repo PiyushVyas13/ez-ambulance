@@ -271,6 +271,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     return;
                                 }
                                 tripPolylines.putIfAbsent(requestType, encodedPolyline);
+                                updateTripPolylines(encodedPolyline);
                                 renderRoutePolyline(googleMap, dest, rawDuration, encodedPolyline, location);
 
                             } else if (workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
@@ -283,6 +284,33 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                         });
             }
         });
+    }
+
+    private void updateTripPolylines(String encodedPolyline) {
+
+        if(trip == null) {
+            return;
+        }
+
+        FirebaseDatabase database = FirebaseService.getInstance().getDatabaseInstance();
+
+        database
+                .getReference()
+                .getRoot()
+                .child("trips")
+                .child(trip.getOwnerId())
+                .child(trip.getId())
+                .child("routePolyline")
+                .setValue(encodedPolyline)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        Log.d(TAG, "updateTripPolylines: route sent to owner!");
+                    } else {
+                        Log.d(TAG, "updateTripPolylines: " + task.getException());
+                    }
+                });
+
+
     }
 
     private void renderRoutePolyline(@NonNull GoogleMap googleMap, List<Double> dest, String rawDuration, String encodedPolyline, Location location) {
