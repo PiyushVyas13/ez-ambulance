@@ -188,10 +188,10 @@ public class HomeFragment extends Fragment {
                             historyList.add(history);
                         }
 
-                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList, ambulanceNumber, profileRef, (v, history) -> {
+                        HistoryAdapter adapter = new HistoryAdapter(requireContext(), historyList, ambulanceNumber, profileRef, "driver", (v, history) -> {
                             historyViewModel.setSelectedTripHistory(history);
 
-                            HomeFragmentDirections.RecentHistoryDetailAction action = HomeFragmentDirections.recentHistoryDetailAction(ambulanceNumber, "Ambulance", profileRef.toString().replace("%40", "@"));
+                            HomeFragmentDirections.RecentHistoryDetailAction action = HomeFragmentDirections.recentHistoryDetailAction(ambulanceNumber, "Ambulance", "");
                             Navigation.findNavController(v).navigate(action);
                         });
                         viewBinding.recentTrips.setLayoutManager(new LinearLayoutManager(requireContext()));

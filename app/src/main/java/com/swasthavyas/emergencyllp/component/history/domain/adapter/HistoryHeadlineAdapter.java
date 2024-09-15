@@ -23,6 +23,7 @@ public class HistoryHeadlineAdapter extends RecyclerView.Adapter<HistoryHeadline
     private final Map<String, List<TripHistory>> segregatedHistory;
     private final List<String> sectionHeaders;
     private final String displayName;
+    private final String historyMode;
     private final StorageReference imageRef;
     private final HistoryAdapter.OnHistoryItemClickListener onClickListener;
 
@@ -30,6 +31,7 @@ public class HistoryHeadlineAdapter extends RecyclerView.Adapter<HistoryHeadline
                                   Map<String, List<TripHistory>> segregatedHistory,
                                   String displayName,
                                   StorageReference imageRef,
+                                  String historyMode,
                                   HistoryAdapter.OnHistoryItemClickListener onClickListener) {
         this.context = context;
         this.segregatedHistory = segregatedHistory;
@@ -37,6 +39,7 @@ public class HistoryHeadlineAdapter extends RecyclerView.Adapter<HistoryHeadline
         this.displayName = displayName;
         this.imageRef = imageRef;
         this.onClickListener = onClickListener;
+        this.historyMode = historyMode;
     }
 
     @NonNull
@@ -54,7 +57,7 @@ public class HistoryHeadlineAdapter extends RecyclerView.Adapter<HistoryHeadline
 
         if(historyList != null && !historyList.isEmpty()) {
             holder.setMonthName(monthName);
-            HistoryAdapter adapter = new HistoryAdapter(context, historyList, displayName, imageRef, onClickListener);
+            HistoryAdapter adapter = new HistoryAdapter(context, historyList, displayName, imageRef, historyMode, onClickListener);
             holder.setHistoryList(context, adapter);
         }
 

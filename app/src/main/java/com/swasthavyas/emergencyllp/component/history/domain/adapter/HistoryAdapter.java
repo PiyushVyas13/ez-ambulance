@@ -31,7 +31,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private final List<TripHistory> historyList;
 
     private final String displayName;
-    private final StorageReference imageRef;
+    private final StorageReference imageRefs;
+
+    private final String historyMode;
 
     private final OnHistoryItemClickListener onClickListener;
 
@@ -42,12 +44,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     public HistoryAdapter(Context context,
                           List<TripHistory> historyList,
                           String displayName,
-                          StorageReference imageRef,
+                          StorageReference imageRefs,
+                          String historyMode,
                           OnHistoryItemClickListener onClickListener) {
         this.context = context;
         this.historyList = historyList;
         this.displayName = displayName;
-        this.imageRef = imageRef;
+        this.imageRefs = imageRefs;
+        this.historyMode = historyMode;
         this.onClickListener = onClickListener;
     }
 
@@ -77,8 +81,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         holder.setTripTime(timeString);
         holder.setTripEarning(context, String.valueOf(trip.getPrice()));
 
-        if(imageRef != null) {
-            holder.setProfileImage(context, imageRef);
+        if(historyMode.equals("driver")) {
+            if(tripHistory.getAmbulanceImageRef() != null) {
+                holder.setProfileImage(context, FirebaseService
+                        .getInstance()
+                        .getStorageInstance()
+                        .getReferenceFromUrl(tripHistory.getAmbulanceImageRef()));
+            }
+        } else if(historyMode.equals("ambulance")) {
+            if(tripHistory.getDriverProfileImageRef() != null) {
+                holder.setProfileImage(context, FirebaseService
+                        .getInstance()
+                        .getStorageInstance()
+                        .getReferenceFromUrl(tripHistory.getDriverProfileImageRef()));
+            }
         }
 
         holder.setOnClickListener(v -> onClickListener.onItemClick(v, tripHistory));

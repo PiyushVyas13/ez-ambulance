@@ -168,7 +168,7 @@ HistoryFragment extends Fragment {
             reference = FirebaseService.getInstance().getStorageInstance().getReferenceFromUrl(imageRef);
         }
 
-        HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap, displayName,  reference, (v, history) -> {
+        HistoryHeadlineAdapter historyHeadlineAdapter = new HistoryHeadlineAdapter(requireContext(), segregatedHistoryMap, displayName,  reference, historyMode, (v, history) -> {
             historyViewModel.setSelectedTripHistory(history);
             HistoryFragmentDirections.HistoryDetailAction action = HistoryFragmentDirections.historyDetailAction(displayName, historyMode.equals("driver") ? "Ambulance" : "Driver", imageRef);
             Navigation.findNavController(v).navigate(action);
