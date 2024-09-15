@@ -50,37 +50,74 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
         assert pickupLocationArray != null;
         assert dropLocationArray != null;
 
-        Map<String, Object> tripMap = getTripMap(
-                pickupLocationArray,
-                dropLocationArray,
-                lockedTripMap,
-                terminalState,
-                Arrays.asList(pickupPolyline, dropPolyline)
-                );
-
-        if(tripMap == null) {
-            callback.onFailure(new IllegalArgumentException("trip status is invalid."));
-            return;
-        }
-
-        TripHistory tripHistory = TripHistory.createFromMap(tripMap);
+        String assignedAmbulanceId = (String) lockedTripMap.get("assignedAmbulanceId");
+        String assignedDriverId = (String) lockedTripMap.get("assignedDriverId");
+        String ownerId = (String) lockedTripMap.get("ownerId");
 
         FirebaseFirestore dbInstance = FirebaseService.getInstance().getFirestoreInstance();
 
         dbInstance
-                .collection("trip_history")
-                .document(tripHistory.getTrip().getId())
-                .set(tripHistory)
+                .collection("owners")
+                .document(ownerId)
+                .collection("ambulances")
+                .document(assignedAmbulanceId)
+                .get()
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
-                        callback.onSuccess(null);
+                        String imageRef = task.getResult().getString("image_ref");
+
+                        dbInstance
+                                .collection("employees")
+                                .whereEqualTo("driver_id", assignedDriverId)
+                                .limit(1)
+                                .get()
+                                .addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()) {
+                                        String profileRef = task1.getResult().getDocuments().get(0).getString("profileImageRef");
+
+                                        Map<String, Object> tripMap = getTripMap(
+                                                pickupLocationArray,
+                                                dropLocationArray,
+                                                lockedTripMap,
+                                                terminalState,
+                                                imageRef,
+                                                profileRef,
+                                                Arrays.asList(pickupPolyline, dropPolyline)
+                                        );
+
+                                        if(tripMap == null) {
+                                            callback.onFailure(new IllegalArgumentException("trip status is invalid."));
+                                            return;
+                                        }
+
+                                        TripHistory tripHistory = TripHistory.createFromMap(tripMap);
+
+
+                                        dbInstance
+                                                .collection("trip_history")
+                                                .document(tripHistory.getTrip().getId())
+                                                .set(tripHistory)
+                                                .addOnCompleteListener(task2 -> {
+                                                    if(task2.isSuccessful()) {
+                                                        callback.onSuccess(null);
+                                                    } else {
+                                                        callback.onFailure(task2.getException());
+                                                    }
+                                                });
+
+                                    } else {
+                                        callback.onFailure(task1.getException());
+                                    }
+                                });
                     } else {
                         callback.onFailure(task.getException());
                     }
                 });
+
+
     }
 
-    private Map<String, Object> getTripMap(Double[] pickupLocationArray, Double[] dropLocationArray, Map<String, Object> lockedTripMap, String terminalState, List<String> polylines) {
+    private Map<String, Object> getTripMap(Double[] pickupLocationArray, Double[] dropLocationArray, Map<String, Object> lockedTripMap, String terminalState, String imageRef, String profileRef, List<String> polylines) {
         List<Double> pickupLocationList = new ArrayList<>();
         List<Double> dropLocationList = new ArrayList<>();
 
@@ -106,6 +143,8 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
             tripHistoryMap.put("terminalState", TripStatus.valueOf(terminalState));
             tripHistoryMap.put("completionTimestamp" , new Timestamp(new Date()));
             tripHistoryMap.put("routePolyLines", polylines);
+            tripHistoryMap.put("ambulanceImageRef", imageRef);
+            tripHistoryMap.put("driverProfileImageRef", profileRef);
         } catch (IllegalArgumentException e) {
             return null;
         }

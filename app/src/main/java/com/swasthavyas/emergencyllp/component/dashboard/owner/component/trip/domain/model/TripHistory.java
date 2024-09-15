@@ -14,6 +14,8 @@ public class TripHistory {
     private String terminalState;
     private Timestamp completedAt;
     private List<String> routePolyLines;
+    private String ambulanceImageRef;
+    private String driverProfileImageRef;
 
 
     public TripHistory(){
@@ -26,11 +28,13 @@ public class TripHistory {
      * @param completedAt completion time of the trip
      * @param routePolyLines encoded polyline from pickup to drop location
      */
-    public TripHistory(Trip trip,String terminalState,Timestamp completedAt,List<String> routePolyLines){
+    private TripHistory(Trip trip,String terminalState,Timestamp completedAt,List<String> routePolyLines, String ambulanceImageRef, String driverProfileImageRef){
         this.trip = trip;
         this.terminalState = terminalState;
         this.completedAt = completedAt;
         this.routePolyLines = routePolyLines;
+        this.ambulanceImageRef = ambulanceImageRef;
+        this.driverProfileImageRef = driverProfileImageRef;
     }
 
     public Trip getTrip() {
@@ -79,17 +83,40 @@ public class TripHistory {
 
          List<String> routePolylines = (List<String>) map.get("routePolyLines");
 
-        return new TripHistory(trip,terminalState,completionTimestamp,routePolylines);
+         String ambulanceImageRef = (String) map.get("ambulanceImageRef");
+         String driverProfileImageRef = (String) map.get("driverProfileImageRef");
+
+        return new TripHistory(trip,terminalState,completionTimestamp,routePolylines, ambulanceImageRef, driverProfileImageRef);
 
      }
 
     @NonNull
     @Override
     public String toString() {
-        return "TripHistory{" + "trip=" + trip +
-                ", terminalState='" + terminalState + '\'' +
-                ", completedAt=" + completedAt +
-                ", routePolyLines='" + routePolyLines + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("TripHistory{");
+        sb.append("trip=").append(trip);
+        sb.append(", terminalState='").append(terminalState).append('\'');
+        sb.append(", completedAt=").append(completedAt);
+        sb.append(", routePolyLines=").append(routePolyLines);
+        sb.append(", ambulanceImageRef='").append(ambulanceImageRef).append('\'');
+        sb.append(", driverProfileImageRef='").append(driverProfileImageRef).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public String getAmbulanceImageRef() {
+        return ambulanceImageRef;
+    }
+
+    public void setAmbulanceImageRef(String ambulanceImageRef) {
+        this.ambulanceImageRef = ambulanceImageRef;
+    }
+
+    public String getDriverProfileImageRef() {
+        return driverProfileImageRef;
+    }
+
+    public void setDriverProfileImageRef(String driverProfileImageRef) {
+        this.driverProfileImageRef = driverProfileImageRef;
     }
 }
