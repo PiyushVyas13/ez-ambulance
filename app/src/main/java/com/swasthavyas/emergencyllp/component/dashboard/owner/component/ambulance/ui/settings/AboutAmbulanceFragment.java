@@ -74,7 +74,7 @@ AboutAmbulanceFragment extends Fragment {
         });
 
         ambulanceViewModel.getAssignedDriver().observe(getViewLifecycleOwner(), assignedDriver -> {
-            viewBinding.assignedDriverName.setText(assignedDriver.getName());
+            viewBinding.assignedDriverName.setText(assignedDriver == null ? "No Driver Assigned" : assignedDriver.getName());
         });
 
 

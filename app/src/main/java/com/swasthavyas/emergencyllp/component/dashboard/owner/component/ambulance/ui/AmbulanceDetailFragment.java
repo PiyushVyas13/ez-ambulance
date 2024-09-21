@@ -235,7 +235,6 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                             assignedDriver = driver;
                         });
 
-                viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), assignedDriver.getName(), assignedDriver.getProfileImageRef().toString().replace("%40", "@")));
 
 
                 if (assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
@@ -244,6 +243,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
 
                     DriverSearchFragment dialogFragment = getDriverSearchFragment(owner);
 
+                    viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), "No Driver Assigned", null));
 
                     viewBinding.assignedDriverName.setOnClickListener(v -> {
 
@@ -256,6 +256,9 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                     });
                 } else {
                     viewBinding.assignedDriverName.setText(String.format("Assigned to: %s", assignedDriver.getName()));
+
+                    viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), assignedDriver.getName(), assignedDriver.getProfileImageRef() != null ? assignedDriver.getProfileImageRef().toString().replace("%40", "@") : null));
+
 
                     viewBinding.assignRideButton.setOnClickListener(v -> {
                         Navigation.findNavController(v).navigate(R.id.rideAssignmentFragment, null,
