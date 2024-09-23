@@ -114,6 +114,7 @@ public class DriverDashboardFragment extends Fragment {
     private WorkManager workManager;
 
     private boolean isObserverAttached = false;
+    private static int observerCount = 0;
 
     ValueEventListener tripValueListener = new ValueEventListener() {
         @Override
@@ -263,6 +264,11 @@ public class DriverDashboardFragment extends Fragment {
                 .child(employeeViewModel.getCurrentEmployee().getValue().getOwnerId())
                 .child(tripId)
                 .addValueEventListener(tripValueListener);
+
+        observerCount+=1;
+
+        Log.d(TAG, "observeTripStatus: " + isObserverAttached);
+        Log.d(TAG, "observeTripStatus: observerCount: " + observerCount);
     }
 
     private void retrievePotentialTrip() {
@@ -343,7 +349,7 @@ public class DriverDashboardFragment extends Fragment {
     private void registerBackgroundRequestReceiver() {
         if(requireActivity().getIntent() != null && requireActivity().getIntent().hasExtra("tripId")) {
             String tripId = requireActivity().getIntent().getStringExtra("tripId");
-            Toast.makeText(requireActivity(), tripId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity(), "Background: " + tripId, Toast.LENGTH_SHORT).show();
             receivedTripId = tripId;
         }
     }
@@ -355,7 +361,7 @@ public class DriverDashboardFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getExtras() != null && intent.hasExtra("trip_id")) {
                     String tripId = intent.getStringExtra("trip_id");
-                    Toast.makeText(context, tripId, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Foreground: " + tripId, Toast.LENGTH_SHORT).show();
                     receivedTripId = tripId;
                     observeTripStatus(tripId);
                     showRequestDialog(tripId);
@@ -373,6 +379,7 @@ public class DriverDashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        Log.d(TAG, "onResume: " + isObserverAttached);
         if(!isObserverAttached && tripViewModel.getActiveTrip().getValue() != null) {
             observeTripStatus(tripViewModel.getActiveTrip().getValue().getId());
         }
@@ -590,13 +597,21 @@ public class DriverDashboardFragment extends Fragment {
         }
         if(tripViewModel != null && tripViewModel.getActiveTrip().getValue() != null) {
             isObserverAttached = false;
-            database
-                    .getReference()
-                    .getRoot()
-                    .child("trips")
-                    .child(employeeViewModel.getCurrentEmployee().getValue().getOwnerId())
-                    .child(tripViewModel.getActiveTrip().getValue().getId())
-                    .removeEventListener(tripValueListener);
+            for(int i=0; i<observerCount; i++) {
+                database
+                        .getReference()
+                        .getRoot()
+                        .child("trips")
+                        .child(employeeViewModel.getCurrentEmployee().getValue().getOwnerId())
+                        .child(tripViewModel.getActiveTrip().getValue().getId())
+                        .removeEventListener(tripValueListener);
+
+
+            }
+
+            observerCount = 0;
+
+            Log.d(TAG, "onStop: observerCount: " + observerCount);
         }
     }
 
