@@ -91,6 +91,7 @@
 
 
                 <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/delete_driver_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center"
@@ -117,6 +118,7 @@
 
 
                 <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/assign_driver_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center"

@@ -241,19 +241,11 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
                     viewBinding.assignedDriverName.setText(R.string.tap_to_select_a_driver);
                     viewBinding.assignRideButton.setEnabled(false);
 
-                    DriverSearchFragment dialogFragment = getDriverSearchFragment(owner);
+
 
                     viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), "No Driver Assigned", null));
 
-                    viewBinding.assignedDriverName.setOnClickListener(v -> {
 
-                        dialogFragment.show(getChildFragmentManager(), "SOME_TAG");
-                        getChildFragmentManager().executePendingTransactions();
-
-                        dialogFragment.getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-
-                    });
                 } else {
                     viewBinding.assignedDriverName.setText(String.format("Assigned to: %s", assignedDriver.getName()));
 
@@ -386,46 +378,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     }
 
     @NonNull
-    private DriverSearchFragment getDriverSearchFragment(Owner owner) {
-        DriverSearchFragment.DriverSearchDialogListener searchDialogListener = (dialog, driver) -> {
 
-            OneTimeWorkRequest assignAmbulanceRequest = new OneTimeWorkRequest.Builder(AssignAmbulanceWorker.class)
-                    .setInputData(new Data.Builder()
-                            .putString("ambulance_number", ambulance.getVehicleNumber())
-                            .putString("driver_mail", driver.getEmail())
-                            .build())
-                    .setConstraints(new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                    .build();
-
-            WorkManager.getInstance(requireContext())
-                            .enqueue(assignAmbulanceRequest);
-
-            WorkManager.getInstance(requireContext())
-                            .getWorkInfoByIdLiveData(assignAmbulanceRequest.getId())
-                                    .observe(getViewLifecycleOwner(), workInfo -> {
-                                        if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.SUCCEEDED)) {
-                                            owner.assignAmbulanceToEmployee(ambulance.getVehicleNumber(), driver.getDriverId());
-                                            dialog.dismiss();
-                                        }
-                                        else if(workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {
-                                            dialog.dismiss();
-                                            Toast.makeText(requireActivity(), workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-        };
-
-        List<EmployeeDriver> availableEmployees =
-                owner.getEmployees().getValue()
-                        .stream()
-                        .filter(driver -> driver.getAssignedAmbulanceNumber() == null || driver.getAssignedAmbulanceNumber().equals("None"))
-                        .collect(Collectors.toList());
-
-        DriverSearchFragment dialogFragment = new DriverSearchFragment(
-                availableEmployees, searchDialogListener
-        );
-
-        return dialogFragment;
-    }
 
     private static final List<String> optionsList = Arrays.asList("About Ambulance", "History");
     private static final List<String> optionDescList = Arrays.asList(

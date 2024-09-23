@@ -5,7 +5,10 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.work.WorkerParameters;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 import com.swasthavyas.emergencyllp.util.asyncwork.ListenableWorkerAdapter;
 import com.swasthavyas.emergencyllp.util.asyncwork.NetworkResultCallback;
@@ -31,13 +34,36 @@ public class AssignAmbulanceWorker extends ListenableWorkerAdapter {
 
         dbInstance
                 .collection("employees")
-                .document(driverMail)
-                .update(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, ambulanceNumber)
+                .whereEqualTo(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, ambulanceNumber)
+                .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        callback.onSuccess(null);
-                    }
-                    else{
+                    if(task.isSuccessful()) {
+                        WriteBatch batch = dbInstance.batch();
+                        for(DocumentSnapshot snapshot : task.getResult().getDocuments()) {
+                            String email = snapshot.getId();
+
+                            DocumentReference ref = dbInstance.collection("employees").document(email);
+                            batch.update(ref, EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, "None");
+                        }
+                        batch.commit().addOnCompleteListener(task1 -> {
+                            if(task1.isSuccessful()) {
+                                dbInstance
+                                        .collection("employees")
+                                        .document(driverMail)
+                                        .update(EmployeeDriver.ModelColumns.ASSIGNED_AMBULANCE_NUMBER, ambulanceNumber)
+                                        .addOnCompleteListener(task2 -> {
+                                            if (task2.isSuccessful()) {
+                                                callback.onSuccess(null);
+                                            }
+                                            else{
+                                                callback.onFailure(task2.getException());
+                                            }
+                                        });
+                            } else {
+                                callback.onFailure(task1.getException());
+                            }
+                        });
+                    } else {
                         callback.onFailure(task.getException());
                     }
                 });
