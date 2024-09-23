@@ -173,6 +173,11 @@ public class DriverDashboardFragment extends Fragment {
                     .build();
 
             WorkManager.getInstance(requireContext())
+                    .beginWith(getRidesCountRequest)
+                    .then(getEarningRequest)
+                    .enqueue();
+
+            WorkManager.getInstance(requireContext())
                             .getWorkInfoByIdLiveData(getRidesCountRequest.getId())
                             .observe(getViewLifecycleOwner(), workInfo -> {
                                 if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
