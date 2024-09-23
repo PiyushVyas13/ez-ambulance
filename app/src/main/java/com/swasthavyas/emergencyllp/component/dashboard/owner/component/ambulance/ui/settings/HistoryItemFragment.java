@@ -95,7 +95,7 @@ public class HistoryItemFragment extends Fragment implements OnMapReadyCallback 
             viewBinding.displayLabel.setText(String.format("%s: ", displayLabel));
             viewBinding.name.setText(displayName);
             viewBinding.customerName.setText(trip.getCustomerName());
-            viewBinding.earning.setText(String.valueOf(trip.getPrice()));
+            viewBinding.earning.setText(history.getTerminalState().equals("COMPLETED") ? String.valueOf(trip.getPrice()) : "0.00");
             viewBinding.customerAge.setText(String.valueOf(trip.getCustomerAge()));
             viewBinding.customerMobile.setText(trip.getCustomerMobile());
             viewBinding.pickupLocation.setText(trip.getPickupLocationAddress());
@@ -134,6 +134,30 @@ public class HistoryItemFragment extends Fragment implements OnMapReadyCallback 
 
     private void renderPolylines(@NonNull GoogleMap map, List<String> routePolyLines) {
         map.clear();
+
+        if(routePolyLines.get(0).equals("Not Created")) {
+            return;
+        }
+
+        if(routePolyLines.get(1).equals("Not Created")) {
+            List<LatLng> pickupRouteCoordinates = PolyUtil.decode(routePolyLines.get(0));
+
+            PolylineOptions pickupRouteOptions = new PolylineOptions()
+                    .addAll(pickupRouteCoordinates)
+                    .addSpan(new StyleSpan(StrokeStyle.gradientBuilder(Color.RED, Color.YELLOW).build()));
+
+            LatLng startLocation = pickupRouteCoordinates.get(0);
+            LatLng pickupLocation = pickupRouteCoordinates.get(pickupRouteCoordinates.size() - 1);
+
+            map.addPolyline(pickupRouteOptions);
+
+            map.addMarker(new MarkerOptions().position(startLocation).icon(getBitmapFromVector()));
+            map.addMarker(new MarkerOptions().position(pickupLocation));
+
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 12f));
+
+            return;
+        }
 
         List<LatLng> pickupRouteCoordinates = PolyUtil.decode(routePolyLines.get(0));
         List<LatLng> dropRouteCoordinates = PolyUtil.decode(routePolyLines.get(1));

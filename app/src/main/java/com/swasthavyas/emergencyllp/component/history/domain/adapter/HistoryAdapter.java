@@ -76,7 +76,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         holder.setName(displayName);
         holder.setTripDate(dateString);
         holder.setTripTime(timeString);
-        holder.setTripEarning(context, String.valueOf(trip.getPrice()));
+        holder.setTripEarning(context, tripHistory.getTerminalState().equals("COMPLETED") ? String.valueOf(trip.getPrice()) : "0.00");
 
         if(historyMode.equals("driver")) {
             if(tripHistory.getAmbulanceImageRef() != null) {

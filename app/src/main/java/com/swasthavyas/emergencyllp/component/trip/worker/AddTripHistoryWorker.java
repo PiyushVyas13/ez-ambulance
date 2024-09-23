@@ -146,6 +146,7 @@ public class AddTripHistoryWorker extends ListenableWorkerAdapter {
             tripHistoryMap.put("ambulanceImageRef", imageRef);
             tripHistoryMap.put("driverProfileImageRef", profileRef);
         } catch (IllegalArgumentException e) {
+            Log.d(TAG, "getTripMap: "+e);
             return null;
         }
 

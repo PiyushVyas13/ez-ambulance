@@ -503,6 +503,9 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .build())
                 .build();
 
+        tripPolylines.putIfAbsent(REQUEST_PICKUP, "Not Created");
+        tripPolylines.putIfAbsent(REQUEST_DROP, "Not Created");
+
         OneTimeWorkRequest addHistoryRequest = new OneTimeWorkRequest.Builder(AddTripHistoryWorker.class)
                 .setInputData(new Data.Builder()
                         .putAll(trip.toMap())
@@ -522,6 +525,10 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
                         Toast.makeText(this, "Trip Completed!", Toast.LENGTH_SHORT).show();
                         setResult(Activity.RESULT_OK);
+                        finish();
+                    } else if(workInfo.getState().isFinished() && workInfo.getState() == WorkInfo.State.FAILED){
+                        Toast.makeText(this, workInfo.getOutputData().getString("message"), Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
                         finish();
                     }
                 });
