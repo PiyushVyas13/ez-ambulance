@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/sample_profile"
+            android:scaleType="centerCrop"
+            android:elevation="4dp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            app:civ_border_color="@color/grey"
+            app:civ_border_width="1dp" />
+
+
+
+        <LinearLayout
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:textSize="@dimen/_20ssp"
+                android:textColor="@color/black"
+                android:text="William8765"/>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/trip_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/black"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:text="Nov 3, 2024"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:text="at"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/trip_time"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_height="wrap_content"
+                    android:text="3:45 am"/>
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/trip_earning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_15ssp"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:textStyle="bold"
+            android:textColor="@color/success"
+            android:text="@string/trip_earning"/>
+
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

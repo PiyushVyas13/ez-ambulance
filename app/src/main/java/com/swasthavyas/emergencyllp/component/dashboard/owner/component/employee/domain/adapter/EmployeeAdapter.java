@@ -1,6 +1,9 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.adapter;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
@@ -86,6 +90,15 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
                     .show();
         });
         //TODO: Load Profile pic from employee profile
+
+        if(employee.getProfileImageRef() != null) {
+            Log.d(TAG, "onBindViewHolder: " + employee.getProfileImageRef());
+            Glide.with(context)
+                    .load(employee.getProfileImageRef())
+                    .placeholder(R.drawable.sample_profile)
+                    .dontAnimate()
+                    .into(holder.getProfilePicture());
+        }
     }
 
 

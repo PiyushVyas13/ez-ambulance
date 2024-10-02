@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -23,6 +25,10 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -32,12 +38,15 @@ import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.auth.viewmodel.AuthViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.viewmodel.DriverRegistrationViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.TripViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.worker.FetchOwnerWorker;
 import com.swasthavyas.emergencyllp.databinding.FragmentOwnerDashboardBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
+import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -50,6 +59,7 @@ public class OwnerDashboardFragment extends Fragment {
     FragmentOwnerDashboardBinding viewBinding;
     OwnerViewModel ownerViewModel;
     AuthViewModel authViewModel;
+    TripViewModel tripViewModel;
     DriverRegistrationViewModel driverRegistrationViewModel;
     NavController navController;
 
@@ -71,6 +81,7 @@ public class OwnerDashboardFragment extends Fragment {
         viewBinding = FragmentOwnerDashboardBinding.inflate(getLayoutInflater());
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
         driverRegistrationViewModel = new ViewModelProvider(requireActivity()).get(DriverRegistrationViewModel.class);
 
         FirebaseUser currentUser = authViewModel.getCurrentUser().getValue();
@@ -107,7 +118,7 @@ public class OwnerDashboardFragment extends Fragment {
                                     (String) ownerData.get("user_id"),
                                     (String) ownerData.get("aadhaar_number")
                             );
-                            //TODO: Deserialize ambulance string and convert it to List<Ambulance> and pass it to owner.
+                            // Deserialize ambulance string and convert it to List<Ambulance> and pass it to owner.
 
                             List<Ambulance> ambulances = deserializeAmbulancesString((String) ownerData.get("ambulances"));
                             List<EmployeeDriver> employees = deserializeEmployeesString((String) ownerData.get("employees"));
@@ -115,6 +126,46 @@ public class OwnerDashboardFragment extends Fragment {
                             owner.setEmployees(employees);
 
                             ownerViewModel.setOwner(owner);
+
+
+                            FirebaseDatabase database = FirebaseService.getInstance().getDatabaseInstance();
+//                            database.useEmulator("10.0.2.2", 8000);
+
+                            database
+                                    .getReference()
+                                    .getRoot()
+                                    .child("trips")
+                                    .child(owner.getId())
+                                    .addChildEventListener(new ChildEventListener() {
+                                        @Override
+                                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                            Log.d(AppConstants.TAG, "onChildAdded: " + snapshot.getValue());
+                                            Trip trip = snapshot.getValue(Trip.class);
+                                            tripViewModel.addTrip(trip);
+                                        }
+
+                                        @Override
+                                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                                            Trip trip = snapshot.getValue(Trip.class);
+
+                                            tripViewModel.removeTrip(trip.getId());
+                                        }
+
+                                        @Override
+                                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                         }
                         else return;
                     } else if (workInfo.getState().isFinished() && workInfo.getState().equals(WorkInfo.State.FAILED)) {

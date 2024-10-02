@@ -1,25 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".component.dashboard.driver.ui.ProfileFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Profile"
-        android:textSize="30sp"
-        android:gravity="center"
-        />
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-    <Button
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeableImageView2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_120sdp"
+            android:background="@drawable/background_top"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:layout_gravity="center|top"
+            android:id="@+id/history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_22ssp"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_30sdp" />
+
+
+    </FrameLayout>
+
+    <LinearLayout
+
+        android:id="@+id/linearLayout9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        app:layout_constraintVertical_bias="0.050000012">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_16sdp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:elevation="4dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/sample_profile"
+                    app:civ_border_color="@color/black"
+                    app:civ_border_width="@dimen/_1ssp" />
+
+                <ImageButton
+                    android:id="@+id/change_profile_image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom|end"
+                    android:translationZ="5dp"
+                    android:src="@drawable/edit_icon"
+                    android:background="@drawable/profile_background" />
+            </FrameLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:text="Name : "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16ssp"
+                        android:textStyle="bold" />
+
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/driver_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sujal Agrawal"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_14ssp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/driver_mobile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="9345678901"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_16ssp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:background="@color/grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:text="Mail"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/driver_mail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sujal@gmail.com"
+                android:textSize="@dimen/_15ssp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:text="Age"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/driver_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="56"
+                android:textSize="@dimen/_15ssp" />
+        </LinearLayout>
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="Documents Uploaded"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:background="@color/grey" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="wrap_content"
+                android:text="Aadhar Card No."
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/driver_aadhaar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2442 5354 XXXX"
+                android:textSize="@dimen/_15ssp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="wrap_content"
+                android:text="Licence No."
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4435545445"
+                android:textSize="@dimen/_15ssp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/sign_out_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign out"
-        android:layout_gravity="center"
-        />
+        android:layout_gravity="bottom"
+        android:text="Logout"
+        android:layout_marginStart="@dimen/_30sdp"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:textSize="@dimen/_20ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout9"
+        app:layout_constraintVertical_bias="0.89" />
 
-</FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

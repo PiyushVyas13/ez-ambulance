@@ -1,8 +1,4 @@
-package com.swasthavyas.emergencyllp.util;
-
-import android.os.Bundle;
-
-import androidx.work.Data;
+package com.swasthavyas.emergencyllp.util.firebase;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 

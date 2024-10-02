@@ -27,12 +27,17 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.worker.AddAmbulanceWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentAddAmbulanceBinding;
 import com.swasthavyas.emergencyllp.util.types.AmbulanceType;
+
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddAmbulanceFragment extends Fragment {
     FragmentAddAmbulanceBinding viewBinding;
@@ -61,7 +66,23 @@ public class AddAmbulanceFragment extends Fragment {
             }
         });
 
+        AtomicReference<String> formattedVehicleNumber = new AtomicReference<>();
+
+
+        final MaskedTextChangedListener listener = MaskedTextChangedListener.Companion.installOn(
+                viewBinding.vehicleNumber,
+                "[AA][00]-[Aa]-[0000]",
+                (maskFilled, extractedText, formattedText, mask) -> {
+                    Log.d(TAG, "onCreateView: " + extractedText);
+                    Log.d(TAG, "onCreateView: " + formattedText);
+                    Log.d(TAG, "onCreateView: " + mask);
+                    formattedVehicleNumber.set(formattedText);
+                }
+        );
+
+
         viewBinding.vehicleType.setOnFocusChangeListener((v, hasFocus) -> viewBinding.vehicleType.setHint(hasFocus ? "Eg. Bolero, Omni, Traveller etc." : ""));
+        viewBinding.vehicleNumber.setOnFocusChangeListener((v, hasFocus) -> viewBinding.vehicleNumber.setHint(hasFocus ? listener.placeholder() : ""));
 
         viewBinding.cancelButton.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.ownerHomeFragment, null, new NavOptions.Builder().setEnterAnim(android.R.anim.slide_in_left).setExitAnim(android.R.anim.fade_out).build());
@@ -99,23 +120,18 @@ public class AddAmbulanceFragment extends Fragment {
                 return;
             }
 
-            if(viewBinding.ambulanceType.getCheckedRadioButtonId() == -1 || viewBinding.vehicleNumber.getText().toString().isEmpty() || viewBinding.vehicleType.getText().toString().isEmpty() || ambulanceUri == null) {
+            if(viewBinding.ambulanceType.getCheckedRadioButtonId() == -1 || viewBinding.vehicleNumber.getText().toString().isEmpty() || viewBinding.vehicleType.getText().toString().isEmpty() || ambulanceUri == null || formattedVehicleNumber.get() == null) {
                 Toast.makeText(requireActivity(), "All fields are required", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String ownerId = ownerViewModel.getOwner().getValue().getId();
-            AmbulanceType ambulanceType = AmbulanceType.NONE;
+            if(!isValidVehicleNumber(formattedVehicleNumber.get())) {
+                Toast.makeText(requireActivity(), "Please enter valid vehicle number", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            if(viewBinding.ambulanceType.getCheckedRadioButtonId() == viewBinding.advanceLifeSupport.getId()) {
-                ambulanceType = AmbulanceType.ADVANCED;
-            }
-            else if(viewBinding.ambulanceType.getCheckedRadioButtonId() == viewBinding.basicLifeSupport.getId()) {
-                ambulanceType = AmbulanceType.BASIC;
-            }
-            else if(viewBinding.ambulanceType.getCheckedRadioButtonId() == viewBinding.transport.getId()) {
-                ambulanceType = AmbulanceType.MORTUARY;
-            }
+            String ownerId = ownerViewModel.getOwner().getValue().getId();
+            AmbulanceType ambulanceType = getAmbulanceType();
 
             String vehicleNumber = viewBinding.vehicleNumber.getText().toString();
             String vehicleType = viewBinding.vehicleType.getText().toString();
@@ -172,5 +188,45 @@ public class AddAmbulanceFragment extends Fragment {
         });
 
         return viewBinding.getRoot();
+    }
+
+    @NonNull
+    private AmbulanceType getAmbulanceType() {
+        AmbulanceType ambulanceType = AmbulanceType.NONE;
+
+        if(viewBinding.ambulanceType.getCheckedRadioButtonId() == viewBinding.advanceLifeSupport.getId()) {
+            ambulanceType = AmbulanceType.ADVANCED;
+        }
+        else if(viewBinding.ambulanceType.getCheckedRadioButtonId() == viewBinding.basicLifeSupport.getId()) {
+            ambulanceType = AmbulanceType.BASIC;
+        }
+        else if(viewBinding.ambulanceType.getCheckedRadioButtonId() == viewBinding.transport.getId()) {
+            ambulanceType = AmbulanceType.MORTUARY;
+        }
+        return ambulanceType;
+    }
+
+    private boolean isValidVehicleNumber(String vehicleNumber) {
+        String[] validStateCodes = {
+                "AP", "AR", "AS", "BR", "CG", "GA", "GJ", "HR", "HP", "JH", "KA", "KL", "MP",
+                "MH", "MN", "ML", "MZ", "NL", "OD", "PB", "RJ", "SK", "TN", "TS", "TR", "UP",
+                "UK", "WB", "AN", "CH", "DD", "DL", "JK", "LA", "LD", "PY"
+        };
+
+        String pattern = "^[A-Z]{2}[0-9]{2}-[A-Z]{1,2}-[0-9]{4}$";
+
+        Matcher matcher = Pattern.compile(pattern).matcher(vehicleNumber);
+
+        if(matcher.matches()) {
+            String stateCode = vehicleNumber.substring(0, 2);
+            for(String code : validStateCodes) {
+                if(stateCode.equals(code)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
     }
 }

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeableImageView2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_110sdp"
+            android:background="@drawable/background_top"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_36sdp"
+            android:layout_marginTop="@dimen/_60sdp"
+            android:layout_marginEnd="@dimen/_36sdp"
+            android:gravity="center"
+            android:text="@string/history_text"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_25ssp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:id="@+id/textInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:hint="@string/date_text"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/primary"
+        app:boxStrokeErrorColor="@color/error"
+        app:boxStrokeWidth="@dimen/_2sdp"
+        app:endIconDrawable="@drawable/calender"
+        app:endIconMode="custom"
+        app:endIconTint="@color/primary"
+        app:helperText="MM/DD/YYYY"
+        app:helperTextEnabled="true"
+        app:helperTextTextColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:textSize="@dimen/_14ssp"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:textColor="@color/black"
+            android:textStyle="bold|italic" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/materialTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="month"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:textSize="@dimen/_15ssp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:background="@color/grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialTextView2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view">
+
+
+    </androidx.recyclerview.widget.RecyclerView>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.23" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

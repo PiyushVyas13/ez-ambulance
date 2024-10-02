@@ -9,7 +9,22 @@
         android:id="@+id/homeFragment"
         android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.HomeFragment"
         android:label="1"
-        tools:layout="@layout/fragment_home_driver" />
+        tools:layout="@layout/fragment_home_driver" >
+        <action
+            android:id="@+id/historyAction"
+            app:destination="@id/driverHistoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/recentHistoryDetailAction"
+            app:destination="@id/driverHistoryItemFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/notificationFragment"
         android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.NotificationFragment"
@@ -20,4 +35,46 @@
         android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.ProfileFragment"
         android:label="5"
         tools:layout="@layout/fragment_profile_driver" />
+    <fragment
+        android:id="@+id/tripPreviewFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.driver.ui.TripPreviewFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_trip_preview" />
+    <fragment
+        android:id="@+id/driverHistoryFragment"
+        android:name="com.swasthavyas.emergencyllp.component.history.ui.HistoryFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_history" >
+        <argument
+            android:name="recordableId"
+            app:argType="string" />
+        <argument
+            android:name="recordableFieldName"
+            app:argType="string" />
+        <action
+            android:id="@+id/historyDetailAction"
+            app:destination="@id/driverHistoryItemFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <argument
+            android:name="displayName"
+            app:argType="string" />
+        <argument
+            android:name="historyMode"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/driverHistoryItemFragment"
+        android:name="com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui.settings.HistoryItemFragment"
+        android:label="1"
+        tools:layout="@layout/fragment_history_item" >
+        <argument
+            android:name="displayName"
+            app:argType="string" />
+        <argument
+            android:name="displayLabel"
+            app:argType="string" />
+    </fragment>
 </navigation>

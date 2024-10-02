@@ -3,18 +3,17 @@ package com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.ui
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.work.Data;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,24 +25,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.AddressComponents;
-import com.google.android.libraries.places.api.model.LocationRestriction;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.swasthavyas.emergencyllp.R;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
 import com.swasthavyas.emergencyllp.databinding.FragmentPickupLocationBinding;
 import com.swasthavyas.emergencyllp.util.AppConstants;
 import com.swasthavyas.emergencyllp.util.steppernav.NavigationStepFragment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 
 public class PickupLocationFragment extends NavigationStepFragment implements OnMapReadyCallback {
@@ -88,7 +83,7 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
                              Bundle savedInstanceState) {
         viewBinding = FragmentPickupLocationBinding.inflate(getLayoutInflater());
         viewBinding.state.setEnabled(false);
-        viewBinding.pincode.setEnabled(false);
+//        viewBinding.pincode.setEnabled(false);
 
         RectangularBounds bounds = RectangularBounds.newInstance(
                 new LatLng(20.5558, 78.6304),
@@ -225,14 +220,14 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
         return true;
     }
     @Override
-    public Bundle collectData() {
+    public Data collectData() {
         String streetAdress = viewBinding.streetAddressInput.getText().toString();
         String city = viewBinding.city.getText().toString();
         String landmark = viewBinding.landmark.getText().toString();
         String state = viewBinding.state.getText().toString();
         String pincode = viewBinding.pincode.getText().toString();
 
-        Bundle dataBundle = new Bundle();
+        Data.Builder dataBuilder = new Data.Builder();
 
         StringBuilder pickupLocationAddress = new StringBuilder();
 
@@ -253,9 +248,9 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
                 .trimToSize();
 
 
-        dataBundle.putString("address", sanitizeAddress(pickupLocationAddress.toString()));
-        dataBundle.putParcelable("coordinates", locationCoordinates);
+        dataBuilder.putString(Trip.ModelColumns.PICKUP_LOCATION_ADDRESS, sanitizeAddress(pickupLocationAddress.toString()));
+        dataBuilder.putDoubleArray(Trip.ModelColumns.PICKUP_LOCATION, new double[] {locationCoordinates.latitude, locationCoordinates.longitude});
 
-        return dataBundle;
+        return dataBuilder.build();
     }
 }

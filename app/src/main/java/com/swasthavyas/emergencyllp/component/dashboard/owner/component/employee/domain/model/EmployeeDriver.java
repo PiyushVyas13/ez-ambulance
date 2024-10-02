@@ -1,8 +1,25 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model;
 
-import java.util.Map;
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class EmployeeDriver {
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.common.util.ArrayUtils;
+import com.google.common.primitives.Doubles;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.DoubleStream;
+
+public class EmployeeDriver implements Parcelable {
     private String driverId;
     private String name;
     private String userId;
@@ -15,19 +32,94 @@ public class EmployeeDriver {
     private String assignedAmbulanceNumber;
 
     private String phoneNumber;
+    private String ownerId;
+    private String aadhaarNumber;
+    private List<Double> lastLocation;
+    private StorageReference profileImageRef;
 
-    private EmployeeDriver(String name, String email, String driverId, String userId, int age, String phoneNumber, String assignedAmbulanceNumber, String aadhaarImageRef, String licenceImageRef) {
-        this.name = name;
+    protected EmployeeDriver(Parcel in) {
+        email = in.readString();
+        driverId = in.readString();
+        userId = in.readString();
+        name = in.readString();
+        age = in.readInt();
+        aadhaarImageRef = in.readString();
+        licenceImageRef = in.readString();
+        assignedAmbulanceNumber = in.readString();
+        phoneNumber = in.readString();
+        ownerId = in.readString();
+        aadhaarNumber = in.readString();
+        List<Double> location = new ArrayList<>();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            in.readList(location, null, Double.class);
+        }
+        else {
+            in.readList(location, null);
+        }
+
+        lastLocation = location;
+
+        String profileRef = in.readString();
+        if(profileRef == null) {
+            profileImageRef = null;
+        } else {
+            profileImageRef = FirebaseStorage.getInstance().getReferenceFromUrl(profileRef);
+        }
+    }
+
+    public static final Creator<EmployeeDriver> CREATOR = new Creator<EmployeeDriver>() {
+        @Override
+        public EmployeeDriver createFromParcel(Parcel in) {
+            return new EmployeeDriver(in);
+        }
+
+        @Override
+        public EmployeeDriver[] newArray(int size) {
+            return new EmployeeDriver[size];
+        }
+    };
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "EmployeeDriver{" + "driverId='" + driverId + '\'' +
+                ", name='" + name + '\'' +
+                ", userId='" + userId + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", aadhaarNumber='" + aadhaarNumber + '\'' +
+                ", aadhaarImageRef='" + aadhaarImageRef + '\'' +
+                ", licenceImageRef='" + licenceImageRef + '\'' +
+                ", assignedAmbulanceNumber='" + assignedAmbulanceNumber + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", lastLocation='" + (lastLocation == null ? "[Not Available]" : String.format(Locale.getDefault(), "[%f, %f]", lastLocation.get(0), lastLocation.get(1))) + '\'' +
+                '}';
+    }
+
+    private EmployeeDriver(String name, String email, String ownerId, String driverId, String userId, int age, String phoneNumber, String assignedAmbulanceNumber, String aadhaarNumber, String aadhaarImageRef, String licenceImageRef, List<Double> lastLocation, String profileImageRef) {
         this.email = email;
         this.driverId = driverId;
         this.userId = userId;
         this.age = age;
+        this.name = name;
         this.phoneNumber = phoneNumber;
+        this.assignedAmbulanceNumber = assignedAmbulanceNumber;
+        this.aadhaarNumber = aadhaarNumber;
         this.aadhaarImageRef = aadhaarImageRef;
         this.licenceImageRef = licenceImageRef;
-        this.assignedAmbulanceNumber = assignedAmbulanceNumber;
+        this.ownerId = ownerId;
+        this.lastLocation = lastLocation;
+        if(profileImageRef == null) {
+            this.profileImageRef = null;
+        } else {
+            this.profileImageRef = FirebaseStorage.getInstance().getReferenceFromUrl(profileImageRef);
+        }
+
     }
 
+    @SuppressWarnings("unchecked")
     public static EmployeeDriver createFromMap(Map<String, Object> map) {
         String driverId = (String) map.get(ModelColumns.DRIVER_ID);
         String userId = (String) map.get(ModelColumns.USER_ID);
@@ -50,8 +142,36 @@ public class EmployeeDriver {
         String licenceImageRef = (String) map.get(ModelColumns.LICENSE_IMAGE_REF);
         String email = (String) map.get(ModelColumns.EMAIL);
         String assignedAmbulanceNumber = (String) map.get(ModelColumns.ASSIGNED_AMBULANCE_NUMBER);
+        String ownerId = (String) map.get(ModelColumns.OWNER_ID);
+        String aadhaarNumber = (String) map.get(ModelColumns.AADHAAR_NUMBER);
 
-        return new EmployeeDriver(name, email, driverId, userId, age, phoneNumber, assignedAmbulanceNumber, aadhaarImageRef, licenceImageRef);
+        Object receivedLocation = map.get(ModelColumns.LAST_LOCATION);
+        List<Double> lastLocation;
+
+        if(receivedLocation instanceof Double[]) {
+            lastLocation = Arrays.asList((Double[]) receivedLocation);
+        }
+        else {
+            lastLocation = (List<Double>) receivedLocation;
+        }
+
+        String profileImageRef = (String) map.get(ModelColumns.PROFILE_IMAGE_REF);
+
+        return new EmployeeDriver(
+                name,
+                email,
+                ownerId,
+                driverId,
+                userId,
+                age,
+                phoneNumber,
+                assignedAmbulanceNumber,
+                aadhaarNumber,
+                aadhaarImageRef,
+                licenceImageRef,
+                lastLocation,
+                profileImageRef
+        );
     }
 
     public String getDriverId() {
@@ -122,8 +242,86 @@ public class EmployeeDriver {
         return assignedAmbulanceNumber;
     }
 
+    public String getAadhaarNumber() {
+        return this.aadhaarNumber;
+    }
+
+    public void setAadhaarNumber(String aadhaarNumber) {
+        this.aadhaarNumber = aadhaarNumber;
+    }
+
     public void setAssignedAmbulanceNumber(String assignedAmbulanceNumber) {
         this.assignedAmbulanceNumber = assignedAmbulanceNumber;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public List<Double> getLastLocation() {
+        return this.lastLocation;
+    }
+
+    public void setLastLocation(List<Double> location) {
+        this.lastLocation = location;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(this.email);
+        dest.writeString(this.driverId);
+        dest.writeString(this.userId);
+        dest.writeInt(this.age);
+        dest.writeString(this.name);
+        dest.writeString(this.phoneNumber);
+        dest.writeString(this.assignedAmbulanceNumber);
+        dest.writeString(this.aadhaarNumber);
+        dest.writeString(this.aadhaarImageRef);
+        dest.writeString(this.licenceImageRef);
+        dest.writeString(this.ownerId);
+        dest.writeList(this.lastLocation);
+        if(this.profileImageRef == null) {
+            dest.writeString(null);
+        } else {
+            dest.writeString(this.profileImageRef.toString());
+        }
+
+    }
+
+    public Map<String, Object> getKeyValueMap() {
+        Map<String, Object> map = new HashMap<>();
+
+
+        map.put(ModelColumns.EMAIL, email);
+        map.put(ModelColumns.DRIVER_ID, driverId);
+        map.put(ModelColumns.USER_ID, userId);
+        map.put(ModelColumns.AGE, age);
+        map.put(ModelColumns.NAME, name);
+        map.put(ModelColumns.PHONE_NUMBER, phoneNumber);
+        map.put(ModelColumns.ASSIGNED_AMBULANCE_NUMBER, assignedAmbulanceNumber);
+        map.put(ModelColumns.AADHAAR_NUMBER, aadhaarNumber);
+        map.put(ModelColumns.AADHAAR_IMAGE_REF, aadhaarImageRef);
+        map.put(ModelColumns.LICENSE_IMAGE_REF, licenceImageRef);
+        map.put(ModelColumns.OWNER_ID, ownerId);
+
+        return map;
+    }
+
+    public StorageReference getProfileImageRef() {
+        return profileImageRef;
+    }
+
+    public void setProfileImageRef(StorageReference profileImageRef) {
+        this.profileImageRef = profileImageRef;
     }
 
     public static class ModelColumns {
@@ -137,6 +335,9 @@ public class EmployeeDriver {
         public static final String AADHAAR_NUMBER = "aadhaar_number";
         public static final String AADHAAR_IMAGE_REF = "aadhaar_image_ref";
         public static final String LICENSE_IMAGE_REF = "license_image_ref";
+        public static final String PROFILE_IMAGE_REF = "profileImageRef";
+        public static final String OWNER_ID = "owner_id";
+        public static final String LAST_LOCATION = "last_location";
 
     }
 }

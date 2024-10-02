@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.work.WorkerParameters;
 
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -44,10 +45,13 @@ public class DeleteDriverWorker extends ListenableWorkerAdapter {
         storage = FirebaseStorage.getInstance();
 
         dbInstance
-                .collection("owners")
-                .document(ownerId)
                 .collection("employees")
-                .whereEqualTo(EmployeeDriver.ModelColumns.DRIVER_ID, driverId)
+                .where(
+                        Filter.and(
+                                Filter.equalTo(EmployeeDriver.ModelColumns.DRIVER_ID, driverId),
+                                Filter.equalTo(EmployeeDriver.ModelColumns.OWNER_ID, ownerId)
+                        )
+                )
                 .limit(1)
                 .get()
                 .addOnCompleteListener(fetchDriverTask -> {

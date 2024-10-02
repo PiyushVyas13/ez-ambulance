@@ -18,6 +18,7 @@ module.exports = {
             "error", 4,
         ],
         "max-len": ["error", 150],
+        "linebreak-style": ["error", "windows"],
     },
     overrides: [
         {

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".component.dashboard.owner.component.ambulance.ui.settings.AboutAmbulanceFragment">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeableImageView2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100sdp"
+            android:background="@drawable/background_top"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="About Ambulance"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_20ssp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ambulance_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_110sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_launcher_round" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_30ssp"
+            android:backgroundTint="#ECEBEB"
+            app:cardCornerRadius="@dimen/_8sdp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/assigned_driver_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:padding="@dimen/_10sdp"
+                android:text="Assigned Driver Name"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:orientation="vertical">
+
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/delete_driver_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/delete" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/delete"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10ssp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="@dimen/_65sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:orientation="vertical">
+
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/assign_driver_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/edit" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Edit"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10ssp" />
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_30sdp"
+                android:text="Ambulance Type"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="bold" />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/ambulance_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:text="Ambulance Type"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/_12ssp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_55sdp"
+                android:text="@string/vehicle_type_text"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="bold" />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/vehicle_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:text="@string/vehicle_type_text"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/_12ssp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_35sdp"
+                android:text="@string/vehicle_number_text"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="bold" />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/vehicle_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:text="@string/vehicle_number_text"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/_12ssp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.21" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

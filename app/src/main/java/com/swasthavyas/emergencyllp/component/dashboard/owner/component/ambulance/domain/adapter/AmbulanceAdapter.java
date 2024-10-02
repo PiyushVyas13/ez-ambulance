@@ -1,6 +1,8 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
@@ -28,6 +31,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
     private final List<Ambulance> ambulances;
     private final Context context;
+    private List<String> availableAmbulanceIds;
 
     private final OnDeleteCallback deleteCallback;
     private final OnItemClickListener itemClickListener;
@@ -40,6 +44,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
         private final TextView vehicleNumber;
         private final TextView serialNumber;
         private final ImageButton deleteButton;
+        private final Chip availabilityChip;
 
 
 
@@ -51,6 +56,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
             vehicleNumber = (TextView) itemView.findViewById(R.id.vehicle_number_holder);
             serialNumber = (TextView) itemView.findViewById(R.id.sr_number);
             deleteButton = (ImageButton) itemView.findViewById(R.id.delete_button);
+            availabilityChip = (Chip) itemView.findViewById(R.id.availability);
         }
 
         public TextView getVehicleNumber() {
@@ -67,13 +73,21 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
             itemView.setOnClickListener(v -> listener.onItemClick(position, item));
         }
 
+        public Chip getAvailabilityChip() {return availabilityChip;}
+
     }
 
-    public AmbulanceAdapter(Context context, List<Ambulance> ambulances, OnDeleteCallback deleteCallback, OnItemClickListener onItemClickListener) {
+    public void setAvailableAmbulanceIds(List<String> availableAmbulanceIds) {
+        this.availableAmbulanceIds = availableAmbulanceIds;
+        notifyDataSetChanged();
+    }
+
+    public AmbulanceAdapter(Context context, List<Ambulance> ambulances, List<String> availableAmbulanceIds, OnDeleteCallback deleteCallback, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.ambulances = ambulances;
         this.deleteCallback = deleteCallback;
         this.itemClickListener = onItemClickListener;
+        this.availableAmbulanceIds = availableAmbulanceIds;
     }
 
 
@@ -92,6 +106,18 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
         holder.getVehicleNumber().setText(ambulance.getVehicleNumber());
         holder.getSerialNumber().setText(String.format(Locale.getDefault(), "%d", position+1));
         holder.setOnItemClickListener(ambulance, position, itemClickListener);
+
+        holder.getAvailabilityChip().setText(
+                availableAmbulanceIds.contains(ambulance.getId()) ?
+                        "Not Available" :
+                        "Available"
+        );
+
+        holder.getAvailabilityChip().setChipBackgroundColor(
+                availableAmbulanceIds.contains(ambulance.getId()) ?
+                        ColorStateList.valueOf(context.getColor(R.color.error)) :
+                        ColorStateList.valueOf(context.getColor(R.color.success))
+        );
 
 
         holder.getDeleteButton().setOnClickListener(v -> {

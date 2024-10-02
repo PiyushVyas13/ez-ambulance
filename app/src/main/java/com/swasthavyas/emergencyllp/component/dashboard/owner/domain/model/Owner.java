@@ -9,6 +9,7 @@ import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 public class Owner {
@@ -96,6 +97,25 @@ public class Owner {
         }
         else {
             throw new NullPointerException("employees is null.");
+        }
+    }
+
+    public void assignAmbulanceToEmployee(String ambulanceNumber, String driverId) {
+        if(getEmployees().isInitialized()) {
+            boolean flag = false;
+            for(EmployeeDriver employeeDriver : employees.getValue()) {
+                if(employeeDriver.getDriverId().equals(driverId)) {
+                    employeeDriver.setAssignedAmbulanceNumber(ambulanceNumber);
+                    flag = true;
+                }
+            }
+            if(flag) {
+                employees.setValue(employees.getValue());
+            }
+            else {
+                throw new NoSuchElementException("Employee with given driver ID not found.");
+            }
+
         }
     }
 

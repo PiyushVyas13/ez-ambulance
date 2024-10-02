@@ -1,42 +1,78 @@
 package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.ui;
 
+import static com.swasthavyas.emergencyllp.util.AppConstants.TAG;
+
 import android.content.Context;
-import android.os.Build;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavOptions;
-import androidx.navigation.Navigation;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.StrokeStyle;
+import com.google.android.gms.maps.model.StyleSpan;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.PolyUtil;
 import com.swasthavyas.emergencyllp.R;
+import com.swasthavyas.emergencyllp.component.dashboard.driver.ui.dialog.DriverSearchFragment;
+import com.swasthavyas.emergencyllp.component.dashboard.driver.worker.AssignAmbulanceWorker;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.viewmodel.AmbulanceViewModel;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.trip.domain.model.Trip;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.domain.model.Owner;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.OwnerViewModel;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.viewmodel.TripViewModel;
 import com.swasthavyas.emergencyllp.databinding.FragmentAmbulanceDetailBinding;
+import com.swasthavyas.emergencyllp.util.firebase.FirebaseService;
+import com.swasthavyas.emergencyllp.util.types.TripStatus;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 
 public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallback {
 
     FragmentAmbulanceDetailBinding viewBinding;
+    TripViewModel tripViewModel;
 
 
     public AmbulanceDetailFragment() {
@@ -46,8 +82,104 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     private Ambulance ambulance;
     private EmployeeDriver assignedDriver;
     private OwnerViewModel ownerViewModel;
+    private AmbulanceViewModel ambulanceViewModel;
 
     private GoogleMap ambulanceLocationMap;
+    private Marker marker;
+    private LatLng currentCoordinates;
+
+    private final AtomicReference<Boolean> isActiveRef = new AtomicReference<>(false);
+    private final AtomicReference<Boolean> isOnRideRef = new AtomicReference<>(false);
+
+    private DatabaseReference tripStatusReference;
+    private DatabaseReference tripPreviewReference;
+    private final ValueEventListener tripListener  = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if(snapshot.exists()) {
+                TripStatus tripStatus = snapshot.getValue(TripStatus.class);
+
+                if(tripStatus == null) {
+                    return;
+                }
+
+                switch (tripStatus) {
+                    case PENDING_RESPONSE:
+                        viewBinding.assignRideButton.setEnabled(false);
+                        viewBinding.assignRideButton.setText("Awaiting driver's response");
+                        break;
+                    case INITIATED:
+                        viewBinding.assignRideButton.setEnabled(false);
+                        viewBinding.assignRideButton.setText("Driver Accepted Ride");
+                        viewBinding.ambulanceRideIndicator.setVisibility(View.VISIBLE);
+                        break;
+                    case REJECTED:
+                        Toast.makeText(requireActivity(), "Driver Rejected Ride", Toast.LENGTH_SHORT).show();
+                        viewBinding.assignRideButton.setEnabled(true);
+                        viewBinding.assignRideButton.setText("Assign Ride");
+                        break;
+                    case CLIENT_PICKUP:
+                        viewBinding.assignRideButton.setEnabled(false);
+                        viewBinding.assignRideButton.setText("Driver yet to pickup client");
+                        viewBinding.ambulanceRideIndicator.setVisibility(View.VISIBLE);
+                        break;
+                    case CLIENT_DROP:
+                        viewBinding.assignRideButton.setEnabled(false);
+                        viewBinding.assignRideButton.setText("Driver has picked up the client");
+                        viewBinding.ambulanceRideIndicator.setVisibility(View.VISIBLE);
+                        break;
+                }
+
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+
+    private final ValueEventListener previewListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if(snapshot.exists() && ambulanceLocationMap != null) {
+                String encodedPolyline = snapshot.getValue(String.class);
+
+                ambulanceLocationMap.clear();
+                marker = ambulanceLocationMap.addMarker(new MarkerOptions()
+                        .position(currentCoordinates)
+                        .icon(getBitmapFromVector())
+                        .title("Current Location"));
+                if(encodedPolyline != null) {
+                    List<LatLng> polylinePoints = PolyUtil.decode(encodedPolyline);
+
+                    PolylineOptions options = new PolylineOptions()
+                            .addAll(polylinePoints)
+                            .addSpan(new StyleSpan(StrokeStyle.gradientBuilder(Color.RED, Color.YELLOW).build()));
+
+
+                    LatLng endpoint = polylinePoints.get(polylinePoints.size()-1);
+                    ambulanceLocationMap.addPolyline(options);
+                    ambulanceLocationMap.addMarker(new MarkerOptions().position(endpoint));
+                }
+
+            } else {
+                if (ambulanceLocationMap != null) {
+                    ambulanceLocationMap.clear();
+                    marker = ambulanceLocationMap.addMarker(new MarkerOptions()
+                            .position(currentCoordinates)
+                            .icon(getBitmapFromVector())
+                            .title("Current Location"));
+                }
+
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
 
 
 
@@ -55,25 +187,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ownerViewModel = new ViewModelProvider(requireActivity()).get(OwnerViewModel.class);
-
-        if(getArguments() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ambulance = getArguments().getParcelable("ambulance", Ambulance.class);
-            }
-            else {
-                ambulance = getArguments().getParcelable("ambulance");
-            }
-
-            List<EmployeeDriver> employees = ownerViewModel.getOwner().getValue().getEmployees().getValue();
-            employees.stream()
-                    .filter(employeeDriver -> employeeDriver.getAssignedAmbulanceNumber().equals(ambulance.getVehicleNumber()))
-                    .findFirst()
-                    .ifPresent(employeeDriver -> assignedDriver = employeeDriver);
-
-        }
-        else  {
-            Navigation.findNavController(viewBinding.getRoot()).popBackStack();
-        }
+        ambulanceViewModel = new ViewModelProvider(requireActivity()).get(AmbulanceViewModel.class);
 
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
@@ -90,40 +204,181 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
             }
         };
 
-
         requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
     }
 
     @Override
+    @SuppressWarnings({"unchecked"})
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         viewBinding = FragmentAmbulanceDetailBinding.inflate(getLayoutInflater());
+        tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
 
 
-        viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext()));
-        viewBinding.ambulanceDetailTitle.setText(ambulance.getVehicleNumber());
-        if(assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
-            viewBinding.assignedDriverName.setText("Tap to select a driver");
-            viewBinding.assignRideButton.setEnabled(false);
-        }
-        else {
-            viewBinding.assignedDriverName.setText("Assigned to: " + assignedDriver.getName());
-        }
+        ambulanceViewModel.getCurrentAmbulance().observe(getViewLifecycleOwner(), ambulance -> {
+            viewBinding.ambulanceDetailTitle.setText(ambulance.getVehicleNumber());
+            this.ambulance = ambulance;
+        });
 
-        viewBinding.assignRideButton.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.rideAssignmentFragment, null,
-                    new NavOptions.Builder()
-                            .setEnterAnim(android.R.anim.slide_in_left)
-                            .setExitAnim(android.R.anim.fade_out)
-                            .setPopEnterAnim(android.R.anim.fade_in)
-                            .setPopExitAnim(R.anim.slide_out_left)
-                            .build());
+
+
+        ownerViewModel.getOwner().observe(getViewLifecycleOwner(), owner -> {
+
+            owner.getEmployees().observe(getViewLifecycleOwner(), drivers -> {
+                drivers.stream()
+                        .filter(driver -> driver.getAssignedAmbulanceNumber().equals(ambulance.getVehicleNumber()))
+                        .findFirst()
+                        .ifPresent(driver -> {
+                            ambulanceViewModel.setAssignedDriver(driver);
+                            assignedDriver = driver;
+                        });
+
+
+
+                if (assignedDriver == null || assignedDriver.getAssignedAmbulanceNumber().equals("None")) {
+                    viewBinding.assignedDriverName.setText(R.string.tap_to_select_a_driver);
+                    viewBinding.assignRideButton.setEnabled(false);
+
+
+
+                    viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), "No Driver Assigned", null));
+
+
+                } else {
+                    viewBinding.assignedDriverName.setText(String.format("Assigned to: %s", assignedDriver.getName()));
+
+                    viewBinding.settingsList.setAdapter(new SettingsOptionAdapter(requireContext(), ambulance.getId(), assignedDriver.getName(), assignedDriver.getProfileImageRef() != null ? assignedDriver.getProfileImageRef().toString().replace("%40", "@") : null));
+
+
+                    viewBinding.assignRideButton.setOnClickListener(v -> {
+                        Navigation.findNavController(v).navigate(R.id.rideAssignmentFragment, null,
+                                new NavOptions.Builder()
+                                        .setEnterAnim(android.R.anim.slide_in_left)
+                                        .setExitAnim(android.R.anim.fade_out)
+                                        .setPopEnterAnim(android.R.anim.fade_in)
+                                        .setPopExitAnim(R.anim.slide_out_left)
+                                        .build());
+                    });
+
+
+                    FirebaseDatabase database = FirebaseService.getInstance().getDatabaseInstance();
+//        database.useEmulator("10.0.2.2", 8000);
+
+                    database
+                            .getReference()
+                            .getRoot()
+                            .child("active_drivers")
+                            .child(assignedDriver.getDriverId())
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        Log.d(TAG, "Location Changed: " + snapshot.getValue());
+                                        List<Double> coords = (List<Double>) snapshot.getValue();
+
+                                        viewBinding.assignedDriverName.setText(String.format("Assigned to: %s (active)", assignedDriver.getName()));
+                                        isActiveRef.set(true);
+
+                                        viewBinding.assignRideButton.setEnabled(!isOnRideRef.get() && isActiveRef.get());
+
+                                        LatLng coordinates = new LatLng(coords.get(0), coords.get(1));
+                                        currentCoordinates = coordinates;
+                                        if (ambulanceLocationMap != null) {
+                                            if (marker == null) {
+                                                marker = ambulanceLocationMap.addMarker(new MarkerOptions()
+                                                        .position(coordinates)
+                                                        .icon(getBitmapFromVector())
+                                                        .title("Driver Location"));
+                                            } else {
+                                                marker.setPosition(coordinates);
+                                            }
+                                            ambulanceLocationMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20f));
+                                        }
+
+
+                                    } else {
+                                        viewBinding.assignRideButton.setEnabled(false);
+                                        viewBinding.assignedDriverName.setText(String.format("Assigned to: %s (inactive)", assignedDriver.getName()));
+                                        isActiveRef.set(false);
+                                        Log.d(TAG, "onDataChange: snapshot does not exist (yet).");
+
+                                        // Get the last known location from persistent database.
+                                        if(assignedDriver.getLastLocation() != null) {
+                                            LatLng coordinates = new LatLng(assignedDriver.getLastLocation().get(0), assignedDriver.getLastLocation().get(1));
+                                            if (ambulanceLocationMap != null) {
+                                                if (marker == null) {
+                                                    marker = ambulanceLocationMap.addMarker(new MarkerOptions().position(coordinates).title("Driver Location"));
+                                                } else {
+                                                    marker.setPosition(coordinates);
+                                                }
+                                                ambulanceLocationMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20f));
+                                            }
+                                        }
+                                        else {
+                                            if(ambulanceLocationMap != null) {
+                                                LatLng coordinates = new LatLng(21.1458, 79.0882);
+                                                ambulanceLocationMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20f));
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.d(TAG, "onCancelled: " + error);
+                                }
+                            });
+
+                    tripViewModel.getActiveTripsLiveData().observe(getViewLifecycleOwner(), trips -> {
+                        Trip potentialTrip = trips
+                                .stream()
+                                .filter(trip -> trip.getAssignedAmbulanceId().equals(ambulance.getId()))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (potentialTrip != null) {
+                            String tripId = potentialTrip.getId();
+                            tripStatusReference = database
+                                    .getReference()
+                                    .getRoot()
+                                    .child("trips")
+                                    .child(potentialTrip.getOwnerId())
+                                    .child(tripId)
+                                    .child("status");
+
+                            tripPreviewReference = database
+                                    .getReference()
+                                    .getRoot()
+                                    .child("trips")
+                                    .child(potentialTrip.getOwnerId())
+                                    .child(tripId)
+                                    .child("routePolyline");
+
+                            isOnRideRef.set(true);
+                            tripStatusReference.addValueEventListener(tripListener);
+                            tripPreviewReference.addValueEventListener(previewListener);
+                        } else {
+                            viewBinding.assignRideButton.setEnabled(isActiveRef.get());
+                            isOnRideRef.set(false);
+                            viewBinding.assignRideButton.setText("Assign Ride");
+                            viewBinding.ambulanceRideIndicator.setVisibility(View.GONE);
+                        }
+                    });
+
+
+                }
+
+            });
+
         });
 
         return viewBinding.getRoot();
     }
+
+    @NonNull
+
 
     private static final List<String> optionsList = Arrays.asList("About Ambulance", "History");
     private static final List<String> optionDescList = Arrays.asList(
@@ -134,14 +389,7 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         ambulanceLocationMap = googleMap;
-        googleMap.addMarker(
-                new MarkerOptions()
-                        .position(new LatLng(21.1458, 79.0882))
-                        .title("Marker")
-        );
-        googleMap.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(new LatLng(21.1458, 79.0882), 15.0f)
-        );
+
     }
 
     @Override
@@ -150,12 +398,35 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
         mapFragment.getMapAsync(this);
     }
 
+    private BitmapDescriptor getBitmapFromVector() {
+        Drawable vectorDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ambulance_live_location);
+
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
     private static class SettingsOptionAdapter extends BaseAdapter {
 
         private final Context context;
+        private final String ambulanceId;
+        private final String driverName;
+        private final String imageRef;
 
-        public SettingsOptionAdapter(Context context) {
+        public SettingsOptionAdapter(Context context, String ambulanceId, String driverName, String imageRef) {
             this.context = context;
+            this.ambulanceId = ambulanceId;
+            this.driverName = driverName;
+            this.imageRef = imageRef;
         }
 
         @Override
@@ -188,7 +459,43 @@ public class AmbulanceDetailFragment extends Fragment implements OnMapReadyCallb
             optionTitle.setText(optionsList.get(position));
             optionDesc.setText(optionDescList.get(position));
 
+            convertView.setOnClickListener(v -> {
+                switch (position) {
+                    case 0:
+
+                        Navigation.findNavController(v)
+                                .navigate(
+                                        R.id.aboutAmbulanceFragment,
+                                        null,
+                                        new NavOptions.Builder()
+                                                .setEnterAnim(R.anim.slide_in_right)
+                                                .setExitAnim(android.R.anim.fade_out)
+                                                .build()
+                                );
+                        break;
+                    case 1:
+                        AmbulanceDetailFragmentDirections.HistoryAction action = AmbulanceDetailFragmentDirections
+                                .historyAction(ambulanceId, "trip.assignedAmbulanceId", driverName, "ambulance");
+
+                        Navigation.findNavController(v)
+                                .navigate(action);
+                        break;
+                }
+            });
+
             return convertView;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(tripStatusReference != null) {
+            tripStatusReference.removeEventListener(tripListener);
+        }
+
+        if(tripPreviewReference != null) {
+            tripPreviewReference.removeEventListener(previewListener);
         }
     }
 }

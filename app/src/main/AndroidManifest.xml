@@ -3,8 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
     <application
+        android:name=".EZAmbulanceApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,11 +17,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EmergencyLLP.Starting"
+        android:usesCleartextTraffic="true"
         tools:targetApi="30">
+
+        <service
+            android:name=".util.service.LocationService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+        <service
+            android:name=".util.service.CloudMessagingService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
         <activity
             android:name=".RegistrationActivity"
             android:exported="false"
-            android:theme="@style/Theme.EmergencyLLP"/>
+            android:theme="@style/Theme.EmergencyLLP" />
         <activity
             android:name=".AuthActivity"
             android:exported="false"
@@ -25,8 +46,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.EmergencyLLP.Starting">
+            android:theme="@style/Theme.EmergencyLLP.Starting"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,14 +55,19 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".component.trip.ui.TripActivity"
+            android:exported="false"
+            android:theme="@style/Theme.EmergencyLLP"
+            />
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
-
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"
-            />
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

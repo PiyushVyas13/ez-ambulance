@@ -63,7 +63,7 @@ public class Ambulance implements Parcelable {
         String ownerId = (String) map.get(ModelColumns.OWNER_ID);
         AmbulanceType ambulanceType = AmbulanceType.valueOf((String) map.get(ModelColumns.AMBULANCE_TYPE));
         String vehicleNumber = (String) map.get(ModelColumns.VEHICLE_NUMBER);
-        String vehicleType = (String) map.get(ModelColumns.AMBULANCE_TYPE);
+        String vehicleType = (String) map.get(ModelColumns.VEHICLE_TYPE);
         String imageRef = (String) map.get(ModelColumns.IMAGE_REF);
 
         return new Ambulance(id, ownerId, ambulanceType, vehicleNumber, vehicleType, imageRef);
