@@ -3,6 +3,7 @@ package com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulan
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.swasthavyas.emergencyllp.R;
 import com.swasthavyas.emergencyllp.component.dashboard.owner.component.ambulance.domain.model.Ambulance;
+import com.swasthavyas.emergencyllp.component.dashboard.owner.component.employee.domain.model.EmployeeDriver;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +32,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
 
     private final List<Ambulance> ambulances;
+    private final List<EmployeeDriver> drivers;
     private final Context context;
     private List<String> availableAmbulanceIds;
 
@@ -42,6 +45,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView vehicleNumber;
+        private final TextView assignedDriverName;
         private final TextView serialNumber;
         private final ImageButton deleteButton;
         private final Chip availabilityChip;
@@ -54,6 +58,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
             // We can attach some listeners here
             vehicleNumber = (TextView) itemView.findViewById(R.id.vehicle_number_holder);
+            assignedDriverName = (TextView) itemView.findViewById(R.id.assigned_driver_holder);
             serialNumber = (TextView) itemView.findViewById(R.id.sr_number);
             deleteButton = (ImageButton) itemView.findViewById(R.id.delete_button);
             availabilityChip = (Chip) itemView.findViewById(R.id.availability);
@@ -75,6 +80,9 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
 
         public Chip getAvailabilityChip() {return availabilityChip;}
 
+        public TextView getAssignedDriverName() {
+            return assignedDriverName;
+        }
     }
 
     public void setAvailableAmbulanceIds(List<String> availableAmbulanceIds) {
@@ -82,12 +90,13 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
         notifyDataSetChanged();
     }
 
-    public AmbulanceAdapter(Context context, List<Ambulance> ambulances, List<String> availableAmbulanceIds, OnDeleteCallback deleteCallback, OnItemClickListener onItemClickListener) {
+    public AmbulanceAdapter(Context context, List<Ambulance> ambulances, List<EmployeeDriver> drivers, List<String> availableAmbulanceIds, OnDeleteCallback deleteCallback, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.ambulances = ambulances;
         this.deleteCallback = deleteCallback;
         this.itemClickListener = onItemClickListener;
         this.availableAmbulanceIds = availableAmbulanceIds;
+        this.drivers = drivers;
     }
 
 
@@ -131,6 +140,21 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.View
                     .setNegativeButton("Cancel", (dialog, which) -> {})
                     .show();
         });
+
+
+        Log.d("AmbulanceAdapter", "onBindViewHolder: " + drivers);
+        Log.d("AmbulanceAdapter", "onBindViewHolder: " + ambulance.getVehicleNumber());
+        EmployeeDriver driver = drivers
+                .stream()
+                .filter(employeeDriver -> employeeDriver.getAssignedAmbulanceNumber().equals(ambulance.getVehicleNumber()))
+                .findFirst()
+                .orElse(null);
+
+        if(driver == null) {
+            holder.getAssignedDriverName().setVisibility(View.GONE);
+        } else {
+            holder.getAssignedDriverName().setText("Assigned to: " + driver.getName());
+        }
     }
 
 

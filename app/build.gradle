@@ -6,6 +6,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/suyogparkhi/Desktop/ezambulance_release_key')
+            storePassword 'adminpass'
+            keyAlias 'release_key'
+            keyPassword 'adminpass'
+        }
+    }
     namespace 'com.swasthavyas.emergencyllp'
     compileSdk 34
 
@@ -23,6 +31,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

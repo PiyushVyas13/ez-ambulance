@@ -77,13 +77,13 @@ public class DropLocationFragment extends NavigationStepFragment implements OnMa
         AutocompleteSupportFragment autocompleteFragment = viewBinding.autocompleteFragment.getFragment();
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG, Place.Field.VIEWPORT, Place.Field.ADDRESS));
         autocompleteFragment.setCountries("IN");
-        autocompleteFragment.setLocationRestriction(bounds);
-        autocompleteFragment.setTypesFilter(
-                Arrays.asList(
-                        PlaceTypes.HOSPITAL,
-                        PlaceTypes.PHARMACY
-                )
-        );
+//        autocompleteFragment.setLocationRestriction(bounds);
+//        autocompleteFragment.setTypesFilter(
+//                Arrays.asList(
+//                        PlaceTypes.HOSPITAL,
+//                        PlaceTypes.PHARMACY
+//                )
+//        );
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override

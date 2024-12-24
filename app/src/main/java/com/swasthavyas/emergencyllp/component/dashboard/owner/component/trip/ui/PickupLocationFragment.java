@@ -86,8 +86,8 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
 //        viewBinding.pincode.setEnabled(false);
 
         RectangularBounds bounds = RectangularBounds.newInstance(
-                new LatLng(20.5558, 78.6304),
-                new LatLng(21.2720, 79.4864)
+                new LatLng(8.0883, 77.5385),
+                new LatLng(28.0167, 97.4167)
         );
 
         viewBinding.streetAddressInput.setOnFocusChangeListener((view, hasFocus) -> {
@@ -96,7 +96,6 @@ public class PickupLocationFragment extends NavigationStepFragment implements On
 
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                         .setCountries(Collections.singletonList("IN"))
-                        .setLocationRestriction(bounds)
                         .setTypesFilter(Arrays.asList(
                                 PlaceTypes.STREET_NUMBER,
                                 PlaceTypes.STREET_ADDRESS,

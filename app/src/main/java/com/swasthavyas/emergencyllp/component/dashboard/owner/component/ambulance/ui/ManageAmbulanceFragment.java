@@ -100,7 +100,7 @@ public class ManageAmbulanceFragment extends Fragment {
             };
 
 
-            AmbulanceAdapter ambulanceAdapter = new AmbulanceAdapter(requireContext(), currentOwner.getAmbulances().getValue(), new ArrayList<>(), deleteCallback, ((position, ambulance) -> {
+            AmbulanceAdapter ambulanceAdapter = new AmbulanceAdapter(requireContext(), currentOwner.getAmbulances().getValue(), currentOwner.getEmployees().getValue(), new ArrayList<>(), deleteCallback, ((position, ambulance) -> {
                 ambulanceViewModel.setCurrentAmbulance(ambulance);
                 Navigation.findNavController(viewBinding.getRoot()).navigate(R.id.ambulanceDetailFragment, null, new NavOptions.Builder().setEnterAnim(R.anim.slide_in_right).setExitAnim(android.R.anim.fade_out).build());
             }));

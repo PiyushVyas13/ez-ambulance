@@ -75,7 +75,7 @@
     <string name="cancel">Cancel</string>
     <string name="personal_detail_text">Personal Details</string>
     <string name="ambulance_documents_detail_text"><![CDATA[Ambulance & Document Details]]></string>
-    <string name="select_ambulance_text">Select Ambulance</string>
+    <string name="select_ambulance_text">Select Ambulance (Optional)</string>
     <string name="aadhaar_no_of_driver_text">Driver\'s Aadhaar Number</string>
     <string name="choose_file_text">Choose a file</string>
     <string name="no_file_chosen_text">No file chosen</string>

@@ -48,6 +48,16 @@
                 android:text="Ambulance No."
                 android:textColor="@color/black"/>
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/assigned_driver_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Assigned to: "
+                android:layout_marginTop="@dimen/_4sdp"
+                android:textColor="@color/black"/>
+
+
 <!--            <LinearLayout-->
 <!--                android:layout_marginTop="@dimen/_8sdp"-->
 <!--                android:layout_width="wrap_content"-->

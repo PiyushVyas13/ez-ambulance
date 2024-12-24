@@ -32,6 +32,7 @@ import com.swasthavyas.emergencyllp.util.types.UserRole;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
 public class MainActivity extends AppCompatActivity {
 
     FirebaseUser currentUser;

@@ -66,6 +66,7 @@ public class DriverAmbulanceDetailsFragment extends Fragment {
 
 
             viewBinding.ambulanceAutocomplete.setThreshold(1);
+            viewBinding.ambulanceAutocomplete.setOnFocusChangeListener((v, hasFocus) -> viewBinding.ambulanceAutocomplete.setHint(hasFocus ? "Optional" : ""));
             viewBinding.ambulanceAutocomplete.setAdapter(new ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line, ambulanceNumbers));
 
         });

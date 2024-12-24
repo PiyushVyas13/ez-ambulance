@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.0"
+agp = "8.3.1"
 androidMapsUtils = "3.8.0"
 circleimageview = "3.1.0"
 compiler = "4.14.2"
